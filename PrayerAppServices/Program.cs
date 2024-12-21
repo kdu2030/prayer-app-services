@@ -1,7 +1,14 @@
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+IHostEnvironment environment = builder.Environment;
+
+string appSettingsPath = environment.IsDevelopment() ? "appsettings.Development.json" : "appsettings.Production.json";
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddJsonFile(appSettingsPath)
+    .Build();
+builder.Configuration.AddConfiguration(configuration);
+
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
