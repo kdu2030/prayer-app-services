@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using PrayerAppServices.Configuration;
+using PrayerAppServices.Data;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IHostEnvironment environment = builder.Environment;
 
@@ -7,14 +11,13 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 builder.Configuration.AddConfiguration(configuration);
 
-
-
-
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.ConfigureDbContext(configuration);
 
 var app = builder.Build();
 
