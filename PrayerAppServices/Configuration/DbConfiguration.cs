@@ -4,7 +4,7 @@ using PrayerAppServices.User.Entities;
 
 namespace PrayerAppServices.Configuration {
     public static class DbConfiguration {
-        public static void ConfigureDbContext(this IServiceCollection services, IConfiguration configuration) {
+        public static void AddDbContext(this IServiceCollection services, IConfiguration configuration) {
             string? connectionString = configuration.GetConnectionString("DefaultConnection");
 
             if (string.IsNullOrEmpty(connectionString)) {
@@ -13,6 +13,7 @@ namespace PrayerAppServices.Configuration {
 
             services.AddDbContext<AppDbContext>(options =>
               options.UseNpgsql(configuration.GetConnectionString(connectionString))
+                .UseSnakeCaseNamingConvention()
             );
 
             services.AddIdentityApiEndpoints<AppUser>()

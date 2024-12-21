@@ -2,8 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrayerAppServices.User.Entities {
-    [Table("app_user")]
     public class AppUser : IdentityUser<int> {
+        [Column(TypeName = "varchar(256)")]
         public string? FullName { get; set; }
 
         public AppUser() { }

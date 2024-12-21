@@ -1,6 +1,4 @@
-using Microsoft.EntityFrameworkCore;
 using PrayerAppServices.Configuration;
-using PrayerAppServices.Data;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IHostEnvironment environment = builder.Environment;
@@ -17,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.ConfigureDbContext(configuration);
+builder.Services.AddDbContext(configuration);
 
 var app = builder.Build();
 
