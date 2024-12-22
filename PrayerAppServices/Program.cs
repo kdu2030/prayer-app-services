@@ -13,7 +13,7 @@ builder.Configuration.AddConfiguration(configuration);
 
 // Add services to the container.
 builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = DataValidationHandler.HandleDataValidationErrors);
+    .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = ErrorHandler.HandleDataValidationErrors);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -30,7 +30,7 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<ExceptionHandlerMiddleware>();
+app.UseExceptionHandler(app => app.Run(context => ErrorHandler.HandleException(context)));
 
 app.UseAuthorization();
 
