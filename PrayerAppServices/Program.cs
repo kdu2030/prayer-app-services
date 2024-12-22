@@ -1,4 +1,5 @@
 using PrayerAppServices.Configuration;
+using PrayerAppServices.Error;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IHostEnvironment environment = builder.Environment;
@@ -10,7 +11,9 @@ IConfiguration configuration = new ConfigurationBuilder()
 builder.Configuration.AddConfiguration(configuration);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = DataValidationHandler.HandleDataValidationErrors);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
