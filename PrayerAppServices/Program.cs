@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Diagnostics;
 using PrayerAppServices.Configuration;
 using PrayerAppServices.Error;
 
@@ -28,6 +29,8 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseAuthorization();
 
