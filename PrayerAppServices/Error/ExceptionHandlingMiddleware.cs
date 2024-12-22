@@ -18,7 +18,7 @@ namespace PrayerAppServices.Error {
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             Error error = new Error {
                 ErrorCode = ErrorCode.GenericError,
-                Message = "Internal server error",
+                Message = exception.Message,
                 Url = context.Request.Path,
                 RequestMethod = context.Request.Method
             };
