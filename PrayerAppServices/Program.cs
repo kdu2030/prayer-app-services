@@ -30,7 +30,7 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler(app => app.Run(context => ErrorHandler.HandleException(context)));
+app.UseExceptionHandler(app => app.Run(context => ErrorHandler.HandleExceptionAsync(context)));
 
 app.UseAuthorization();
 

@@ -16,7 +16,7 @@ namespace PrayerAppServices.Error {
             return new BadRequestObjectResult(error);
         }
 
-        public static async Task HandleException(HttpContext context) {
+        public static async Task HandleExceptionAsync(HttpContext context) {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
