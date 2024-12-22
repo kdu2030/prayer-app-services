@@ -4,7 +4,7 @@ namespace PrayerAppServices.Error {
     public class DataValidationHandler {
         public static IActionResult HandleDataValidationErrors(ActionContext context) {
             IEnumerable<string> errorMessages = context.ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage);
-            var error = new DataValidationError {
+            DataValidationError error = new DataValidationError {
                 ErrorCode = ErrorCode.DataValidationError,
                 DataValidationErrors = errorMessages,
                 Message = "Data validation error",
