@@ -6,7 +6,7 @@ namespace PrayerAppServices.User {
     [ApiController]
     [Route("/api/v1/user")]
     public class UserController(IUserManager userManager) : ControllerBase, IUserController {
-        private IUserManager _userManager = userManager;
+        private readonly IUserManager _userManager = userManager;
 
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
