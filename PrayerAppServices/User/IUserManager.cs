@@ -2,6 +2,6 @@
 
 namespace PrayerAppServices.User {
     public interface IUserManager {
-        Task<UserSummary> CreateUser(CreateUserRequest request);
+        Task<UserSummary> CreateUserAsync(CreateUserRequest request);
     }
 }

@@ -16,7 +16,7 @@ namespace PrayerAppServices.User {
         private const int AccessTokenValidityMs = 60 * 60 * 1000;
         private const int RefreshTokenValidityMs = 15 * 24 * 60 * 60 * 1000;
 
-        public async Task<UserSummary> CreateUser(CreateUserRequest request) {
+        public async Task<UserSummary> CreateUserAsync(CreateUserRequest request) {
             Task<AppUser?> userByEmailResult = _userManager.FindByEmailAsync(request.Email);
             Task<AppUser?> userByUsernameResult = _userManager.FindByNameAsync(request.Username);
 

@@ -11,7 +11,7 @@ namespace PrayerAppServices.User {
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
         public async Task<IActionResult> CreateUser(CreateUserRequest request) {
-            UserSummary userSummary = await _userManager.CreateUser(request);
+            UserSummary userSummary = await _userManager.CreateUserAsync(request);
             return Ok(userSummary);
         }
 
