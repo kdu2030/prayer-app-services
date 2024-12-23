@@ -8,6 +8,9 @@ namespace PrayerAppServices.User {
     public class UserManager(UserManager<AppUser> userManager) {
         private UserManager<AppUser> _userManager = userManager;
 
+        private const int AccessTokenValidityMs = 60 * 60 * 1000;
+        private const int RefreshTokenValidityMs = 15 * 24 * 60 * 60 * 1000;
+
         public async Task<UserSummary> CreateUser(CreateUserRequest request) {
             Task<AppUser?> userByEmailResult = _userManager.FindByEmailAsync(request.Email);
             Task<AppUser?> userByUsernameResult = _userManager.FindByNameAsync(request.Username);
@@ -35,5 +38,7 @@ namespace PrayerAppServices.User {
             byte[] hashBytes = sha256.ComputeHash(passwordBytes);
             return Convert.ToHexString(hashBytes);
         }
+
+
     }
 }
