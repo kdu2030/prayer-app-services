@@ -22,6 +22,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext(configuration);
 builder.Services.AddJwtConfiguration(configuration);
 
+builder.Services.RegisterServices();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
