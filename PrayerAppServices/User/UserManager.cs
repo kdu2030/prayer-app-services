@@ -9,9 +9,9 @@ using System.Text;
 
 namespace PrayerAppServices.User {
     public class UserManager(UserManager<AppUser> userManager, IConfiguration configuration, JwtSecurityTokenHandler jwtSecurityTokenHandler) : IUserManager {
-        private UserManager<AppUser> _userManager = userManager;
-        private IConfiguration _configuration = configuration;
-        private JwtSecurityTokenHandler _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
+        private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly IConfiguration _configuration = configuration;
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
 
         private const int AccessTokenValidityMs = 60 * 60 * 1000;
         private const int RefreshTokenValidityMs = 15 * 24 * 60 * 60 * 1000;
