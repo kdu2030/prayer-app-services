@@ -12,7 +12,7 @@ namespace PrayerAppServices.Configuration {
             }
 
             services.AddDbContext<AppDbContext>(options =>
-              options.UseNpgsql(configuration.GetConnectionString(connectionString))
+              options.UseNpgsql(connectionString)
                 .UseSnakeCaseNamingConvention()
             );
 
