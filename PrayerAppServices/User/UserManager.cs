@@ -34,8 +34,9 @@ namespace PrayerAppServices.User {
             AppUser newUser = new AppUser(request.Username, request.FullName, request.Email, passwordHash);
             await _userManager.CreateAsync(newUser);
 
-            throw new NotImplementedException();
+            return CreateUserSummary(newUser);
         }
+
 
         private string HashPassword(string rawPassword) {
             byte[] passwordBytes = Encoding.UTF8.GetBytes(rawPassword);
@@ -44,7 +45,20 @@ namespace PrayerAppServices.User {
             return Convert.ToHexString(hashBytes);
         }
 
-        private string GenerateToken(AppUser user) {
+        private UserSummary CreateUserSummary(AppUser user) {
+            return new UserSummary {
+                Id = user.Id,
+                Username = user.UserName ?? "",
+                Email = user.Email ?? "",
+                FullName = user.FullName ?? "",
+                Tokens = new UserTokenPair {
+                    AccessToken = GenerateToken(user, AccessTokenValidityMs),
+                    RefreshToken = GenerateToken(user, RefreshTokenValidityMs)
+                }
+            };
+        }
+
+        private string GenerateToken(AppUser user, int validityLengthMs) {
             string? jwtKey = _configuration["Jwt:Key"];
             string? issuer = _configuration["Jwt:Issuer"];
             string? audience = _configuration["Jwt:Audience"];
@@ -59,7 +73,15 @@ namespace PrayerAppServices.User {
                 new Claim(ClaimTypes.Name, user.UserName ?? "")
             ];
 
-            throw new NotImplementedException();
+            JwtSecurityToken token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.Now.AddMilliseconds(validityLengthMs),
+                signingCredentials: credentials
+            );
+
+            return _jwtSecurityTokenHandler.WriteToken(token);
         }
 
     }
