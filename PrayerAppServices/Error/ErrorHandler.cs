@@ -17,12 +17,17 @@ namespace PrayerAppServices.Error {
         }
 
         public static async Task HandleExceptionAsync(HttpContext context) {
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
             IExceptionHandlerPathFeature? exceptionHandlerPathFeature =
                 context.Features.Get<IExceptionHandlerPathFeature>();
             Exception? exception = exceptionHandlerPathFeature?.Error;
+
+            if (exception is ArgumentException) {
+                await HandleArgumentExceptionAsync(context, exception as ArgumentException);
+                return;
+            }
+
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             Error error = new Error {
                 ErrorCode = ErrorCode.GenericError,
@@ -30,6 +35,20 @@ namespace PrayerAppServices.Error {
                 Url = context.Request.Path,
                 RequestMethod = context.Request.Method
             };
+            await context.Response.WriteAsJsonAsync(error);
+        }
+
+        private static async Task HandleArgumentExceptionAsync(HttpContext context, ArgumentException exception) {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            DataValidationError error = new DataValidationError {
+                ErrorCode = ErrorCode.DataValidationError,
+                DataValidationErrors = [exception.Message],
+                Message = "Data validation error",
+                Url = context.Request.Path,
+                RequestMethod = context.Request.Method
+            };
+
             await context.Response.WriteAsJsonAsync(error);
         }
     }
