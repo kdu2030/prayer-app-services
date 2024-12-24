@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrayerAppServices.User.Models;
 using System.Net;
 
@@ -24,6 +25,7 @@ namespace PrayerAppServices.User {
         }
 
         [HttpGet]
+        [Authorize]
         [Route("{userId}/summary")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
         public IActionResult GetUserSummaryFromUserId(int userId) {
