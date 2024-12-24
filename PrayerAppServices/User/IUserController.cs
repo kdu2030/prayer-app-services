@@ -7,5 +7,7 @@ namespace PrayerAppServices.User {
         public Task<IActionResult> CreateUser(CreateUserRequest request);
 
         public Task<IActionResult> GetUserSummaryFromCredentials(UserCredentials credentials);
+
+        public IActionResult GetUserSummaryFromUserId(int userId);
     }
 }

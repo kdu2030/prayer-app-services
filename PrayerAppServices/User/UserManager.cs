@@ -5,7 +5,6 @@ using PrayerAppServices.User.Entities;
 using PrayerAppServices.User.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace PrayerAppServices.User {
@@ -45,6 +44,11 @@ namespace PrayerAppServices.User {
                 throw new UnauthorizedAccessException("Password is incorrect.");
             }
 
+            return CreateUserSummary(user);
+        }
+
+        public UserSummary GetUserSummaryFromUserId(int userId) {
+            AppUser user = userManager.Users.FirstOrDefault((user) => user.Id == userId) ?? throw new ArgumentException("User ID does not exist.");
             return CreateUserSummary(user);
         }
 

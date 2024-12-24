@@ -23,5 +23,12 @@ namespace PrayerAppServices.User {
             return Ok(userSummary);
         }
 
+        [HttpGet]
+        [Route("{userId}/summary")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
+        public IActionResult GetUserSummaryFromUserId(int userId) {
+            UserSummary userSummary = _userManager.GetUserSummaryFromUserId(userId);
+            return Ok(userSummary);
+        }
     }
 }
