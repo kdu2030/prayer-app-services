@@ -26,6 +26,11 @@ namespace PrayerAppServices.Error {
                 return;
             }
 
+            if (exception is UnauthorizedAccessException) {
+                await HandleUnauthorizedAccessException(context, exception as UnauthorizedAccessException);
+                return;
+            }
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
@@ -47,6 +52,20 @@ namespace PrayerAppServices.Error {
                 Message = "Data validation error",
                 Url = context.Request.Path,
                 RequestMethod = context.Request.Method
+            };
+
+            await context.Response.WriteAsJsonAsync(error);
+        }
+
+        private static async Task HandleUnauthorizedAccessException(HttpContext context, UnauthorizedAccessException exception) {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            DataValidationError error = new DataValidationError {
+                ErrorCode = ErrorCode.DataValidationError,
+                DataValidationErrors = [exception.Message],
+                Url = context.Request.Path,
+                RequestMethod = context.Request.Method,
+                Message = "Unauthorized access exception occurred."
             };
 
             await context.Response.WriteAsJsonAsync(error);

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Isopoh.Cryptography.Argon2;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using PrayerAppServices.User.Entities;
 using PrayerAppServices.User.Models;
@@ -30,20 +31,23 @@ namespace PrayerAppServices.User {
                 throw new ArgumentException("Username must be unique to each user.");
             }
 
-            string passwordHash = HashPassword(request.Password);
+            string passwordHash = Argon2.Hash(request.Password);
             AppUser newUser = new AppUser(request.Username, request.FullName, request.Email, passwordHash);
             await _userManager.CreateAsync(newUser);
 
             return CreateUserSummary(newUser);
         }
 
+        public async Task<UserSummary> GetUserSummaryFromCredentialsAsync(UserCredentials credentials) {
+            AppUser? user = await _userManager.FindByEmailAsync(credentials.Email) ?? throw new ArgumentException("A User with this email does not exist.");
+            bool passwordValid = Argon2.Verify(user.PasswordHash, credentials.Password);
+            if (!passwordValid) {
+                throw new UnauthorizedAccessException("Password is incorrect.");
+            }
 
-        private string HashPassword(string rawPassword) {
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(rawPassword);
-            using SHA256 sha256 = SHA256.Create();
-            byte[] hashBytes = sha256.ComputeHash(passwordBytes);
-            return Convert.ToHexString(hashBytes);
+            return CreateUserSummary(user);
         }
+
 
         private UserSummary CreateUserSummary(AppUser user) {
             return new UserSummary {
