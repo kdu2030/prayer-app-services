@@ -15,5 +15,13 @@ namespace PrayerAppServices.User {
             return Ok(userSummary);
         }
 
+        [HttpPost]
+        [Route("summary")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
+        public async Task<IActionResult> GetUserSummaryFromCredentials(UserCredentials credentials) {
+            UserSummary userSummary = await _userManager.GetUserSummaryFromCredentialsAsync(credentials);
+            return Ok(userSummary);
+        }
+
     }
 }
