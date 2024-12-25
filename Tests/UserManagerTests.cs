@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using NuGet.Frameworks;
-using PrayerAppServices.Data;
 using PrayerAppServices.User;
 using PrayerAppServices.User.Entities;
 using PrayerAppServices.User.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace Tests {
     public class UserManagerTests {
