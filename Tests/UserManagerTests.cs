@@ -1,3 +1,4 @@
+using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using PrayerAppServices.User;
@@ -98,6 +99,35 @@ namespace Tests {
             };
 
             Assert.ThrowsAsync<ArgumentException>(() => userManager!.CreateUserAsync(request));
+        }
+
+        [Test]
+        public async Task GetUserSummaryFromCredentials_GivenValidCredentials_ReturnsUserSummary() {
+            using IServiceScope scope = _serviceProvider.CreateScope();
+            UserManager<AppUser>? aspUserManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
+            IUserManager? userManager = scope.ServiceProvider.GetService<IUserManager>();
+
+            if (userManager == null || aspUserManager == null) {
+                Assert.Fail("User manager or database context does not exist.");
+            }
+
+            await aspUserManager!.CreateAsync(new AppUser {
+                UserName = "michael",
+                FullName = "Michael Scott",
+                Email = "mscott@dundermifflin.com",
+                PasswordHash = Argon2.Hash("worldsbestboss")
+            });
+
+            UserCredentials credentials = new UserCredentials {
+                Email = "mscott@dundermifflin.com",
+                Password = "worldsbestboss"
+            };
+
+            UserSummary userSummary = await userManager!.GetUserSummaryFromCredentialsAsync(credentials);
+            Assert.Multiple(() => {
+                Assert.That(userSummary.Username, Is.EqualTo("michael"));
+                Assert.That(userSummary.Email, Is.EqualTo("mscott@dundermifflin.com"));
+            });
         }
     }
 }
