@@ -72,5 +72,32 @@ namespace Tests {
 
             Assert.ThrowsAsync<ArgumentException>(() => userManager!.CreateUserAsync(request));
         }
+
+        [Test]
+        public async Task CreateUser_GivenDuplicateEmail_ThrowsException() {
+            using IServiceScope scope = _serviceProvider.CreateScope();
+            IUserManager? userManager = scope.ServiceProvider.GetService<IUserManager>();
+            UserManager<AppUser>? aspUserManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
+
+            if (userManager == null || aspUserManager == null) {
+                Assert.Fail("User manager or database context does not exist.");
+            }
+
+            await aspUserManager!.CreateAsync(new AppUser {
+                UserName = "jhalpert1",
+                FullName = "Jim Halpert",
+                Email = "jhalpert@dundermifflin.com",
+                PasswordHash = "paper"
+            });
+
+            CreateUserRequest request = new CreateUserRequest {
+                Username = "jhalpert2",
+                FullName = "Jim Halpert",
+                Email = "jhalpert@dundermifflin.com",
+                Password = "paper"
+            };
+
+            Assert.ThrowsAsync<ArgumentException>(() => userManager!.CreateUserAsync(request));
+        }
     }
 }
