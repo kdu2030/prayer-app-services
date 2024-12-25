@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using PrayerAppServices.Data;
 using PrayerAppServices.User;
 using PrayerAppServices.User.Models;
 
@@ -17,7 +16,8 @@ namespace Tests {
 
         [TearDown]
         public void TearDown() {
-            _serviceProvider.TearDownTestServices();
+            _serviceProvider.TearDownTestDb();
+            _serviceProvider.Dispose();
         }
 
         [Test]
