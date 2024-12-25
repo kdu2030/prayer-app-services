@@ -8,7 +8,7 @@ using PrayerAppServices.Data;
 using PrayerAppServices.User.Entities;
 
 namespace Tests {
-    public static class TestConfiguration {
+    public static class TestUtils {
         private static readonly Dictionary<string, string> JwtConfiguration = new Dictionary<
            string,
            string
