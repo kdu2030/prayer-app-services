@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Diagnostics;
 using PrayerAppServices.Configuration;
 using PrayerAppServices.Error;
 
