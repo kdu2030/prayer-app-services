@@ -17,10 +17,7 @@ namespace Tests {
 
         [TearDown]
         public void TearDown() {
-            using var scope = _serviceProvider.CreateScope();
-            AppDbContext? context = scope.ServiceProvider.GetService<AppDbContext>();
-            context?.Database.EnsureDeleted();
-            _serviceProvider.Dispose();
+            _serviceProvider.TearDownTestServices();
         }
 
         [Test]

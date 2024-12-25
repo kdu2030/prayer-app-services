@@ -30,5 +30,12 @@ namespace Tests {
             services.AddIdentityApiEndpoints<AppUser>()
                 .AddEntityFrameworkStores<AppDbContext>();
         }
+
+        public static void TearDownTestServices(this ServiceProvider serviceProvider) {
+            using var scope = serviceProvider.CreateScope();
+            AppDbContext? context = scope.ServiceProvider.GetService<AppDbContext>();
+            context?.Database.EnsureDeleted();
+            serviceProvider.Dispose();
+        }
     }
 }
