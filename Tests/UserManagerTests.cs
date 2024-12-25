@@ -129,5 +129,20 @@ namespace Tests {
                 Assert.That(userSummary.Email, Is.EqualTo("mscott@dundermifflin.com"));
             });
         }
+
+        [Test]
+        public void GetUserSummaryFromCredentials_GivenInvalidEmail_ThrowsException() {
+            using IServiceScope scope = _serviceProvider.CreateScope();
+            IUserManager? userManager = scope.ServiceProvider.GetService<IUserManager>();
+
+            if (userManager == null) {
+                Assert.Fail("User manager does not exist.");
+            }
+
+            Assert.ThrowsAsync<ArgumentException>(() => userManager!.GetUserSummaryFromCredentialsAsync(new UserCredentials {
+                Email = "pvance@dundermifflin.com",
+                Password = "ovenmitt"
+            }));
+        }
     }
 }
