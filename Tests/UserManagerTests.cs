@@ -1,6 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using NuGet.Frameworks;
+using PrayerAppServices.Data;
 using PrayerAppServices.User;
+using PrayerAppServices.User.Entities;
 using PrayerAppServices.User.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tests {
     public class UserManagerTests {
@@ -21,8 +26,8 @@ namespace Tests {
         }
 
         [Test]
-        public async Task CreateUser_GivenUniqueValues_ReturnsUserSummary() {
-            using var scope = _serviceProvider.CreateScope();
+        public async Task CreateUserAsync_GivenUniqueValues_ReturnsUserSummary() {
+            using IServiceScope scope = _serviceProvider.CreateScope();
             IUserManager? userManager = scope.ServiceProvider.GetService<IUserManager>();
 
             if (userManager == null) {
@@ -42,6 +47,33 @@ namespace Tests {
                 Assert.That(userSummary.Username, Is.EqualTo(request.Username));
                 Assert.That(userSummary.Email, Is.EqualTo(request.Email));
             });
+        }
+
+        [Test]
+        public async Task CreateUserAsync_GivenDuplicateUsername_ThrowsException() {
+            using IServiceScope scope = _serviceProvider.CreateScope();
+            UserManager<AppUser>? aspUserManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
+            IUserManager? userManager = scope.ServiceProvider.GetService<IUserManager>();
+
+            if (aspUserManager == null || userManager == null) {
+                Assert.Fail("User manager or database context does not exist.");
+            }
+
+            await aspUserManager!.CreateAsync(new AppUser {
+                UserName = "dshrute",
+                FullName = "Dwight Schrute",
+                Email = "dshrute@example.com",
+                PasswordHash = "beets",
+            });
+
+            CreateUserRequest request = new CreateUserRequest {
+                Username = "dshrute",
+                FullName = "Dwight Schrute",
+                Email = "dshrute@dundermifflin.com",
+                Password = "beets"
+            };
+
+            Assert.ThrowsAsync<ArgumentException>(() => userManager!.CreateUserAsync(request));
         }
     }
 }
