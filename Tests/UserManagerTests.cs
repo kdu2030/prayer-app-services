@@ -144,5 +144,28 @@ namespace Tests {
                 Password = "ovenmitt"
             }));
         }
+
+        [Test]
+        public void GetUserSummaryFromCredentials_GivenInvalidPassword_ThrowsException() {
+            using IServiceScope scope = _serviceProvider.CreateScope();
+            UserManager<AppUser>? aspUserManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
+            IUserManager? userManager = scope.ServiceProvider.GetService<IUserManager>();
+
+            if (userManager == null || aspUserManager == null) {
+                Assert.Fail("User manager or database context does not exist.");
+            }
+
+            aspUserManager!.CreateAsync(new AppUser {
+                UserName = "pam",
+                FullName = "Pam Beesly",
+                Email = "pbeesly@dundermifflin.com",
+                PasswordHash = Argon2.Hash("art")
+            });
+
+            Assert.ThrowsAsync<UnauthorizedAccessException>(() => userManager!.GetUserSummaryFromCredentialsAsync(new UserCredentials {
+                Email = "pbeesly@dundermifflin.com",
+                Password = "graphicdesign"
+            }));
+        }
     }
 }
