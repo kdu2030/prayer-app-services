@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrayerAppServices", "PrayerAppServices\PrayerAppServices.csproj", "{F8F02A2F-98EC-435C-BF43-11C51CEAE020}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrayerAppServices", "PrayerAppServices\PrayerAppServices.csproj", "{F8F02A2F-98EC-435C-BF43-11C51CEAE020}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{BEE1B691-FC1F-41A5-8691-6C1590AE2036}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F8F02A2F-98EC-435C-BF43-11C51CEAE020}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8F02A2F-98EC-435C-BF43-11C51CEAE020}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8F02A2F-98EC-435C-BF43-11C51CEAE020}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEE1B691-FC1F-41A5-8691-6C1590AE2036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEE1B691-FC1F-41A5-8691-6C1590AE2036}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEE1B691-FC1F-41A5-8691-6C1590AE2036}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEE1B691-FC1F-41A5-8691-6C1590AE2036}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
