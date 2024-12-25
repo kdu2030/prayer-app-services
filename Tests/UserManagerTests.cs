@@ -74,7 +74,7 @@ namespace Tests {
         }
 
         [Test]
-        public async Task CreateUser_GivenDuplicateEmail_ThrowsException() {
+        public async Task CreateUserAsync_GivenDuplicateEmail_ThrowsException() {
             using IServiceScope scope = _serviceProvider.CreateScope();
             IUserManager? userManager = scope.ServiceProvider.GetService<IUserManager>();
             UserManager<AppUser>? aspUserManager = scope.ServiceProvider.GetService<UserManager<AppUser>>();
