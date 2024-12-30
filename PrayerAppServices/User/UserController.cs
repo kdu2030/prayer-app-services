@@ -32,5 +32,14 @@ namespace PrayerAppServices.User {
             UserSummary userSummary = _userManager.GetUserSummaryFromUserId(userId);
             return Ok(userSummary);
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("token")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserTokenPair))]
+        public IActionResult GetUserTokenPair([FromHeader(Name = "Authorization")] string authHeader) {
+            UserTokenPair tokenPair = _userManager.GetUserTokenPair(authHeader);
+            return Ok(tokenPair);
+        }
     }
 }

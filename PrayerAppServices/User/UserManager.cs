@@ -15,6 +15,7 @@ namespace PrayerAppServices.User {
 
         private const int AccessTokenValidityMs = 60 * 60 * 1000;
         private const int RefreshTokenValidityMs = 15 * 24 * 60 * 60 * 1000;
+        private readonly string BearerPrefix = "Bearer ";
 
         public async Task<UserSummary> CreateUserAsync(CreateUserRequest request) {
             Task<AppUser?> userByEmailResult = _userManager.FindByEmailAsync(request.Email);
@@ -52,21 +53,36 @@ namespace PrayerAppServices.User {
             return CreateUserSummary(user);
         }
 
+        public UserTokenPair GetUserTokenPair(string authHeader) {
+            string refreshToken = authHeader.Replace(BearerPrefix, string.Empty);
+            JwtSecurityToken token = (JwtSecurityToken)_jwtSecurityTokenHandler.ReadToken(refreshToken);
+            string username = token.Claims
+                .Where((claim) => claim.Type == ClaimTypes.Name)
+                .Select((claim) => claim.Value)
+                .First();
+            return new UserTokenPair {
+                AccessToken = GenerateToken(username, AccessTokenValidityMs),
+                RefreshToken = GenerateToken(username, RefreshTokenValidityMs)
+            };
+        }
+
 
         private UserSummary CreateUserSummary(AppUser user) {
+            string username = user.UserName ?? "";
+
             return new UserSummary {
                 Id = user.Id,
-                Username = user.UserName ?? "",
+                Username = username,
                 Email = user.Email ?? "",
                 FullName = user.FullName ?? "",
                 Tokens = new UserTokenPair {
-                    AccessToken = GenerateToken(user, AccessTokenValidityMs),
-                    RefreshToken = GenerateToken(user, RefreshTokenValidityMs)
+                    AccessToken = GenerateToken(username, AccessTokenValidityMs),
+                    RefreshToken = GenerateToken(username, RefreshTokenValidityMs)
                 }
             };
         }
 
-        private string GenerateToken(AppUser user, int validityLengthMs) {
+        private string GenerateToken(string username, int validityLengthMs) {
             string? jwtKey = _configuration["Jwt:Key"];
             string? issuer = _configuration["Jwt:Issuer"];
             string? audience = _configuration["Jwt:Audience"];
@@ -78,7 +94,7 @@ namespace PrayerAppServices.User {
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             Claim[] claims = [
-                new Claim(ClaimTypes.Name, user.UserName ?? "")
+                new Claim(ClaimTypes.Name, username ?? "")
             ];
 
             JwtSecurityToken token = new JwtSecurityToken(

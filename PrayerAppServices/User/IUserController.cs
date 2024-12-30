@@ -9,5 +9,7 @@ namespace PrayerAppServices.User {
         public Task<IActionResult> GetUserSummaryFromCredentials(UserCredentials credentials);
 
         public IActionResult GetUserSummaryFromUserId(int userId);
+
+        public IActionResult GetUserTokenPair(string authHeader);
     }
 }
