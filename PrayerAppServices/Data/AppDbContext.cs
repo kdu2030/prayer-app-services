@@ -8,7 +8,7 @@ using PrayerAppServices.Users.Entities;
 
 namespace PrayerAppServices.Data {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser, IdentityRole<int>, int>(options) {
-        public DbSet<MediaFileBase> Files { get; set; }
+        public DbSet<MediaFile> MediaFiles { get; set; }
 
         private readonly string[] IdentityTableNames = ["AspNetUsers", "AspNetUserTokens", "AspNetUserLogins", "AspNetUserClaims", "AspNetRoles", "AspNetUserRoles", "AspNetRoleClaims"];
 

@@ -12,7 +12,7 @@ namespace PrayerAppServices.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "files",
+                name: "media_files",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -23,7 +23,7 @@ namespace PrayerAppServices.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_files", x => x.id);
+                    table.PrimaryKey("pk_media_files", x => x.id);
                 });
         }
 
@@ -31,7 +31,7 @@ namespace PrayerAppServices.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "files");
+                name: "media_files");
         }
     }
 }

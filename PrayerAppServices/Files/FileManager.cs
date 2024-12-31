@@ -4,8 +4,9 @@ using PrayerAppServices.Files.Models;
 using RestSharp;
 
 namespace PrayerAppServices.Files {
-    public class FileManager(IConfiguration configuration) : IFileManager {
+    public class FileManager(IConfiguration configuration, IMediaFileRepository fileRepository) : IFileManager {
         private readonly IConfiguration _configuration = configuration;
+        private readonly IMediaFileRepository _fileRepository = fileRepository;
 
         public async Task<MediaFileBase> UploadFileAsync(IFormFile file) {
             FileType fileType = MediaFile.GetFileTypeFromContentType(file.ContentType);
@@ -32,8 +33,7 @@ namespace PrayerAppServices.Files {
             }
 
             MediaFile fileEntity = new MediaFile { Name = fileName, Type = fileType, Url = response.Data.Url };
-
-            throw new NotImplementedException("Not implemented yet");
+            return await _fileRepository.CreateMediaFile(fileEntity);
         }
     }
 }

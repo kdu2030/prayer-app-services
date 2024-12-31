@@ -7,6 +7,7 @@ namespace PrayerAppServices.Configuration {
         public static void RegisterServices(this IServiceCollection services) {
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IFileManager, FileManager>();
+            services.AddScoped<IMediaFileRepository, MediaFileRepository>();
         }
 
     }

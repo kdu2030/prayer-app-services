@@ -2,6 +2,6 @@
 
 namespace PrayerAppServices.Files {
     public interface IFileController {
-        public Task<IActionResult> UploadFileAsync(IFormFile file);
+        Task<IActionResult> UploadFileAsync(IFormFile file);
     }
 }

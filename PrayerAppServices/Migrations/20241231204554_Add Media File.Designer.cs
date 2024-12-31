@@ -12,7 +12,7 @@ using PrayerAppServices.Data;
 namespace PrayerAppServices.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241231193453_Add Media File")]
+    [Migration("20241231204554_Add Media File")]
     partial class AddMediaFile
     {
         /// <inheritdoc />
@@ -191,12 +191,12 @@ namespace PrayerAppServices.Migrations
 
             modelBuilder.Entity("PrayerAppServices.Files.Entities.MediaFile", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -213,9 +213,9 @@ namespace PrayerAppServices.Migrations
                         .HasColumnName("url");
 
                     b.HasKey("Id")
-                        .HasName("pk_files");
+                        .HasName("pk_media_files");
 
-                    b.ToTable("files", (string)null);
+                    b.ToTable("media_files", (string)null);
                 });
 
             modelBuilder.Entity("PrayerAppServices.Users.Entities.AppUser", b =>
