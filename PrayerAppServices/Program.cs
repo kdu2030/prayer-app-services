@@ -11,6 +11,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 builder.Configuration.AddConfiguration(configuration);
 builder.Configuration.AddEnvironmentVariables();
 
+Console.WriteLine("CONNECTION STRING: ");
 Console.WriteLine(configuration["ConnectionStrings:DefaultConnection"]);
 
 // Add services to the container.
