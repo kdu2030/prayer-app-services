@@ -12,10 +12,6 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 builder.Configuration.AddConfiguration(configuration);
 
-Console.WriteLine("CONNECTION STRING: ");
-Console.WriteLine(configuration.GetConnectionString("DefaultConnection"));
-Console.WriteLine(configuration["Jwt:Key"]);
-
 // Add services to the container.
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = ErrorHandler.HandleDataValidationErrors);
