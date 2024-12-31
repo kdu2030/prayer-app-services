@@ -12,11 +12,9 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 builder.Configuration.AddConfiguration(configuration);
 
-Console.WriteLine("CONNECTION ENVIRONMENT VAR:");
-Console.WriteLine(Environment.GetEnvironmentVariable("CONNECTION_STRINGS__DEFAULT_CONNECTION"));
-
 Console.WriteLine("CONNECTION STRING: ");
 Console.WriteLine(configuration.GetConnectionString("DefaultConnection"));
+Console.WriteLine(configuration["Jwt:Key"]);
 
 // Add services to the container.
 builder.Services.AddControllers()
