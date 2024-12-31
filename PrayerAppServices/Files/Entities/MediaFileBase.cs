@@ -1,4 +1,6 @@
-﻿namespace PrayerAppServices.Files.Entities {
+﻿using PrayerAppServices.Files.Constants;
+
+namespace PrayerAppServices.Files.Entities {
     public class MediaFileBase {
         public required int Id { get; set; }
         public required string Name { get; set; }
