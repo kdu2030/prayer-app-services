@@ -4,8 +4,8 @@ using PrayerAppServices.Files.Models;
 using RestSharp;
 
 namespace PrayerAppServices.Files {
-    public class FileManager(IConfiguration configuration, IMediaFileRepository fileRepository) : IFileManager {
-        private readonly IConfiguration _configuration = configuration;
+    public class FileManager(IRestClient fileServicesClient, IMediaFileRepository fileRepository) : IFileManager {
+        private readonly IRestClient _fileServicesClient = fileServicesClient;
         private readonly IMediaFileRepository _fileRepository = fileRepository;
 
         public async Task<MediaFileBase> UploadFileAsync(IFormFile file) {
@@ -16,10 +16,6 @@ namespace PrayerAppServices.Files {
             }
 
             string fileName = file.FileName;
-            string fileServicesUrl = _configuration["FileUpload:Url"]
-                ?? throw new NullReferenceException("File Upload URL cannot be null.");
-
-            RestClient restClient = new RestClient(fileServicesUrl);
             RestRequest restRequest = new RestRequest("/file", Method.Post);
 
             using MemoryStream fileContent = new MemoryStream();
@@ -27,7 +23,7 @@ namespace PrayerAppServices.Files {
 
             restRequest.AddFile("file", fileContent.ToArray(), file.FileName);
 
-            RestResponse<FileUploadResponse> response = await restClient.ExecuteAsync<FileUploadResponse>(restRequest);
+            RestResponse<FileUploadResponse> response = await _fileServicesClient.ExecuteAsync<FileUploadResponse>(restRequest);
             if (!response.IsSuccessful || response.Data == null) {
                 throw new IOException("Unable to upload file");
             }
