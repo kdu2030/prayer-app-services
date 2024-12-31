@@ -9,6 +9,7 @@ IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile(appSettingsPath)
     .AddEnvironmentVariables()
     .Build();
+
 builder.Configuration.AddConfiguration(configuration);
 
 Console.WriteLine("CONNECTION ENVIRONMENT VAR:");
