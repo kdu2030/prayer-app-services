@@ -20,6 +20,11 @@ namespace PrayerAppServices.Files {
             RestClient restClient = new RestClient(fileServicesUrl);
             RestRequest restRequest = new RestRequest("/file", Method.Post);
 
+            using MemoryStream fileContent = new MemoryStream();
+            await file.CopyToAsync(fileContent);
+
+            restRequest.AddFile("file", fileContent.ToArray(), file.FileName);
+
             Console.WriteLine(fileName);
             throw new NotImplementedException();
         }
