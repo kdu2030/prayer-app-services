@@ -12,7 +12,7 @@ builder.Configuration.AddConfiguration(configuration);
 builder.Configuration.AddEnvironmentVariables();
 
 Console.WriteLine("CONNECTION STRING: ");
-Console.WriteLine(configuration["ConnectionStrings:DefaultConnection"]);
+Console.WriteLine(configuration.GetConnectionString("DefaultConnection"));
 
 // Add services to the container.
 builder.Services.AddControllers()
