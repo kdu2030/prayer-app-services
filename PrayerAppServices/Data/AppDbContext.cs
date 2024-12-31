@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using PrayerAppServices.Files.Entities;
 using PrayerAppServices.Users.Entities;
-using MediaFile = PrayerAppServices.Files.Entities.MediaFile;
+
 
 namespace PrayerAppServices.Data {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser, IdentityRole<int>, int>(options) {
