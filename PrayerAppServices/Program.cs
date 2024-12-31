@@ -9,6 +9,9 @@ IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile(appSettingsPath)
     .Build();
 builder.Configuration.AddConfiguration(configuration);
+builder.Configuration.AddEnvironmentVariables();
+
+Console.WriteLine(configuration["ConnectionStrings:DefaultConnection"]);
 
 // Add services to the container.
 builder.Services.AddControllers()
