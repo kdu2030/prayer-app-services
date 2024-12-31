@@ -1,5 +1,6 @@
 ﻿using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
+using PrayerAppServices.Files.Models;
 using RestSharp;
 
 namespace PrayerAppServices.Files {
@@ -25,8 +26,12 @@ namespace PrayerAppServices.Files {
 
             restRequest.AddFile("file", fileContent.ToArray(), file.FileName);
 
-            Console.WriteLine(fileName);
-            throw new NotImplementedException();
+            RestResponse<FileUploadResponse> response = await restClient.ExecuteAsync<FileUploadResponse>(restRequest);
+            if (!response.IsSuccessful) {
+                throw new IOException("Unable to upload file");
+            }
+
+            throw new NotImplementedException("Not implemented yet");
         }
     }
 }
