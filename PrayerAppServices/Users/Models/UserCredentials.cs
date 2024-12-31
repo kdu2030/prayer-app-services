@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PrayerAppServices.User.Models {
+namespace PrayerAppServices.Users.Models {
     public class UserCredentials {
         [EmailAddress]
         public required string Email { get; set; }

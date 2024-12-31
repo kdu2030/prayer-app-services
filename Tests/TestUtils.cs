@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PrayerAppServices.Configuration;
 using PrayerAppServices.Data;
-using PrayerAppServices.User.Entities;
+using PrayerAppServices.Users.Entities;
 
 namespace Tests {
     public static class TestUtils {

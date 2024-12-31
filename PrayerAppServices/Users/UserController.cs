@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PrayerAppServices.User.Models;
+using PrayerAppServices.Users.Models;
 using System.Net;
 
-namespace PrayerAppServices.User {
+namespace PrayerAppServices.Users {
     [ApiController]
     [Route("/api/v1/user")]
     public class UserController(IUserManager userManager) : ControllerBase, IUserController {

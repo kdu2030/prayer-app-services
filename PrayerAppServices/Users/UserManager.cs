@@ -1,13 +1,13 @@
 ﻿using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using PrayerAppServices.User.Entities;
-using PrayerAppServices.User.Models;
+using PrayerAppServices.Users.Entities;
+using PrayerAppServices.Users.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace PrayerAppServices.User {
+namespace PrayerAppServices.Users {
     public class UserManager(UserManager<AppUser> userManager, IConfiguration configuration, JwtSecurityTokenHandler jwtSecurityTokenHandler) : IUserManager {
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly IConfiguration _configuration = configuration;

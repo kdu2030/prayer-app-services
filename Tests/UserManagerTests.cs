@@ -1,9 +1,9 @@
 using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using PrayerAppServices.User;
-using PrayerAppServices.User.Entities;
-using PrayerAppServices.User.Models;
+using PrayerAppServices.Users;
+using PrayerAppServices.Users.Entities;
+using PrayerAppServices.Users.Models;
 
 namespace Tests {
     public class UserManagerTests {

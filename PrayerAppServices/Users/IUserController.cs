@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PrayerAppServices.User.Models;
+using PrayerAppServices.Users.Models;
 
-namespace PrayerAppServices.User {
+namespace PrayerAppServices.Users {
 
     public interface IUserController {
         public Task<IActionResult> CreateUser(CreateUserRequest request);

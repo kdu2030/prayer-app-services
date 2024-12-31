@@ -1,4 +1,4 @@
-﻿using PrayerAppServices.User;
+﻿using PrayerAppServices.Users;
 
 namespace PrayerAppServices.Configuration {
     public static class ServiceConfiguration {
