@@ -11,6 +11,9 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 builder.Configuration.AddConfiguration(configuration);
 
+Console.WriteLine("CONNECTION ENVIRONMENT VAR:");
+Console.WriteLine(Environment.GetEnvironmentVariable("CONNECTION_STRINGS__DEFAULT_CONNECTION"));
+
 Console.WriteLine("CONNECTION STRING: ");
 Console.WriteLine(configuration.GetConnectionString("DefaultConnection"));
 
