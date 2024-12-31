@@ -27,9 +27,11 @@ namespace PrayerAppServices.Files {
             restRequest.AddFile("file", fileContent.ToArray(), file.FileName);
 
             RestResponse<FileUploadResponse> response = await restClient.ExecuteAsync<FileUploadResponse>(restRequest);
-            if (!response.IsSuccessful) {
+            if (!response.IsSuccessful || response.Data == null) {
                 throw new IOException("Unable to upload file");
             }
+
+            MediaFile fileEntity = new MediaFile { Name = fileName, Type = fileType, Url = response.Data.Url };
 
             throw new NotImplementedException("Not implemented yet");
         }
