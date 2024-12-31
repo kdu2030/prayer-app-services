@@ -7,9 +7,9 @@ IHostEnvironment environment = builder.Environment;
 string appSettingsPath = environment.IsDevelopment() ? "appsettings.Development.json" : "appsettings.Production.json";
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile(appSettingsPath)
+    .AddEnvironmentVariables()
     .Build();
 builder.Configuration.AddConfiguration(configuration);
-builder.Configuration.AddEnvironmentVariables();
 
 Console.WriteLine("CONNECTION STRING: ");
 Console.WriteLine(configuration.GetConnectionString("DefaultConnection"));
