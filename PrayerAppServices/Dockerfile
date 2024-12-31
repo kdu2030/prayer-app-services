@@ -17,6 +17,10 @@ COPY . .
 WORKDIR "/src/PrayerAppServices"
 RUN dotnet build "./PrayerAppServices.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+# Install dotnet-ef
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
+
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
@@ -26,4 +30,4 @@ RUN dotnet publish "./PrayerAppServices.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PrayerAppServices.dll"]
+ENTRYPOINT dotnet ef database update -- --connection=$CONNECTION_STRINGS__DEFAULTCONNECTION && dotnet PrayerAppServices.dll
