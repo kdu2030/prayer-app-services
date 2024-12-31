@@ -30,4 +30,4 @@ RUN dotnet publish "./PrayerAppServices.csproj" -c $BUILD_CONFIGURATION -o /app/
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT dotnet ef database update -- --connection=$CONNECTION_STRINGS__DEFAULTCONNECTION && dotnet PrayerAppServices.dll
+ENTRYPOINT dotnet-ef database update -- --connection=$CONNECTION_STRINGS__DEFAULTCONNECTION && dotnet PrayerAppServices.dll
