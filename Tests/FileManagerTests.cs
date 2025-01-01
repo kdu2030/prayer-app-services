@@ -7,22 +7,22 @@ using RestSharp;
 namespace Tests {
     public class FileManagerTests {
         private ServiceProvider _serviceProvider;
-        private Mock<IRestClient> _mockRestClient;
+        private Mock<IFileServicesClient> _mockFileServicesClient;
 
         [SetUp]
         public void SetUp() {
             IServiceCollection services = new ServiceCollection();
-            _mockRestClient = new Mock<IRestClient>();
+            _mockFileServicesClient = new Mock<IFileServicesClient>();
 
             services.AddTestServices();
             services.AddTransient<IFileManager, FileManager>();
-            services.AddTransient(options => _mockRestClient.Object);
+            services.AddTransient(options => _mockFileServicesClient.Object);
             _serviceProvider = services.BuildServiceProvider();
         }
 
         [TearDown]
         public void TearDown() {
-            _mockRestClient.Reset();
+            _mockFileServicesClient.Reset();
             _serviceProvider.TearDownTestDb();
             _serviceProvider.Dispose();
         }
@@ -35,8 +35,8 @@ namespace Tests {
             RestResponse<FileUploadResponse> mockResponse = new RestResponse<FileUploadResponse>(mockRequest);
             mockResponse.Data = new FileUploadResponse { IsError = false, Url = "" };
 
-            _mockRestClient.Setup(_mockRestClient =>
-                _mockRestClient.ExecuteAsync<FileUploadResponse>(It.IsAny<RestRequest>(), new CancellationToken()))
+            _mockFileServicesClient.Setup(_mockRestClient =>
+                _mockRestClient.ExecuteAsync<FileUploadResponse>(It.IsAny<RestRequest>()))
             .ReturnsAsync(() => mockResponse);
 
 
