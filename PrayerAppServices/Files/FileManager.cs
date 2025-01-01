@@ -4,8 +4,8 @@ using PrayerAppServices.Files.Models;
 using RestSharp;
 
 namespace PrayerAppServices.Files {
-    public class FileManager(IRestClient fileServicesClient, IMediaFileRepository fileRepository) : IFileManager {
-        private readonly IRestClient _fileServicesClient = fileServicesClient;
+    public class FileManager(IFileServicesClient fileServicesClient, IMediaFileRepository fileRepository) : IFileManager {
+        private readonly IFileServicesClient _fileServicesClient = fileServicesClient;
         private readonly IMediaFileRepository _fileRepository = fileRepository;
 
         public async Task<MediaFileBase> UploadFileAsync(IFormFile file) {

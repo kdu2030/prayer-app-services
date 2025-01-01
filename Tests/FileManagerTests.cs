@@ -12,6 +12,8 @@ namespace Tests {
         [SetUp]
         public void SetUp() {
             IServiceCollection services = new ServiceCollection();
+            _mockRestClient = new Mock<IRestClient>();
+
             services.AddTestServices();
             services.AddTransient<IFileManager, FileManager>();
             services.AddTransient(options => _mockRestClient.Object);
@@ -20,12 +22,14 @@ namespace Tests {
 
         [TearDown]
         public void TearDown() {
+            _mockRestClient.Reset();
             _serviceProvider.TearDownTestDb();
             _serviceProvider.Dispose();
         }
 
         [Test]
         public void UploadFileAsync_WhenGivenValidFile_ReturnsMediaFile() {
+            using IServiceScope scope = _serviceProvider.CreateScope();
             RestRequest mockRequest = new RestRequest("/file", Method.Post);
 
             RestResponse<FileUploadResponse> mockResponse = new RestResponse<FileUploadResponse>(mockRequest);
@@ -34,6 +38,8 @@ namespace Tests {
             _mockRestClient.Setup(_mockRestClient =>
                 _mockRestClient.ExecuteAsync<FileUploadResponse>(It.IsAny<RestRequest>(), new CancellationToken()))
             .ReturnsAsync(() => mockResponse);
+
+
 
         }
     }

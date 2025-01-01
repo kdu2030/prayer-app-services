@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext(configuration);
 builder.Services.AddJwtConfiguration(configuration);
 
-builder.Services.RegisterServices(configuration);
+builder.Services.RegisterServices();
 
 var app = builder.Build();
 
