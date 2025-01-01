@@ -59,6 +59,14 @@ namespace Tests {
 
         }
 
+        [Test]
+        public void UploadFileAsync_GivenUnknownFileType_ThrowsException() {
+            using IServiceScope scope = _serviceProvider.CreateScope();
+            IFormFile file = CreateTestFormFile("test.txt", "text/plain", "test content");
+            IFileManager fileManager = scope.ServiceProvider.GetRequiredService<IFileManager>();
+            Assert.ThrowsAsync<ArgumentException>(() => fileManager.UploadFileAsync(file));
+        }
+
         private IFormFile CreateTestFormFile(string fileName, string contentType, string content) {
             byte[] fileBytes = Encoding.UTF8.GetBytes(content);
             MemoryStream fileStream = new MemoryStream(fileBytes);
