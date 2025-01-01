@@ -29,7 +29,7 @@ namespace PrayerAppServices.Files {
             }
 
             MediaFile fileEntity = new MediaFile { Name = fileName, Type = fileType, Url = response.Data.Url };
-            return await _fileRepository.CreateMediaFile(fileEntity);
+            return await _fileRepository.CreateMediaFileAsync(fileEntity);
         }
     }
 }

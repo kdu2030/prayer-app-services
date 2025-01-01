@@ -2,6 +2,6 @@
 
 namespace PrayerAppServices.Files {
     public interface IMediaFileRepository {
-        Task<MediaFile> CreateMediaFile(MediaFile file);
+        Task<MediaFile> CreateMediaFileAsync(MediaFile file);
     }
 }
