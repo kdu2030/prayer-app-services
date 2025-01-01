@@ -2,10 +2,14 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using PrayerAppServices.User.Entities;
+using PrayerAppServices.Files.Entities;
+using PrayerAppServices.Users.Entities;
+
 
 namespace PrayerAppServices.Data {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser, IdentityRole<int>, int>(options) {
+        public DbSet<MediaFile> MediaFiles { get; set; }
+
         private readonly string[] IdentityTableNames = ["AspNetUsers", "AspNetUserTokens", "AspNetUserLogins", "AspNetUserClaims", "AspNetRoles", "AspNetUserRoles", "AspNetRoleClaims"];
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {

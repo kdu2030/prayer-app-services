@@ -1,6 +1,6 @@
-﻿using PrayerAppServices.User.Models;
+﻿using PrayerAppServices.Users.Models;
 
-namespace PrayerAppServices.User {
+namespace PrayerAppServices.Users {
     public interface IUserManager {
         Task<UserSummary> CreateUserAsync(CreateUserRequest request);
 

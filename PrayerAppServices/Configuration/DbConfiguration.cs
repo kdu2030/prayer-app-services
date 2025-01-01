@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrayerAppServices.Data;
-using PrayerAppServices.User.Entities;
+using PrayerAppServices.Users.Entities;
 
 namespace PrayerAppServices.Configuration {
     public static class DbConfiguration {

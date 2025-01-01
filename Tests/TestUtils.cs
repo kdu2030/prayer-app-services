@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PrayerAppServices.Configuration;
 using PrayerAppServices.Data;
-using PrayerAppServices.User.Entities;
+using PrayerAppServices.Users.Entities;
 
 namespace Tests {
     public static class TestUtils {
@@ -17,6 +17,7 @@ namespace Tests {
             { "Jwt:Key", "459b5631306a7ec4573e52e83bcc1a22ce2e19682f5e31bb965a9709f1fd99c1" },
             { "Jwt:Issuer", "http://localhost:5152/" },
             { "Jwt:Audience", "http://localhost:5152/" },
+            { "FileServices:Url", "http://localhost:5000" }
         };
 
         public static void AddTestServices(this IServiceCollection services) {

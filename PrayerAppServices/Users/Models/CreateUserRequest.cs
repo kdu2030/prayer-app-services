@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PrayerAppServices.User.Models {
+namespace PrayerAppServices.Users.Models {
     public class CreateUserRequest {
         public required string Username { get; set; }
         public required string FullName { get; set; }
