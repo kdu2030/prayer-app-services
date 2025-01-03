@@ -31,5 +31,9 @@ namespace PrayerAppServices.Files {
             MediaFile fileEntity = new MediaFile { Name = fileName, Type = fileType, Url = response.Data.Url };
             return await _fileRepository.CreateMediaFileAsync(fileEntity);
         }
+
+        public async Task DeleteFileAsync(int fileId) {
+
+        }
     }
 }
