@@ -1,4 +1,5 @@
-﻿using PrayerAppServices.Error;
+﻿using Microsoft.AspNetCore.Routing.Constraints;
+using PrayerAppServices.Error;
 using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
 using PrayerAppServices.Files.Models;
@@ -43,6 +44,15 @@ namespace PrayerAppServices.Files {
             if (errors.Length > 0) {
                 throw new ValidationErrorException(errors.Select((deleteError) => deleteError.Error));
             }
+
+            Uri fileServicesStaticUri = new Uri(new Uri(fileServicesClient.FileServicesUrl), "static");
+            string fileServicesName = file.Url.Replace($"{fileServicesStaticUri}/", "");
+            Console.WriteLine($"Deleting file {fileServicesName}");
+
+
+
+
+
         }
     }
 }
