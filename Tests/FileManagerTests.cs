@@ -70,9 +70,6 @@ namespace Tests {
 
         [Test]
         public void DeleteFileAsync_GivenValidFileId_DeletesFile() {
-            IServiceCollection services = new ServiceCollection();
-            services.AddTestServices();
-
             RestRequest fileDeleteRequest = new RestRequest("/file/1.png", Method.Delete);
             RestResponse<FileDeleteResponse> fileDeleteResponse = new RestResponse<FileDeleteResponse>(fileDeleteRequest) {
                 StatusCode = System.Net.HttpStatusCode.OK,
@@ -82,28 +79,8 @@ namespace Tests {
 
             MediaFile file = new MediaFile { Id = 1, Name = "leslieknope.png", Type = FileType.Image, Url = "http://localhost:5000/static/2.png" };
 
-            Mock<IMediaFileRepository> mockFileRepository = new Mock<IMediaFileRepository>();
-
-            mockFileRepository
-                .Setup(mockFileRepository => mockFileRepository.ValidateMediaFileDelete(It.IsAny<int>()))
-                .Returns(new List<FileDeleteError>());
-
-            mockFileRepository
-                .Setup(mockFileRepository => mockFileRepository.GetMediaFileByIdAsync(It.IsAny<int>()))
-                .ReturnsAsync(file);
-
-            _mockFileServicesClient.Setup(_mockServicesClient => _mockServicesClient.ExecuteAsync<FileDeleteResponse>(It.IsAny<RestRequest>())).ReturnsAsync(
-                fileDeleteResponse);
-            _mockFileServicesClient.Setup(_mockFileServicesClient => _mockFileServicesClient.FileServicesUrl).Returns("http://localhost:5000");
-
-            services.AddTransient(options => mockFileRepository.Object);
-            services.AddTransient<IFileManager, FileManager>();
-            services.AddTransient(options => _mockFileServicesClient.Object);
-
-            _serviceProvider = services.BuildServiceProvider();
-
+            _serviceProvider = CreateServiceProviderForDeleteTests(new List<FileDeleteError>(), fileDeleteResponse, file);
             using IServiceScope scope = _serviceProvider.CreateScope();
-
 
             IFileManager fileManager = scope.ServiceProvider.GetRequiredService<IFileManager>();
             Assert.DoesNotThrowAsync(() => fileManager.DeleteFileAsync(file.Id ?? -1));
@@ -116,6 +93,30 @@ namespace Tests {
                 Headers = new HeaderDictionary(),
                 ContentType = contentType
             };
+        }
+
+        private ServiceProvider CreateServiceProviderForDeleteTests(IEnumerable<FileDeleteError> fileDeleteErrors, RestResponse<FileDeleteResponse> deleteResponse, MediaFile? file) {
+            IServiceCollection services = new ServiceCollection();
+            services.AddTestServices();
+            Mock<IMediaFileRepository> mockFileRepository = new Mock<IMediaFileRepository>();
+
+            mockFileRepository
+                .Setup(mockFileRepository => mockFileRepository.ValidateMediaFileDelete(It.IsAny<int>()))
+                .Returns(fileDeleteErrors);
+
+            mockFileRepository
+                .Setup(mockFileRepository => mockFileRepository.GetMediaFileByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(file);
+
+            _mockFileServicesClient.Setup(_mockServicesClient => _mockServicesClient.ExecuteAsync<FileDeleteResponse>(It.IsAny<RestRequest>())).ReturnsAsync(
+            deleteResponse);
+            _mockFileServicesClient.Setup(_mockFileServicesClient => _mockFileServicesClient.FileServicesUrl).Returns("http://localhost:5000");
+
+            services.AddTransient(options => mockFileRepository.Object);
+            services.AddTransient<IFileManager, FileManager>();
+            services.AddTransient(options => _mockFileServicesClient.Object);
+
+            return services.BuildServiceProvider();
         }
     }
 }
