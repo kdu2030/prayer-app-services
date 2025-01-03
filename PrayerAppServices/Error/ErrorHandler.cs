@@ -27,7 +27,7 @@ namespace PrayerAppServices.Error {
             }
 
             if (exception is UnauthorizedAccessException) {
-                await HandleUnauthorizedAccessException(context, exception as UnauthorizedAccessException);
+                await HandleUnauthorizedAccessExceptionAsync(context, exception as UnauthorizedAccessException);
                 return;
             }
 
@@ -57,7 +57,7 @@ namespace PrayerAppServices.Error {
             await context.Response.WriteAsJsonAsync(error);
         }
 
-        private static async Task HandleUnauthorizedAccessException(HttpContext context, UnauthorizedAccessException exception) {
+        private static async Task HandleUnauthorizedAccessExceptionAsync(HttpContext context, UnauthorizedAccessException exception) {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             DataValidationError error = new DataValidationError {
@@ -66,6 +66,20 @@ namespace PrayerAppServices.Error {
                 Url = context.Request.Path,
                 RequestMethod = context.Request.Method,
                 Message = "Unauthorized access exception occurred."
+            };
+
+            await context.Response.WriteAsJsonAsync(error);
+        }
+
+        private static async Task HandleValidationErrorExceptionAsync(HttpContext context, ValidationErrorException exception) {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            DataValidationError error = new DataValidationError {
+                ErrorCode = ErrorCode.DataValidationError,
+                DataValidationErrors = exception.ValidationErrors,
+                Url = context.Request.Path,
+                RequestMethod = context.Request.Method,
+                Message = "A data validation error occurred."
             };
 
             await context.Response.WriteAsJsonAsync(error);

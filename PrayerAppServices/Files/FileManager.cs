@@ -1,4 +1,5 @@
-﻿using PrayerAppServices.Files.Constants;
+﻿using PrayerAppServices.Error;
+using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
 using PrayerAppServices.Files.Models;
 using RestSharp;
@@ -36,11 +37,11 @@ namespace PrayerAppServices.Files {
             MediaFile? file = await _fileRepository.GetMediaFileByIdAsync(fileId);
             FileDeleteError[] errors = _fileRepository.ValidateMediaFileDelete(fileId).ToArray();
             if (file == null) {
-                throw new InvalidOperationException("File does not exist.");
+                throw new ValidationErrorException(["File does not exist."]);
             }
-            // TODO: Create a new Exception object to hold multiple errors.
+
             if (errors.Length > 0) {
-                throw new InvalidOperationException("File cannot be deleted");
+                throw new ValidationErrorException(errors.Select((deleteError) => deleteError.Error));
             }
         }
     }
