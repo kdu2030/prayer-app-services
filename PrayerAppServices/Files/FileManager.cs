@@ -33,7 +33,15 @@ namespace PrayerAppServices.Files {
         }
 
         public async Task DeleteFileAsync(int fileId) {
-
+            MediaFile? file = await _fileRepository.GetMediaFileByIdAsync(fileId);
+            FileDeleteError[] errors = _fileRepository.ValidateMediaFileDelete(fileId).ToArray();
+            if (file == null) {
+                throw new InvalidOperationException("File does not exist.");
+            }
+            // TODO: Create a new Exception object to hold multiple errors.
+            if (errors.Length > 0) {
+                throw new InvalidOperationException("File cannot be deleted");
+            }
         }
     }
 }
