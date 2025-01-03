@@ -21,13 +21,18 @@ namespace PrayerAppServices.Error {
                 context.Features.Get<IExceptionHandlerPathFeature>();
             Exception? exception = exceptionHandlerPathFeature?.Error;
 
-            if (exception is ArgumentException) {
-                await HandleArgumentExceptionAsync(context, exception as ArgumentException);
+            if (exception is ArgumentException argumentException) {
+                await HandleArgumentExceptionAsync(context, argumentException);
                 return;
             }
 
-            if (exception is UnauthorizedAccessException) {
-                await HandleUnauthorizedAccessExceptionAsync(context, exception as UnauthorizedAccessException);
+            if (exception is UnauthorizedAccessException unauthorizedAccessException) {
+                await HandleUnauthorizedAccessExceptionAsync(context, unauthorizedAccessException);
+                return;
+            }
+
+            if (exception is ValidationErrorException validationErrorException) {
+                await HandleValidationErrorExceptionAsync(context, validationErrorException);
                 return;
             }
 

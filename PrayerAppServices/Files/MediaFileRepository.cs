@@ -14,7 +14,7 @@ namespace PrayerAppServices.Files {
 
         public IEnumerable<FileDeleteError> ValidateMediaFileDelete(int fileId) {
             return _dbContext.Database.SqlQuery<FileDeleteError>(
-                $"SELECT * FROM ValidateFileDelete({fileId})"
+                $"SELECT * FROM validate_file_delete({fileId})"
                 );
         }
 
