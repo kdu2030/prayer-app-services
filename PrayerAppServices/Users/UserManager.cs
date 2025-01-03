@@ -49,7 +49,7 @@ namespace PrayerAppServices.Users {
         }
 
         public UserSummary GetUserSummaryFromUserId(int userId) {
-            AppUser user = userManager.Users.FirstOrDefault((user) => user.Id == userId) ?? throw new ArgumentException("User ID does not exist.");
+            AppUser user = _userManager.Users.FirstOrDefault((user) => user.Id == userId) ?? throw new ArgumentException("User ID does not exist.");
             return CreateUserSummary(user);
         }
 

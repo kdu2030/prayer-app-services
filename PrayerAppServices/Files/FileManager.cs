@@ -1,4 +1,5 @@
-﻿using PrayerAppServices.Files.Constants;
+﻿using PrayerAppServices.Error;
+using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
 using PrayerAppServices.Files.Models;
 using RestSharp;
@@ -30,6 +31,28 @@ namespace PrayerAppServices.Files {
 
             MediaFile fileEntity = new MediaFile { Name = fileName, Type = fileType, Url = response.Data.Url };
             return await _fileRepository.CreateMediaFileAsync(fileEntity);
+        }
+
+        public async Task DeleteFileAsync(int fileId) {
+            MediaFile? file = await _fileRepository.GetMediaFileByIdAsync(fileId);
+            FileDeleteError[] errors = _fileRepository.ValidateMediaFileDelete(fileId).ToArray();
+            if (file == null) {
+                throw new ValidationErrorException(["File does not exist."]);
+            }
+
+            if (errors.Length > 0) {
+                throw new ValidationErrorException(errors.Select((deleteError) => deleteError.Error));
+            }
+
+            Uri fileServicesStaticUri = new Uri(new Uri(_fileServicesClient.FileServicesUrl), "static");
+            string fileServicesName = file.Url.Replace($"{fileServicesStaticUri}/", "");
+
+            RestRequest restRequest = new RestRequest($"/file/{fileServicesName}", Method.Delete);
+            RestResponse<FileDeleteResponse> response = await _fileServicesClient.ExecuteAsync<FileDeleteResponse>(restRequest);
+            if (!response.IsSuccessful) {
+                throw new IOException("Unable to delete file");
+            }
+            await _fileRepository.DeleteMediaFileAsync(file);
         }
     }
 }

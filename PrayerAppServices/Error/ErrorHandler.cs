@@ -21,13 +21,18 @@ namespace PrayerAppServices.Error {
                 context.Features.Get<IExceptionHandlerPathFeature>();
             Exception? exception = exceptionHandlerPathFeature?.Error;
 
-            if (exception is ArgumentException) {
-                await HandleArgumentExceptionAsync(context, exception as ArgumentException);
+            if (exception is ArgumentException argumentException) {
+                await HandleArgumentExceptionAsync(context, argumentException);
                 return;
             }
 
-            if (exception is UnauthorizedAccessException) {
-                await HandleUnauthorizedAccessException(context, exception as UnauthorizedAccessException);
+            if (exception is UnauthorizedAccessException unauthorizedAccessException) {
+                await HandleUnauthorizedAccessExceptionAsync(context, unauthorizedAccessException);
+                return;
+            }
+
+            if (exception is ValidationErrorException validationErrorException) {
+                await HandleValidationErrorExceptionAsync(context, validationErrorException);
                 return;
             }
 
@@ -57,7 +62,7 @@ namespace PrayerAppServices.Error {
             await context.Response.WriteAsJsonAsync(error);
         }
 
-        private static async Task HandleUnauthorizedAccessException(HttpContext context, UnauthorizedAccessException exception) {
+        private static async Task HandleUnauthorizedAccessExceptionAsync(HttpContext context, UnauthorizedAccessException exception) {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             DataValidationError error = new DataValidationError {
@@ -66,6 +71,20 @@ namespace PrayerAppServices.Error {
                 Url = context.Request.Path,
                 RequestMethod = context.Request.Method,
                 Message = "Unauthorized access exception occurred."
+            };
+
+            await context.Response.WriteAsJsonAsync(error);
+        }
+
+        private static async Task HandleValidationErrorExceptionAsync(HttpContext context, ValidationErrorException exception) {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            DataValidationError error = new DataValidationError {
+                ErrorCode = ErrorCode.DataValidationError,
+                DataValidationErrors = exception.ValidationErrors,
+                Url = context.Request.Path,
+                RequestMethod = context.Request.Method,
+                Message = "A data validation error occurred."
             };
 
             await context.Response.WriteAsJsonAsync(error);

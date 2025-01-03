@@ -18,5 +18,12 @@ namespace PrayerAppServices.Files {
             return Ok(mediaFile);
         }
 
+        [HttpDelete("{fileId}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteFileAsync(int fileId) {
+            await _fileManager.DeleteFileAsync(fileId);
+            return Ok();
+        }
+
     }
 }

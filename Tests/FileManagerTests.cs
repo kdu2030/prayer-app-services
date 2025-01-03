@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using PrayerAppServices.Error;
 using PrayerAppServices.Files;
 using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
@@ -67,6 +68,40 @@ namespace Tests {
             Assert.ThrowsAsync<ArgumentException>(() => fileManager.UploadFileAsync(file));
         }
 
+        [Test]
+        public void DeleteFileAsync_GivenValidFileId_DeletesFile() {
+            RestRequest fileDeleteRequest = new RestRequest("/file/1.png", Method.Delete);
+            RestResponse<FileDeleteResponse> fileDeleteResponse = new RestResponse<FileDeleteResponse>(fileDeleteRequest) {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                IsSuccessStatusCode = true,
+                ResponseStatus = ResponseStatus.Completed
+            };
+
+            MediaFile file = new MediaFile { Id = 1, Name = "leslieknope.png", Type = FileType.Image, Url = "http://localhost:5000/static/2.png" };
+
+            _serviceProvider = CreateServiceProviderForDeleteTests(new List<FileDeleteError>(), fileDeleteResponse, file);
+            using IServiceScope scope = _serviceProvider.CreateScope();
+
+            IFileManager fileManager = scope.ServiceProvider.GetRequiredService<IFileManager>();
+            Assert.DoesNotThrowAsync(() => fileManager.DeleteFileAsync(file.Id ?? -1));
+        }
+
+        [Test]
+        public void DeleteFileAsync_GivenInvalidFileId_ThrowsException() {
+            RestRequest fileDeleteRequest = new RestRequest("/file/1.png", Method.Delete);
+            RestResponse<FileDeleteResponse> fileDeleteResponse = new RestResponse<FileDeleteResponse>(fileDeleteRequest) {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                IsSuccessStatusCode = true,
+                ResponseStatus = ResponseStatus.Completed
+            };
+
+            _serviceProvider = CreateServiceProviderForDeleteTests(new List<FileDeleteError> { new FileDeleteError { Error = "File is associated with a prayer group." } }, fileDeleteResponse, null);
+            using IServiceScope scope = _serviceProvider.CreateScope();
+
+            IFileManager fileManager = scope.ServiceProvider.GetRequiredService<IFileManager>();
+            Assert.ThrowsAsync<ValidationErrorException>(() => fileManager.DeleteFileAsync(1));
+        }
+
         private IFormFile CreateTestFormFile(string fileName, string contentType, string content) {
             byte[] fileBytes = Encoding.UTF8.GetBytes(content);
             MemoryStream fileStream = new MemoryStream(fileBytes);
@@ -74,6 +109,30 @@ namespace Tests {
                 Headers = new HeaderDictionary(),
                 ContentType = contentType
             };
+        }
+
+        private ServiceProvider CreateServiceProviderForDeleteTests(IEnumerable<FileDeleteError> fileDeleteErrors, RestResponse<FileDeleteResponse> deleteResponse, MediaFile? file) {
+            IServiceCollection services = new ServiceCollection();
+            services.AddTestServices();
+            Mock<IMediaFileRepository> mockFileRepository = new Mock<IMediaFileRepository>();
+
+            mockFileRepository
+                .Setup(mockFileRepository => mockFileRepository.ValidateMediaFileDelete(It.IsAny<int>()))
+                .Returns(fileDeleteErrors);
+
+            mockFileRepository
+                .Setup(mockFileRepository => mockFileRepository.GetMediaFileByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(file);
+
+            _mockFileServicesClient.Setup(_mockServicesClient => _mockServicesClient.ExecuteAsync<FileDeleteResponse>(It.IsAny<RestRequest>())).ReturnsAsync(
+            deleteResponse);
+            _mockFileServicesClient.Setup(_mockFileServicesClient => _mockFileServicesClient.FileServicesUrl).Returns("http://localhost:5000");
+
+            services.AddTransient(options => mockFileRepository.Object);
+            services.AddTransient<IFileManager, FileManager>();
+            services.AddTransient(options => _mockFileServicesClient.Object);
+
+            return services.BuildServiceProvider();
         }
     }
 }

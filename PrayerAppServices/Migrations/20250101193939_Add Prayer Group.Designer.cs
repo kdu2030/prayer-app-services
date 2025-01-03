@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrayerAppServices.Data;
@@ -11,9 +12,11 @@ using PrayerAppServices.Data;
 namespace PrayerAppServices.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250101193939_Add Prayer Group")]
+    partial class AddPrayerGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -288,10 +291,6 @@ namespace PrayerAppServices.Migrations
                         .HasColumnType("varchar(256)")
                         .HasColumnName("full_name");
 
-                    b.Property<int?>("ImageFileId")
-                        .HasColumnType("integer")
-                        .HasColumnName("image_file_id");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean")
                         .HasColumnName("lockout_enabled");
@@ -337,9 +336,6 @@ namespace PrayerAppServices.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_asp_net_users");
-
-                    b.HasIndex("ImageFileId")
-                        .HasDatabaseName("ix_asp_net_users_image_file_id");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -418,20 +414,8 @@ namespace PrayerAppServices.Migrations
                     b.Navigation("ImageFile");
                 });
 
-            modelBuilder.Entity("PrayerAppServices.Users.Entities.AppUser", b =>
-                {
-                    b.HasOne("PrayerAppServices.Files.Entities.MediaFile", "ImageFile")
-                        .WithMany("AppUsers")
-                        .HasForeignKey("ImageFileId")
-                        .HasConstraintName("fk_asp_net_users_media_files_image_file_id");
-
-                    b.Navigation("ImageFile");
-                });
-
             modelBuilder.Entity("PrayerAppServices.Files.Entities.MediaFile", b =>
                 {
-                    b.Navigation("AppUsers");
-
                     b.Navigation("PrayerGroups");
                 });
 #pragma warning restore 612, 618
