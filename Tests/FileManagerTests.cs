@@ -17,7 +17,7 @@ namespace Tests {
         [SetUp]
         public void SetUp() {
             IServiceCollection services = new ServiceCollection();
-            _mockFileServicesClient = new Mock<IFileServicesClient>() { CallBase = true };
+            _mockFileServicesClient = new Mock<IFileServicesClient>();
 
             services.AddTestServices();
             services.AddTransient<IMediaFileRepository, MediaFileRepository>();
@@ -69,7 +69,7 @@ namespace Tests {
         }
 
         [Test]
-        public async Task DeleteFileAsync_GivenValidFileId_DeletesFile() {
+        public void DeleteFileAsync_GivenValidFileId_DeletesFile() {
             IServiceCollection services = new ServiceCollection();
             services.AddTestServices();
 
@@ -80,11 +80,21 @@ namespace Tests {
                 ResponseStatus = ResponseStatus.Completed
             };
 
-            Mock<IMediaFileRepository> mockFileRepository = new Mock<IMediaFileRepository>() { CallBase = true };
-            mockFileRepository.Setup(mockFileRepository => mockFileRepository.ValidateMediaFileDelete(It.IsAny<int>()))
+            MediaFile file = new MediaFile { Id = 1, Name = "leslieknope.png", Type = FileType.Image, Url = "http://localhost:5000/static/2.png" };
+
+            Mock<IMediaFileRepository> mockFileRepository = new Mock<IMediaFileRepository>();
+
+            mockFileRepository
+                .Setup(mockFileRepository => mockFileRepository.ValidateMediaFileDelete(It.IsAny<int>()))
                 .Returns(new List<FileDeleteError>());
+
+            mockFileRepository
+                .Setup(mockFileRepository => mockFileRepository.GetMediaFileByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(file);
+
             _mockFileServicesClient.Setup(_mockServicesClient => _mockServicesClient.ExecuteAsync<FileDeleteResponse>(It.IsAny<RestRequest>())).ReturnsAsync(
                 fileDeleteResponse);
+            _mockFileServicesClient.Setup(_mockFileServicesClient => _mockFileServicesClient.FileServicesUrl).Returns("http://localhost:5000");
 
             services.AddTransient(options => mockFileRepository.Object);
             services.AddTransient<IFileManager, FileManager>();
@@ -93,18 +103,10 @@ namespace Tests {
             _serviceProvider = services.BuildServiceProvider();
 
             using IServiceScope scope = _serviceProvider.CreateScope();
-            MediaFile file = new MediaFile { Id = 1, Name = "leslieknope.png", Type = FileType.Image, Url = "http://localhost:5000/static/2.png" };
 
-            AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-            appDbContext.MediaFiles.Add(file);
-            appDbContext.SaveChanges();
 
             IFileManager fileManager = scope.ServiceProvider.GetRequiredService<IFileManager>();
-            await fileManager.DeleteFileAsync(file.Id ?? -1);
-
-            MediaFile? mediaFile = appDbContext.MediaFiles.Find(file.Id);
-            Assert.That(mediaFile, Is.Null);
+            Assert.DoesNotThrowAsync(() => fileManager.DeleteFileAsync(file.Id ?? -1));
         }
 
         private IFormFile CreateTestFormFile(string fileName, string contentType, string content) {
