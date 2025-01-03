@@ -44,7 +44,7 @@ namespace PrayerAppServices.Files {
                 throw new ValidationErrorException(errors.Select((deleteError) => deleteError.Error));
             }
 
-            Uri fileServicesStaticUri = new Uri(new Uri(fileServicesClient.FileServicesUrl), "static");
+            Uri fileServicesStaticUri = new Uri(new Uri(_fileServicesClient.FileServicesUrl), "static");
             string fileServicesName = file.Url.Replace($"{fileServicesStaticUri}/", "");
 
             RestRequest restRequest = new RestRequest($"/file/{fileServicesName}", Method.Delete);
