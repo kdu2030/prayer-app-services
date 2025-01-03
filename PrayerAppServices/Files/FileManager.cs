@@ -47,12 +47,13 @@ namespace PrayerAppServices.Files {
 
             Uri fileServicesStaticUri = new Uri(new Uri(fileServicesClient.FileServicesUrl), "static");
             string fileServicesName = file.Url.Replace($"{fileServicesStaticUri}/", "");
-            Console.WriteLine($"Deleting file {fileServicesName}");
 
-
-
-
-
+            RestRequest restRequest = new RestRequest($"/file/{fileServicesName}", Method.Delete);
+            RestResponse<FileDeleteResponse> response = await _fileServicesClient.ExecuteAsync<FileDeleteResponse>(restRequest);
+            if (!response.IsSuccessful) {
+                throw new IOException("Unable to delete file");
+            }
+            await _fileRepository.DeleteMediaFileAsync(file);
         }
     }
 }

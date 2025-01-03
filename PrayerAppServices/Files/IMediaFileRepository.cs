@@ -6,5 +6,7 @@ namespace PrayerAppServices.Files {
         Task<MediaFile> CreateMediaFileAsync(MediaFile file);
         IEnumerable<FileDeleteError> ValidateMediaFileDelete(int fileId);
         Task<MediaFile?> GetMediaFileByIdAsync(int fileId);
+
+        Task DeleteMediaFileAsync(MediaFile mediaFile);
     }
 }
