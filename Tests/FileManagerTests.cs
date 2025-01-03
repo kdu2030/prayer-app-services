@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using PrayerAppServices.Data;
+using PrayerAppServices.Error;
 using PrayerAppServices.Files;
 using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
@@ -84,6 +85,22 @@ namespace Tests {
 
             IFileManager fileManager = scope.ServiceProvider.GetRequiredService<IFileManager>();
             Assert.DoesNotThrowAsync(() => fileManager.DeleteFileAsync(file.Id ?? -1));
+        }
+
+        [Test]
+        public void DeleteFileAsync_GivenInvalidFileId_ThrowsException() {
+            RestRequest fileDeleteRequest = new RestRequest("/file/1.png", Method.Delete);
+            RestResponse<FileDeleteResponse> fileDeleteResponse = new RestResponse<FileDeleteResponse>(fileDeleteRequest) {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                IsSuccessStatusCode = true,
+                ResponseStatus = ResponseStatus.Completed
+            };
+
+            _serviceProvider = CreateServiceProviderForDeleteTests(new List<FileDeleteError> { new FileDeleteError { Error = "File is associated with a prayer group." } }, fileDeleteResponse, null);
+            using IServiceScope scope = _serviceProvider.CreateScope();
+
+            IFileManager fileManager = scope.ServiceProvider.GetRequiredService<IFileManager>();
+            Assert.ThrowsAsync<ValidationErrorException>(() => fileManager.DeleteFileAsync(1));
         }
 
         private IFormFile CreateTestFormFile(string fileName, string contentType, string content) {
