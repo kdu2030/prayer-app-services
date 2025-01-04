@@ -75,7 +75,12 @@ BEGIN
             f.name,
             f.url
         FROM temp_admin_user a INNER JOIN media_files f ON a.image_file_id = f.id;
+    DROP TABLE IF EXISTS temp_admin_user;
     RETURN;
+EXCEPTION
+    WHEN OTHERS THEN
+        DROP TABLE IF EXISTS temp_admin_user;
+        RAISE;
 END;
 $$
 LANGUAGE plpgsql;
