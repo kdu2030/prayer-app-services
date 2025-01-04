@@ -22,7 +22,6 @@ AS
 $$
 DECLARE 
         new_group_id INT;
-        admin_user_id INT;
 BEGIN
     DROP TABLE IF EXISTS temp_admin_user;
     
