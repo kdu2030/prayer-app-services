@@ -12,6 +12,8 @@ namespace PrayerAppServices.Data {
         public DbSet<MediaFile> MediaFiles { get; set; }
         public DbSet<PrayerGroup> PrayerGroups { get; set; }
 
+        public DbSet<PrayerGroupUser> PrayerGroupUsers { get; set; }
+
         private readonly string[] IdentityTableNames = ["AspNetUsers", "AspNetUserTokens", "AspNetUserLogins", "AspNetUserClaims", "AspNetRoles", "AspNetUserRoles", "AspNetRoleClaims"];
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {

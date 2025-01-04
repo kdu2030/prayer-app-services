@@ -10,5 +10,6 @@ namespace PrayerAppServices.PrayerGroups.Entities {
 
         public MediaFile? ImageFile { get; set; }
 
+        public IEnumerable<PrayerGroupUser>? Users { get; set; }
     }
 }
