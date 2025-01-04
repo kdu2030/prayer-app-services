@@ -24,6 +24,7 @@ DECLARE
         new_group_id INT;
 BEGIN
     DROP TABLE IF EXISTS temp_admin_user;
+    DROP TABLE IF EXISTS temp_relevant_files;
     
     CREATE TEMPORARY TABLE temp_admin_user (
         id INT,
@@ -31,8 +32,15 @@ BEGIN
         image_file_id INT
     );
 
+    CREATE TEMPORARY TABLE temp_relevant_files (
+        id INT,
+        name VARCHAR(255),
+        url VARCHAR(255),
+        type INT
+    );
+
     INSERT INTO 
-        temp_admin_user(id, full_name, image_file_id)
+        temp_admin_user (id, full_name, image_file_id)
     SELECT
         u.id,
         full_name,
@@ -41,10 +49,29 @@ BEGIN
         asp_net_users u
     WHERE user_name = username;
 
+    INSERT INTO
+        temp_relevant_files (id, name, url, type)
+    SELECT
+        f.id,
+        f.name,
+        f.url,
+        f.type
+    FROM media_files f, temp_admin_user a
+    WHERE f.id = a.image_file_id OR f.id = group_image_file_id;
+
     IF NOT EXISTS (SELECT 1 FROM temp_admin_user)
     THEN
         RAISE EXCEPTION 'User does not exist.';
     END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM temp_relevant_files f 
+        WHERE f.id = group_image_file_id AND type = 1
+    )
+    THEN
+        RAISE EXCEPTION 'Image file for group not found or file is not an image.';
+    END IF;
+
 
     INSERT INTO
         prayer_groups (name, description, rules, color, image_file_id)
@@ -74,12 +101,14 @@ BEGIN
             a.image_file_id,
             f.name,
             f.url
-        FROM temp_admin_user a INNER JOIN media_files f ON a.image_file_id = f.id;
+        FROM temp_admin_user a INNER JOIN temp_relevant_files f ON a.image_file_id = f.id;
     DROP TABLE IF EXISTS temp_admin_user;
+    DROP TABLE IF EXISTS temp_relevant_files;
     RETURN;
 EXCEPTION
     WHEN OTHERS THEN
         DROP TABLE IF EXISTS temp_admin_user;
+        DROP TABLE IF EXISTS temp_relevant_files;
         RAISE;
 END;
 $$
