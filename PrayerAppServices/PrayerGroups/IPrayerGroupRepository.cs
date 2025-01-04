@@ -2,6 +2,6 @@
 
 namespace PrayerAppServices.PrayerGroups {
     public interface IPrayerGroupRepository {
-        Task<PrayerGroupSummary> CreatePrayerGroupAsync(PrayerGroupSummary prayerGroup);
+        Task<PrayerGroup> CreatePrayerGroupAsync(PrayerGroup prayerGroup);
     }
 }

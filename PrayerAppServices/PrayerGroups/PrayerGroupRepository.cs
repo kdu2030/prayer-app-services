@@ -5,7 +5,7 @@ namespace PrayerAppServices.PrayerGroups {
     public class PrayerGroupRepository(AppDbContext dbContext) : IPrayerGroupRepository {
         private readonly AppDbContext _dbContext = dbContext;
 
-        public async Task<PrayerGroupSummary> CreatePrayerGroupAsync(PrayerGroupSummary prayerGroup) {
+        public async Task<PrayerGroup> CreatePrayerGroupAsync(PrayerGroup prayerGroup) {
             _dbContext.PrayerGroups.Add(prayerGroup);
             await _dbContext.SaveChangesAsync();
             return prayerGroup;

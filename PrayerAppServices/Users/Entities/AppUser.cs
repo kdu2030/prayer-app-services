@@ -10,7 +10,7 @@ namespace PrayerAppServices.Users.Entities {
 
         public MediaFile? ImageFile { get; set; }
 
-        public IEnumerable<PrayerGroupUser> GroupUsers { get; set; }
+        public IEnumerable<PrayerGroupUser>? GroupUsers { get; set; }
 
         public AppUser() : base() {
         }
