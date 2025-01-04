@@ -1,6 +1,6 @@
 ﻿namespace PrayerAppServices.PrayerGroups.Constants {
     public enum PrayerGroupRole {
-        Admin,
+        Admin = 1,
         Member
     }
 }
