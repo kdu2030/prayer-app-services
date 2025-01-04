@@ -11,7 +11,12 @@ CREATE OR REPLACE FUNCTION create_prayer_group(
     description TEXT,
     rules TEXT,
     color INT,
-    image_file_id INT
+    image_file_id INT,
+    admin_user_id INT,
+    admin_full_name VARCHAR(255),
+    admin_image_file_id INT,
+    admin_image_file_name VARCHAR(255),
+    admin_image_file_url VARCHAR(255)
 )
 AS
 $$
@@ -19,15 +24,25 @@ DECLARE
         new_group_id INT;
         admin_user_id INT;
 BEGIN
+    DROP TABLE IF EXISTS temp_admin_user;
+    
+    CREATE TEMPORARY TABLE temp_admin_user (
+        id INT,
+        full_name VARCHAR(255),
+        image_file_id INT
+    );
+
+    INSERT INTO 
+        temp_admin_user(id, full_name, image_file_id)
     SELECT
-        u.id
-    INTO
-        admin_user_id
+        u.id,
+        full_name,
+        u.image_file_id
     FROM
         asp_net_users u
     WHERE user_name = username;
 
-    IF admin_user_id IS NULL
+    IF NOT EXISTS (SELECT 1 FROM temp_admin_user)
     THEN
         RAISE EXCEPTION 'User does not exist.';
     END IF;
@@ -40,16 +55,27 @@ BEGIN
 
     INSERT INTO
         prayer_group_users (prayer_group_id, app_user_id, role)
-    VALUES
-        (new_group_id, admin_user_id, 1);
+    SELECT
+        new_group_id,
+        a.id,
+        1
+    FROM
+        temp_admin_user a;
 
-    RETURN QUERY SELECT 
-        new_group_id, 
-        group_name, 
-        group_description, 
-        group_rules,
-        group_color,
-        group_image_file_id;
+    RETURN QUERY 
+        SELECT 
+            new_group_id, 
+            group_name, 
+            group_description, 
+            group_rules,
+            group_color,
+            group_image_file_id,
+            a.id,
+            a.full_name,
+            a.image_file_id,
+            f.name,
+            f.url
+        FROM temp_admin_user a INNER JOIN media_files f ON a.image_file_id = f.id;
     RETURN;
 END;
 $$
