@@ -42,7 +42,7 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupDetails;
         }
 
-        private MediaFileBase? GetGroupImageFromCreateResponse(CreatePrayerGroupResponse response) {
+        private static MediaFileBase? GetGroupImageFromCreateResponse(CreatePrayerGroupResponse response) {
             if (response.ImageFileId == null) {
                 return null;
             }
@@ -54,7 +54,7 @@ namespace PrayerAppServices.PrayerGroups {
             };
         }
 
-        private IEnumerable<UserSummary>? GetAdminUserFromCreateResponse(CreatePrayerGroupResponse response) {
+        private static IEnumerable<UserSummary>? GetAdminUserFromCreateResponse(CreatePrayerGroupResponse response) {
             if (response.AdminUserId == null) {
                 return null;
             }
