@@ -8,7 +8,7 @@ namespace PrayerAppServices.PrayerGroups {
         private readonly IUserManager _userManager = userManager;
 
         public PrayerGroupDetails CreatePrayerGroup(string authToken, NewPrayerGroupRequest newPrayerGroupRequest) {
-            string username = _userManager.ExtractUsernameFromToken(authToken);
+            string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
             throw new NotImplementedException();
         }
 

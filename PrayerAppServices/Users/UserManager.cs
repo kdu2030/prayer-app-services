@@ -54,14 +54,14 @@ namespace PrayerAppServices.Users {
         }
 
         public UserTokenPair GetUserTokenPair(string authHeader) {
-            string username = ExtractUsernameFromToken(authHeader);
+            string username = ExtractUsernameFromAuthHeader(authHeader);
             return new UserTokenPair {
                 AccessToken = GenerateToken(username, AccessTokenValidityMs),
                 RefreshToken = GenerateToken(username, RefreshTokenValidityMs)
             };
         }
 
-        public string ExtractUsernameFromToken(string authHeader) {
+        public string ExtractUsernameFromAuthHeader(string authHeader) {
             string refreshToken = authHeader.Replace(BearerPrefix, string.Empty);
             JwtSecurityToken token = (JwtSecurityToken)_jwtSecurityTokenHandler.ReadToken(refreshToken);
             string username = token.Claims

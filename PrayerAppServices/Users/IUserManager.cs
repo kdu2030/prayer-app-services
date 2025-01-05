@@ -10,6 +10,6 @@ namespace PrayerAppServices.Users {
 
         UserTokenPair GetUserTokenPair(string authHeader);
 
-        string ExtractUsernameFromToken(string authHeader);
+        string ExtractUsernameFromAuthHeader(string authHeader);
     }
 }
