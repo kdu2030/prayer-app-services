@@ -1,4 +1,5 @@
-﻿using PrayerAppServices.Files.Entities;
+﻿using PrayerAppServices.Files.Constants;
+using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
@@ -22,6 +23,7 @@ namespace PrayerAppServices.PrayerGroups {
             };
 
             CreatePrayerGroupResponse createResponse = _prayerGroupRepository.CreatePrayerGroup(username, newPrayerGroup); ;
+            MediaFileBase? groupImage = GetGroupImageFromCreateResponse(createResponse);
 
             // TODO: Missing Image and Admins Mapping
 
@@ -31,6 +33,7 @@ namespace PrayerAppServices.PrayerGroups {
                 Description = createResponse.Description,
                 Rules = createResponse.Rules,
                 Color = colorStr,
+                ImageFile = groupImage,
                 IsUserJoined = true,
                 IsUserAdmin = true,
             };
@@ -38,5 +41,16 @@ namespace PrayerAppServices.PrayerGroups {
             throw new NotImplementedException();
         }
 
+        private MediaFileBase? GetGroupImageFromCreateResponse(CreatePrayerGroupResponse response) {
+            if (response.ImageFileId == null) {
+                return null;
+            }
+            return new MediaFileBase {
+                Id = response.ImageFileId,
+                Name = response.GroupImageFileName ?? "",
+                Url = response.GroupImageFileUrl ?? "",
+                Type = FileType.Image,
+            };
+        }
     }
 }
