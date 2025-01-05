@@ -13,7 +13,7 @@ namespace PrayerAppServices.Users.Models {
 
         public UserTokenPair? Tokens { get; set; }
 
-        public MediaFile? Image { get; set; }
+        public MediaFileBase? Image { get; set; }
 
     }
 }
