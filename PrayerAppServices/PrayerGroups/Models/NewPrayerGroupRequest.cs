@@ -1,5 +1,5 @@
 ﻿namespace PrayerAppServices.PrayerGroups.Models {
-    public class NewPrayerGroupResponse {
+    public class NewPrayerGroupRequest {
         public required string Name { get; set; }
         public string? Description { get; set; }
         public string? Rules { get; set; }

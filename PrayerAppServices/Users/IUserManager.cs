@@ -9,5 +9,7 @@ namespace PrayerAppServices.Users {
         UserSummary GetUserSummaryFromUserId(int userId);
 
         UserTokenPair GetUserTokenPair(string authHeader);
+
+        string ExtractUsernameFromToken(string authHeader);
     }
 }
