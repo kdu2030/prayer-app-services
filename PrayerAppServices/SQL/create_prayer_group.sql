@@ -12,6 +12,8 @@ CREATE OR REPLACE FUNCTION create_prayer_group(
     rules TEXT,
     color INT,
     image_file_id INT,
+    group_image_file_name VARCHAR(255),
+    group_image_file_url VARCHAR(255),
     admin_user_id INT,
     admin_full_name VARCHAR(255),
     admin_image_file_id INT,
@@ -96,12 +98,16 @@ BEGIN
             group_rules,
             group_color,
             group_image_file_id,
+            f2.name,
+            f2.url,
             a.id,
             a.full_name,
             a.image_file_id,
-            f.name,
-            f.url
-        FROM temp_admin_user a INNER JOIN temp_relevant_files f ON a.image_file_id = f.id;
+            f1.name,
+            f1.url
+        FROM temp_admin_user a 
+        INNER JOIN temp_relevant_files f1 ON a.image_file_id = f1.id
+        INNER JOIN temp_relevant_files f2 ON f2.id = group_image_file_id;
     DROP TABLE IF EXISTS temp_admin_user;
     DROP TABLE IF EXISTS temp_relevant_files;
     RETURN;
