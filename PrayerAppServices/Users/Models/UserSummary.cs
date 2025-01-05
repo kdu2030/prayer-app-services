@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace PrayerAppServices.Users.Models {
     public class UserSummary {
         public int Id { get; set; }
-        public required string Username { get; set; }
+        public string? Username { get; set; }
 
         [EmailAddress]
         public string? Email { get; set; }
