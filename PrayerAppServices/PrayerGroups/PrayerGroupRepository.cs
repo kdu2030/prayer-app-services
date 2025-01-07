@@ -9,13 +9,15 @@ namespace PrayerAppServices.PrayerGroups {
 
         public CreatePrayerGroupResponse CreatePrayerGroup(string adminUsername, NewPrayerGroup newPrayerGroup) {
             FormattableString sqlQuery = $@"SELECT * FROM create_prayer_group(
-                ${adminUsername},
-                ${newPrayerGroup.Name},
-                ${newPrayerGroup.Description},
-                ${newPrayerGroup.Rules},
-                ${newPrayerGroup.Color},
-                ${newPrayerGroup.ImageFileId}
-            );";
+                {adminUsername},
+                {newPrayerGroup.Name},
+                {newPrayerGroup.Description},
+                {newPrayerGroup.Rules},
+                {newPrayerGroup.Color},
+                {newPrayerGroup.ImageFileId}
+            )";
+
+
             return _dbContext.Database.SqlQuery<CreatePrayerGroupResponse>(
                sqlQuery
             ).First();
