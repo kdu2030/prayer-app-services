@@ -31,8 +31,14 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task<IQueryable<PrayerGroupAdminUser>> GetPrayerGroupAdminsAsync(int prayerGroupId) {
-            FormattableString query = @$"SELECT * FROM get_prayer_group_admins({prayerGroupId})";
+            FormattableString query = $"SELECT * FROM get_prayer_group_admins({prayerGroupId})";
             Task<IQueryable<PrayerGroupAdminUser>> task = Task.FromResult(_dbContext.Database.SqlQuery<PrayerGroupAdminUser>(query));
+            return await task;
+        }
+
+        public async Task<PrayerGroupAppUser> GetPrayerGroupAppUserAsync(int prayerGroupId, string username) {
+            FormattableString query = $"SELECT * FROM get_prayer_group_user({prayerGroupId}, {username})";
+            Task<PrayerGroupAppUser> task = Task.FromResult(_dbContext.Database.SqlQuery<PrayerGroupAppUser>(query).First());
             return await task;
         }
 
