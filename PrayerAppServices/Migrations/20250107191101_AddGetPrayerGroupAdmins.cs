@@ -13,7 +13,7 @@ namespace PrayerAppServices.Migrations {
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder) {
-            migrationBuilder.Sql("DROP FUNCTION IF EXISTS get_prayer_group_admins");
+            migrationBuilder.Sql("DROP FUNCTION IF EXISTS get_prayer_group_admins;");
         }
     }
 }
