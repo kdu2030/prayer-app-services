@@ -1,3 +1,4 @@
+
 CREATE OR REPLACE FUNCTION create_prayer_group(
     username VARCHAR(255),
     group_name VARCHAR(255),
@@ -106,8 +107,8 @@ BEGIN
             f1.name,
             f1.url
         FROM temp_admin_user a 
-        INNER JOIN temp_relevant_files f1 ON a.image_file_id = f1.id
-        INNER JOIN temp_relevant_files f2 ON f2.id = group_image_file_id;
+        LEFT JOIN temp_relevant_files f1 ON a.image_file_id = f1.id
+        LEFT JOIN temp_relevant_files f2 ON f2.id = group_image_file_id;
     DROP TABLE IF EXISTS temp_admin_user;
     DROP TABLE IF EXISTS temp_relevant_files;
     RETURN;

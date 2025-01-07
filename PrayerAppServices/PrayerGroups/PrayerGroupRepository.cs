@@ -2,6 +2,7 @@
 using PrayerAppServices.Data;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
+using System.Text.RegularExpressions;
 
 namespace PrayerAppServices.PrayerGroups {
     public class PrayerGroupRepository(AppDbContext dbContext) : IPrayerGroupRepository {
@@ -21,6 +22,10 @@ namespace PrayerAppServices.PrayerGroups {
             return _dbContext.Database.SqlQuery<CreatePrayerGroupResponse>(
                sqlQuery
             ).First();
+        }
+
+        public async Task<PrayerGroup?> GetPrayerGroupByIdAsync(int id) {
+            return await _dbContext.PrayerGroups.FindAsync([id]);
         }
     }
 }
