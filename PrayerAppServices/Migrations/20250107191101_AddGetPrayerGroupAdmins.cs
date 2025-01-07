@@ -4,17 +4,16 @@
 
 namespace PrayerAppServices.Migrations {
     /// <inheritdoc />
-    public partial class AddCreatePrayerGroupFunction : Migration {
+    public partial class AddGetPrayerGroupAdmins : Migration {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder) {
-            string filePath = @"../PrayerAppServices/SQL/create_prayer_group.sql";
+            string filePath = @"../PrayerAppServices/SQL/get_prayer_group_admins.sql";
             migrationBuilder.Sql(File.ReadAllText(filePath));
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder) {
-            migrationBuilder.Sql("DROP FUNCTION IF EXISTS create_prayer_group");
-
+            migrationBuilder.Sql("DROP FUNCTION IF EXISTS get_prayer_group_admins");
         }
     }
 }
