@@ -6,13 +6,13 @@ using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
 using PrayerAppServices.Users.Models;
 using PrayerAppServices.Utils;
+using RestSharp;
 
 namespace PrayerAppServices.PrayerGroups {
     public class PrayerGroupManager(IPrayerGroupRepository prayerGroupRepository, IUserManager userManager) : IPrayerGroupManager {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
         private readonly IUserManager _userManager = userManager;
 
-        // TODO: Instead of IsUserAdmin, create a new field called User Role
         public PrayerGroupDetails CreatePrayerGroup(string authToken, NewPrayerGroupRequest newPrayerGroupRequest) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
             string? colorStr = newPrayerGroupRequest.Color;
@@ -42,6 +42,24 @@ namespace PrayerAppServices.PrayerGroups {
             };
 
             return prayerGroupDetails;
+        }
+
+        public async Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId) {
+            string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
+
+            Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
+            Task<IQueryable<PrayerGroupAdminUser>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupAdminsAsync(prayerGroupId);
+            Task<PrayerGroupAppUser> appUserTask = _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
+
+            PrayerGroup? prayerGroup = await prayerGroupTask;
+            IQueryable<PrayerGroupAdminUser> adminUsers = await adminUsersTask;
+            PrayerGroupAppUser prayerGroupAppUser = await appUserTask;
+
+            if (prayerGroup == null) {
+                throw new ArgumentException($"A prayer group with id {prayerGroupId} does not exist");
+            }
+
+            throw new NotImplementedException();
         }
 
         private static MediaFileBase? GetGroupImageFromCreateResponse(CreatePrayerGroupResponse response) {
