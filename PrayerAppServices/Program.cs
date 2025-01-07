@@ -14,6 +14,7 @@ builder.Configuration.AddConfiguration(configuration);
 
 // Add services to the container.
 builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)
     .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory = ErrorHandler.HandleDataValidationErrors);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
