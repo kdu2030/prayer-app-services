@@ -11,6 +11,7 @@ namespace PrayerAppServices.PrayerGroups {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
         private readonly IUserManager _userManager = userManager;
 
+        // TODO: Instead of IsUserAdmin, create a new field called User Role
         public PrayerGroupDetails CreatePrayerGroup(string authToken, NewPrayerGroupRequest newPrayerGroupRequest) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
             string? colorStr = newPrayerGroupRequest.Color;
