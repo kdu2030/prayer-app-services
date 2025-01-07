@@ -1,4 +1,5 @@
 ﻿using PrayerAppServices.Files.Entities;
+using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.Users.Models;
 
 namespace PrayerAppServices.PrayerGroups.Models {
@@ -11,7 +12,7 @@ namespace PrayerAppServices.PrayerGroups.Models {
         public MediaFileBase? ImageFile { get; set; }
         public IEnumerable<UserSummary>? Admins { get; set; }
         public bool? IsUserJoined { get; set; }
-        public bool? IsUserAdmin { get; set; }
+        public PrayerGroupRole? UserRole { get; set; }
 
     }
 }

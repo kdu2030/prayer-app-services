@@ -1,5 +1,6 @@
 ﻿using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
+using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
@@ -37,7 +38,7 @@ namespace PrayerAppServices.PrayerGroups {
                 ImageFile = groupImage,
                 Admins = adminUsers,
                 IsUserJoined = true,
-                IsUserAdmin = true,
+                UserRole = PrayerGroupRole.Admin,
             };
 
             return prayerGroupDetails;
