@@ -6,7 +6,6 @@ using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
 using PrayerAppServices.Users.Models;
 using PrayerAppServices.Utils;
-using RestSharp;
 
 namespace PrayerAppServices.PrayerGroups {
     public class PrayerGroupManager(IPrayerGroupRepository prayerGroupRepository, IUserManager userManager) : IPrayerGroupManager {
