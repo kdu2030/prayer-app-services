@@ -4,7 +4,7 @@ using PrayerAppServices.PrayerGroups.Constants;
 namespace PrayerAppServices.PrayerGroups.Entities {
     public class PrayerGroupAppUser {
         public int? Id { get; set; }
-        public string? Name { get; set; }
+        public string? FullName { get; set; }
         public int? ImageFileId { get; set; }
         public string? FileName { get; set; }
         public string? FileUrl { get; set; }

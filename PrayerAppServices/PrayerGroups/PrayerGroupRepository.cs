@@ -30,16 +30,14 @@ namespace PrayerAppServices.PrayerGroups {
             return await _dbContext.PrayerGroups.FindAsync([id]);
         }
 
-        public async Task<IQueryable<PrayerGroupAdminUser>> GetPrayerGroupAdminsAsync(int prayerGroupId) {
+        public IQueryable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId) {
             FormattableString query = $"SELECT * FROM get_prayer_group_admins({prayerGroupId})";
-            Task<IQueryable<PrayerGroupAdminUser>> task = Task.FromResult(_dbContext.Database.SqlQuery<PrayerGroupAdminUser>(query));
-            return await task;
+            return _dbContext.Database.SqlQuery<PrayerGroupAdminUser>(query);
         }
 
-        public async Task<PrayerGroupAppUser> GetPrayerGroupAppUserAsync(int prayerGroupId, string username) {
+        public PrayerGroupAppUser GetPrayerGroupAppUser(int prayerGroupId, string username) {
             FormattableString query = $"SELECT * FROM get_prayer_group_user({prayerGroupId}, {username})";
-            Task<PrayerGroupAppUser> task = Task.FromResult(_dbContext.Database.SqlQuery<PrayerGroupAppUser>(query).First());
-            return await task;
+            return _dbContext.Database.SqlQuery<PrayerGroupAppUser>(query).First();
         }
 
     }

@@ -43,20 +43,17 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupDetails;
         }
 
+        // TODO: Fix this, Multiple DB Context Requests Cannot Run At the Same Time
         public async Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
 
-            Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
-            Task<IQueryable<PrayerGroupAdminUser>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupAdminsAsync(prayerGroupId);
-            Task<PrayerGroupAppUser> appUserTask = _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
-
-            PrayerGroup? prayerGroup = await prayerGroupTask;
-            IQueryable<PrayerGroupAdminUser> adminUsers = await adminUsersTask;
-            PrayerGroupAppUser prayerGroupAppUser = await appUserTask;
-
+            PrayerGroup? prayerGroup = await _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
             if (prayerGroup == null) {
                 throw new ArgumentException($"A prayer group with id {prayerGroupId} does not exist");
             }
+
+            IQueryable<PrayerGroupAdminUser> adminUsers = _prayerGroupRepository.GetPrayerGroupAdmins(prayerGroupId);
+            PrayerGroupAppUser appUser = _prayerGroupRepository.GetPrayerGroupAppUser(prayerGroupId, username);
 
             throw new NotImplementedException();
         }
