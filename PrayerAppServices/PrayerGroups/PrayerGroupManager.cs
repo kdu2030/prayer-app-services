@@ -55,8 +55,8 @@ namespace PrayerAppServices.PrayerGroups {
             PrayerGroupAppUser? appUser = _prayerGroupRepository.GetPrayerGroupAppUser(prayerGroupId, username);
 
             IEnumerable<UserSummary> adminUserSummaries = GetAdminUserSummaries(adminUsers);
+            string? colorString = prayerGroup.Color.HasValue ? ColorUtils.ColorIntToHexString(prayerGroup.Color ?? 0) : null;
 
-            // TODO: Need to add color
             PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails {
                 Id = prayerGroupId,
                 Name = prayerGroup.Name,
@@ -64,6 +64,7 @@ namespace PrayerAppServices.PrayerGroups {
                 Rules = prayerGroup.Rules,
                 ImageFile = prayerGroup.ImageFile,
                 Admins = adminUserSummaries,
+                Color = colorString,
                 IsUserJoined = appUser != null,
                 UserRole = appUser?.PrayerGroupRole,
             };

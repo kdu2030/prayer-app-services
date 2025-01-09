@@ -10,6 +10,11 @@ namespace PrayerAppServices.Utils {
             return int.Parse(digitsStr, System.Globalization.NumberStyles.HexNumber);
         }
 
-
+        public static string ColorIntToHexString(int colorInt) {
+            int red = (colorInt & 0xFF0000) >> 16;
+            int green = (colorInt & 0xFF00) >> 8;
+            int blue = colorInt & 0xFF;
+            return $"#{red:x2}{green:x2}{blue:x2}";
+        }
     }
 }
