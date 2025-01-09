@@ -43,7 +43,6 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupDetails;
         }
 
-        // TODO: Fix this, Multiple DB Context Requests Cannot Run At the Same Time
         public async Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
 
@@ -52,8 +51,17 @@ namespace PrayerAppServices.PrayerGroups {
                 throw new ArgumentException($"A prayer group with id {prayerGroupId} does not exist");
             }
 
-            IQueryable<PrayerGroupAdminUser> adminUsers = _prayerGroupRepository.GetPrayerGroupAdmins(prayerGroupId);
+            IEnumerable<PrayerGroupAdminUser> adminUsers = _prayerGroupRepository.GetPrayerGroupAdmins(prayerGroupId);
             PrayerGroupAppUser appUser = _prayerGroupRepository.GetPrayerGroupAppUser(prayerGroupId, username);
+
+            IEnumerable<UserSummary> adminUserSummaries = GetAdminUserSummaries(adminUsers);
+
+            PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails {
+                Id = prayerGroupId,
+                Name = prayerGroup.Name,
+                Description = prayerGroup.Description,
+                Rules = prayerGroup.Rules,
+            };
 
             throw new NotImplementedException();
         }
@@ -92,5 +100,21 @@ namespace PrayerAppServices.PrayerGroups {
 
             return [adminUserSummary];
         }
+
+        private IEnumerable<UserSummary> GetAdminUserSummaries(IEnumerable<PrayerGroupAdminUser> adminUsers) {
+            return adminUsers.Where(adminUser => adminUser.Id != null)
+                .Select(adminUser => new UserSummary {
+                    Id = adminUser.Id ?? -1,
+                    FullName = adminUser.FullName,
+                    Image = adminUser.ImageFileId != null ? new MediaFileBase {
+                        Id = adminUser.ImageFileId,
+                        Name = adminUser.FileName ?? "",
+                        Url = adminUser.FileUrl ?? "",
+                        Type = FileType.Image
+                    } : null
+                });
+        }
+
+
     }
 }
