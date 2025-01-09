@@ -17,7 +17,7 @@ namespace PrayerAppServices.PrayerGroups {
         [HttpGet("{prayerGroupId}")]
         [Authorize]
         public async Task<ActionResult<PrayerGroupDetails>> GetPrayerGroupDetailsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId) {
-            ActionResult<PrayerGroupDetails> prayerGroupDetails = await _prayerGroupManager.GetPrayerGroupDetailsAsync(authHeader, prayerGroupId);
+            PrayerGroupDetails prayerGroupDetails = await _prayerGroupManager.GetPrayerGroupDetailsAsync(authHeader, prayerGroupId);
             return Ok(prayerGroupDetails);
         }
     }
