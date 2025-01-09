@@ -35,9 +35,9 @@ namespace PrayerAppServices.PrayerGroups {
             return _dbContext.Database.SqlQuery<PrayerGroupAdminUser>(query);
         }
 
-        public PrayerGroupAppUser GetPrayerGroupAppUser(int prayerGroupId, string username) {
+        public PrayerGroupAppUser? GetPrayerGroupAppUser(int prayerGroupId, string username) {
             FormattableString query = $"SELECT * FROM get_prayer_group_user({prayerGroupId}, {username})";
-            return _dbContext.Database.SqlQuery<PrayerGroupAppUser>(query).First();
+            return _dbContext.Database.SqlQuery<PrayerGroupAppUser>(query).FirstOrDefault();
         }
 
     }

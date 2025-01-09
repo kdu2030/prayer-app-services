@@ -52,18 +52,23 @@ namespace PrayerAppServices.PrayerGroups {
             }
 
             IEnumerable<PrayerGroupAdminUser> adminUsers = _prayerGroupRepository.GetPrayerGroupAdmins(prayerGroupId);
-            PrayerGroupAppUser appUser = _prayerGroupRepository.GetPrayerGroupAppUser(prayerGroupId, username);
+            PrayerGroupAppUser? appUser = _prayerGroupRepository.GetPrayerGroupAppUser(prayerGroupId, username);
 
             IEnumerable<UserSummary> adminUserSummaries = GetAdminUserSummaries(adminUsers);
 
+            // TODO: Need to add color
             PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails {
                 Id = prayerGroupId,
                 Name = prayerGroup.Name,
                 Description = prayerGroup.Description,
                 Rules = prayerGroup.Rules,
+                ImageFile = prayerGroup.ImageFile,
+                Admins = adminUserSummaries,
+                IsUserJoined = appUser != null,
+                UserRole = appUser?.PrayerGroupRole,
             };
 
-            throw new NotImplementedException();
+            return prayerGroupDetails;
         }
 
         private static MediaFileBase? GetGroupImageFromCreateResponse(CreatePrayerGroupResponse response) {
@@ -114,7 +119,6 @@ namespace PrayerAppServices.PrayerGroups {
                     } : null
                 });
         }
-
 
     }
 }

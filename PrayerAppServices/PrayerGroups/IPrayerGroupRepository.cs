@@ -6,6 +6,6 @@ namespace PrayerAppServices.PrayerGroups {
         CreatePrayerGroupResponse CreatePrayerGroup(string adminUsername, NewPrayerGroup newPrayerGroup);
         Task<PrayerGroup?> GetPrayerGroupByIdAsync(int id);
         IQueryable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId);
-        PrayerGroupAppUser GetPrayerGroupAppUser(int prayerGroupId, string username);
+        PrayerGroupAppUser? GetPrayerGroupAppUser(int prayerGroupId, string username);
     }
 }
