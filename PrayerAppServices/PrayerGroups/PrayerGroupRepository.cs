@@ -26,8 +26,10 @@ namespace PrayerAppServices.PrayerGroups {
             ).First();
         }
 
-        public async Task<PrayerGroup?> GetPrayerGroupByIdAsync(int id) {
-            return await _dbContext.PrayerGroups.FindAsync([id]);
+        public PrayerGroup? GetPrayerGroupById(int id) {
+            return _dbContext.PrayerGroups
+                .Include(group => group.ImageFile)
+                .FirstOrDefault(group => group.Id == id);
         }
 
         public IQueryable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId) {
