@@ -29,7 +29,7 @@ namespace PrayerAppServices.Files {
                 throw new IOException("Unable to upload file");
             }
 
-            MediaFile fileEntity = new MediaFile { Name = fileName, Type = fileType, Url = response.Data.Url };
+            MediaFile fileEntity = new MediaFile { FileName = fileName, FileType = fileType, Url = response.Data.Url };
             return await _fileRepository.CreateMediaFileAsync(fileEntity);
         }
 

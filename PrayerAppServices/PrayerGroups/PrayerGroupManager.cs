@@ -78,9 +78,9 @@ namespace PrayerAppServices.PrayerGroups {
             }
             return new MediaFileBase {
                 Id = response.ImageFileId,
-                Name = response.GroupImageFileName ?? "",
+                FileName = response.GroupImageFileName ?? "",
                 Url = response.GroupImageFileUrl ?? "",
-                Type = FileType.Image,
+                FileType = FileType.Image,
             };
         }
 
@@ -92,9 +92,9 @@ namespace PrayerAppServices.PrayerGroups {
             MediaFileBase? userImage = response.AdminImageFileId != null ?
                 new MediaFileBase {
                     Id = response.AdminImageFileId,
-                    Name = response.AdminImageFileName ?? "",
+                    FileName = response.AdminImageFileName ?? "",
                     Url = response.AdminImageFileUrl ?? "",
-                    Type = FileType.Image
+                    FileType = FileType.Image
                 }
                 : null;
 
@@ -114,9 +114,9 @@ namespace PrayerAppServices.PrayerGroups {
                     FullName = adminUser.FullName,
                     Image = adminUser.ImageFileId != null ? new MediaFileBase {
                         Id = adminUser.ImageFileId,
-                        Name = adminUser.FileName ?? "",
+                        FileName = adminUser.FileName ?? "",
                         Url = adminUser.FileUrl ?? "",
-                        Type = FileType.Image
+                        FileType = FileType.Image
                     } : null
                 });
         }

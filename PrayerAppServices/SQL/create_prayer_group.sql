@@ -36,9 +36,9 @@ BEGIN
 
     CREATE TEMPORARY TABLE temp_relevant_files (
         id INT,
-        name VARCHAR(255),
+        file_name VARCHAR(255),
         url VARCHAR(255),
-        type INT
+        file_type INT
     );
 
     INSERT INTO 
@@ -52,12 +52,12 @@ BEGIN
     WHERE user_name = username;
 
     INSERT INTO
-        temp_relevant_files (id, name, url, type)
+        temp_relevant_files (id, file_name, url, file_type)
     SELECT
         f.id,
-        f.name,
+        f.file_name,
         f.url,
-        f.type
+        f.file_type
     FROM media_files f, temp_admin_user a
     WHERE f.id = a.image_file_id OR f.id = group_image_file_id;
 
@@ -68,7 +68,7 @@ BEGIN
 
     IF NOT EXISTS (
         SELECT 1 FROM temp_relevant_files f 
-        WHERE f.id = group_image_file_id AND type = 1
+        WHERE f.id = group_image_file_id AND file_type = 1
     )
     THEN
         RAISE EXCEPTION 'Image file for group not found or file is not an image.';
@@ -98,12 +98,12 @@ BEGIN
             group_rules,
             group_color,
             group_image_file_id,
-            f2.name,
+            f2.file_name,
             f2.url,
             a.id,
             a.full_name,
             a.image_file_id,
-            f1.name,
+            f1.file_name,
             f1.url
         FROM temp_admin_user a 
         LEFT JOIN temp_relevant_files f1 ON a.image_file_id = f1.id
@@ -117,7 +117,5 @@ EXCEPTION
         DROP TABLE IF EXISTS temp_relevant_files;
         RAISE;
 END;
-$$
-LANGUAGE plpgsql;
 $$
 LANGUAGE plpgsql;
