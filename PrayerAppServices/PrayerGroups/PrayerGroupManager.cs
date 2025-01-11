@@ -59,7 +59,7 @@ namespace PrayerAppServices.PrayerGroups {
 
             PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails {
                 Id = prayerGroupId,
-                Name = prayerGroup.Name,
+                Name = prayerGroup.GroupName,
                 Description = prayerGroup.Description,
                 Rules = prayerGroup.Rules,
                 ImageFile = prayerGroup.ImageFile,

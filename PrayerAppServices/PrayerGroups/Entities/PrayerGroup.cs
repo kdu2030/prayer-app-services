@@ -3,7 +3,7 @@
 namespace PrayerAppServices.PrayerGroups.Entities {
     public class PrayerGroup {
         public int? Id { get; set; }
-        public required string Name { get; set; }
+        public required string GroupName { get; set; }
         public string? Description { get; set; }
         public string? Rules { get; set; }
         public int? Color { get; set; }
