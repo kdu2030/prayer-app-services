@@ -66,7 +66,7 @@ BEGIN
         RAISE EXCEPTION 'User does not exist.';
     END IF;
 
-    IF NOT EXISTS (
+    IF group_image_file_id IS NOT NULL AND NOT EXISTS (
         SELECT 1 FROM temp_relevant_files f 
         WHERE f.id = group_image_file_id AND file_type = 1
     )
