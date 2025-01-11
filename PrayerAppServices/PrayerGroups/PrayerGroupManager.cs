@@ -12,6 +12,10 @@ namespace PrayerAppServices.PrayerGroups {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
         private readonly IUserManager _userManager = userManager;
 
+        // TODO: We will need to create a route for checking prayer group uniqueness.
+        // Can't use existing search route because we want to make it lightweight.
+        // Needs to be separate because Create Prayer Group is a wizard
+
         public PrayerGroupDetails CreatePrayerGroup(string authToken, NewPrayerGroupRequest newPrayerGroupRequest) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
             string? colorStr = newPrayerGroupRequest.Color;
