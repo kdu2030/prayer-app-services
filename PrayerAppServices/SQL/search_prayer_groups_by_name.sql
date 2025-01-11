@@ -20,7 +20,7 @@ BEGIN
         f.file_type
     FROM 
         prayer_groups g
-    INNER JOIN 
+    LEFT JOIN 
         media_files f ON f.id = g.image_file_id
     WHERE 
         to_tsvector(g.group_name) @@ websearch_to_tsquery(name_query)
