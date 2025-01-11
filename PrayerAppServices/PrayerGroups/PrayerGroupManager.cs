@@ -30,7 +30,7 @@ namespace PrayerAppServices.PrayerGroups {
 
             PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails {
                 Id = createResponse.Id,
-                GroupName = createResponse.Name,
+                GroupName = createResponse.GroupName,
                 Description = createResponse.Description,
                 Rules = createResponse.Rules,
                 Color = colorStr,
@@ -89,7 +89,7 @@ namespace PrayerAppServices.PrayerGroups {
                 return null;
             }
 
-            MediaFileBase? userImage = response.ImageFileId != null ?
+            MediaFileBase? userImage = response.AdminImageFileId != null ?
                 new MediaFileBase {
                     Id = response.AdminImageFileId,
                     Name = response.AdminImageFileName ?? "",
