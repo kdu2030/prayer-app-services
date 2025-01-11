@@ -1,14 +1,13 @@
-
 CREATE OR REPLACE FUNCTION create_prayer_group(
     username VARCHAR(255),
-    group_name VARCHAR(255),
+    new_group_name VARCHAR(255),
     group_description TEXT,
     group_rules TEXT,
     group_color INT,
     group_image_file_id INT
 ) RETURNS TABLE (
     id INT,
-    name VARCHAR(255),
+    group_name VARCHAR(255),
     description TEXT,
     rules TEXT,
     color INT,
@@ -77,9 +76,9 @@ BEGIN
 
 
     INSERT INTO
-        prayer_groups (name, description, rules, color, image_file_id)
+        prayer_groups (group_name, description, rules, color, image_file_id)
     VALUES
-        (group_name, group_description, group_rules, group_color, group_image_file_id)
+        (new_group_name, group_description, group_rules, group_color, group_image_file_id)
     RETURNING prayer_groups.id INTO new_group_id;
 
     INSERT INTO
@@ -94,7 +93,7 @@ BEGIN
     RETURN QUERY 
         SELECT 
             new_group_id, 
-            group_name, 
+            new_group_name, 
             group_description, 
             group_rules,
             group_color,
@@ -118,5 +117,7 @@ EXCEPTION
         DROP TABLE IF EXISTS temp_relevant_files;
         RAISE;
 END;
+$$
+LANGUAGE plpgsql;
 $$
 LANGUAGE plpgsql;
