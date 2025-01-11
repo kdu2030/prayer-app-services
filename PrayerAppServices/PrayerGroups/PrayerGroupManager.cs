@@ -17,7 +17,7 @@ namespace PrayerAppServices.PrayerGroups {
             string? colorStr = newPrayerGroupRequest.Color;
             int? color = colorStr != null ? ColorUtils.ColorHexStringToInt(colorStr) : null;
             NewPrayerGroup newPrayerGroup = new NewPrayerGroup {
-                Name = newPrayerGroupRequest.Name,
+                GroupName = newPrayerGroupRequest.GroupName,
                 Description = newPrayerGroupRequest.Description,
                 Rules = newPrayerGroupRequest.Rules,
                 Color = color,
@@ -30,7 +30,7 @@ namespace PrayerAppServices.PrayerGroups {
 
             PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails {
                 Id = createResponse.Id,
-                Name = createResponse.Name,
+                GroupName = createResponse.Name,
                 Description = createResponse.Description,
                 Rules = createResponse.Rules,
                 Color = colorStr,
@@ -59,7 +59,7 @@ namespace PrayerAppServices.PrayerGroups {
 
             PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails {
                 Id = prayerGroupId,
-                Name = prayerGroup.GroupName,
+                GroupName = prayerGroup.GroupName,
                 Description = prayerGroup.Description,
                 Rules = prayerGroup.Rules,
                 ImageFile = prayerGroup.ImageFile,

@@ -13,7 +13,7 @@ namespace PrayerAppServices.PrayerGroups {
         public CreatePrayerGroupResponse CreatePrayerGroup(string adminUsername, NewPrayerGroup newPrayerGroup) {
             FormattableString sqlQuery = $@"SELECT * FROM create_prayer_group(
                 {adminUsername},
-                {newPrayerGroup.Name},
+                {newPrayerGroup.GroupName},
                 {newPrayerGroup.Description},
                 {newPrayerGroup.Rules},
                 {newPrayerGroup.Color},
