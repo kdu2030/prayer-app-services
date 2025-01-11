@@ -42,5 +42,10 @@ namespace PrayerAppServices.PrayerGroups {
             return _dbContext.Database.SqlQuery<PrayerGroupAppUser>(query).FirstOrDefault();
         }
 
+        public PrayerGroup? GetPrayerGroupByName(string groupName) {
+            return _dbContext.PrayerGroups.Where(group => group.GroupName == groupName)
+                .FirstOrDefault();
+        }
+
     }
 }

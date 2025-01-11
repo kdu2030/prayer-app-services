@@ -76,6 +76,16 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupDetails;
         }
 
+        public GroupNameValidationResponse ValidateGroupName(string groupName) {
+            List<string> errors = new List<string>();
+            PrayerGroup? prayerGroup = _prayerGroupRepository.GetPrayerGroupByName(groupName);
+            if (prayerGroup != null) {
+                errors.Add("A prayer group with this name already exists.");
+            }
+
+            return new GroupNameValidationResponse { IsNameValid = errors.Count == 0, Errors = errors };
+        }
+
         private static MediaFileBase? GetGroupImageFromCreateResponse(CreatePrayerGroupResponse response) {
             if (response.ImageFileId == null) {
                 return null;

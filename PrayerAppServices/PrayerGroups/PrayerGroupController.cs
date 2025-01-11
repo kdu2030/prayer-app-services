@@ -20,5 +20,12 @@ namespace PrayerAppServices.PrayerGroups {
             PrayerGroupDetails prayerGroupDetails = _prayerGroupManager.GetPrayerGroupDetails(authHeader, prayerGroupId);
             return Ok(prayerGroupDetails);
         }
+
+        [HttpGet("validate-name")]
+        [Authorize]
+        public ActionResult<GroupNameValidationResponse> ValidateGroupName([FromQuery(Name = "name")] string prayerGroupName) {
+            GroupNameValidationResponse validationResponse = _prayerGroupManager.ValidateGroupName(prayerGroupName);
+            return Ok(validationResponse);
+        }
     }
 }

@@ -7,5 +7,7 @@ namespace PrayerAppServices.PrayerGroups {
         PrayerGroup? GetPrayerGroupById(int id);
         IQueryable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId);
         PrayerGroupAppUser? GetPrayerGroupAppUser(int prayerGroupId, string username);
+
+        PrayerGroup? GetPrayerGroupByName(string groupName);
     }
 }
