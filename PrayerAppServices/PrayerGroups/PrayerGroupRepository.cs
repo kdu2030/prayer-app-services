@@ -29,7 +29,7 @@ namespace PrayerAppServices.PrayerGroups {
                 .FirstOrDefault(group => group.Id == id);
         }
 
-        public IQueryable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId) {
+        public IEnumerable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId) {
             FormattableString query = $"SELECT * FROM get_prayer_group_admins({prayerGroupId})";
             return _dbContext.Database.SqlQuery<PrayerGroupAdminUser>(query);
         }

@@ -5,7 +5,7 @@ namespace PrayerAppServices.PrayerGroups {
     public interface IPrayerGroupRepository {
         CreatePrayerGroupResponse CreatePrayerGroup(string adminUsername, NewPrayerGroup newPrayerGroup);
         PrayerGroup? GetPrayerGroupById(int id);
-        IQueryable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId);
+        IEnumerable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId);
         PrayerGroupAppUser? GetPrayerGroupAppUser(int prayerGroupId, string username);
         PrayerGroup? GetPrayerGroupByName(string groupName);
         IEnumerable<PrayerGroupSearchResult> SearchPrayerGroupsByName(string nameQuery, int maxNumResults);
