@@ -27,5 +27,12 @@ namespace PrayerAppServices.PrayerGroups {
             GroupNameValidationResponse validationResponse = _prayerGroupManager.ValidateGroupName(prayerGroupName);
             return Ok(validationResponse);
         }
+
+        [HttpGet("search")]
+        public ActionResult<IEnumerable<PrayerGroupDetails>> SearchByGroupName([FromQuery(Name = "name")] string nameQuery, [FromQuery(Name = "maxResults")] int maxResults) {
+            IEnumerable<PrayerGroupDetails> prayerGroups = _prayerGroupManager.SearchPrayerGroupsByName(nameQuery, maxResults);
+            return Ok(prayerGroups);
+
+        }
     }
 }

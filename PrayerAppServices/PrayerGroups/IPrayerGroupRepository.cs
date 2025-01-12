@@ -8,6 +8,6 @@ namespace PrayerAppServices.PrayerGroups {
         IQueryable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId);
         PrayerGroupAppUser? GetPrayerGroupAppUser(int prayerGroupId, string username);
         PrayerGroup? GetPrayerGroupByName(string groupName);
-        IEnumerable<PrayerGroupSearchResult> SearchPrayerGroupsByName(string nameQuery, int maxNumResults)
+        IEnumerable<PrayerGroupSearchResult> SearchPrayerGroupsByName(string nameQuery, int maxNumResults);
     }
 }
