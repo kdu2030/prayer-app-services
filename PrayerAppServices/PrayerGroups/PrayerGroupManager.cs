@@ -12,10 +12,6 @@ namespace PrayerAppServices.PrayerGroups {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
         private readonly IUserManager _userManager = userManager;
 
-        // TODO: We will need to create a route for checking prayer group uniqueness.
-        // Can't use existing search route because we want to make it lightweight.
-        // Needs to be separate because Create Prayer Group is a wizard
-
         public PrayerGroupDetails CreatePrayerGroup(string authToken, NewPrayerGroupRequest newPrayerGroupRequest) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
             string? colorStr = newPrayerGroupRequest.Color;
@@ -84,6 +80,27 @@ namespace PrayerAppServices.PrayerGroups {
             }
 
             return new GroupNameValidationResponse { IsNameValid = errors.Count == 0, Errors = errors };
+        }
+
+        public IEnumerable<PrayerGroupDetails> SearchPrayerGroupsByName(string nameQuery, int maxNumResults) {
+            IEnumerable<PrayerGroupSearchResult> searchResults = _prayerGroupRepository.SearchPrayerGroupsByName(nameQuery, maxNumResults);
+            return searchResults.Select(GetPrayerGroupDetailFromSearchResult);
+        }
+
+        private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
+            MediaFileBase? mediaFile = searchResult.ImageFileId != null
+                ? new MediaFileBase {
+                    Id = searchResult.ImageFileId,
+                    FileName = searchResult.FileName ?? "",
+                    FileType = searchResult.FileType ?? FileType.Unknown,
+                    Url = searchResult.FileUrl ?? ""
+                }
+                : null;
+            return new PrayerGroupDetails {
+                Id = searchResult.Id,
+                GroupName = searchResult.GroupName,
+                ImageFile = mediaFile,
+            };
         }
 
         private static MediaFileBase? GetGroupImageFromCreateResponse(CreatePrayerGroupResponse response) {

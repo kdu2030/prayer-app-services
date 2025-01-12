@@ -44,6 +44,10 @@ namespace PrayerAppServices.PrayerGroups {
                 .FirstOrDefault();
         }
 
+        public IEnumerable<PrayerGroupSearchResult> SearchPrayerGroupsByName(string nameQuery, int maxNumResults) {
+            FormattableString query = $"SELECT * FROM search_prayer_groups_by_name({nameQuery}, {maxNumResults})";
+            return _dbContext.Database.SqlQuery<PrayerGroupSearchResult>(query);
+        }
 
     }
 }
