@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using PrayerAppServices.Data;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
-using PrayerAppServices.Users.Entities;
-using System.Text.RegularExpressions;
 
 namespace PrayerAppServices.PrayerGroups {
     public class PrayerGroupRepository(AppDbContext dbContext) : IPrayerGroupRepository {
@@ -46,6 +43,7 @@ namespace PrayerAppServices.PrayerGroups {
             return _dbContext.PrayerGroups.Where(group => group.GroupName == groupName)
                 .FirstOrDefault();
         }
+
 
     }
 }
