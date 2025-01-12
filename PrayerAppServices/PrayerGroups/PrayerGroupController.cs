@@ -29,6 +29,7 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         [HttpGet("search")]
+        [Authorize]
         public ActionResult<IEnumerable<PrayerGroupDetails>> SearchByGroupName([FromQuery(Name = "name")] string nameQuery, [FromQuery(Name = "maxResults")] int maxResults) {
             IEnumerable<PrayerGroupDetails> prayerGroups = _prayerGroupManager.SearchPrayerGroupsByName(nameQuery, maxResults);
             return Ok(prayerGroups);
