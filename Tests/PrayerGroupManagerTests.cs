@@ -4,6 +4,7 @@ using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
 using PrayerAppServices.Users.Models;
+using Tests.MockData;
 
 namespace Tests {
     public class PrayerGroupManagerTests {
@@ -107,6 +108,28 @@ namespace Tests {
 
             IEnumerable<UserSummary> adminUsers = details.Admins ?? [];
             Assert.That(adminUsers.Where(admin => admin.Id == response?.AdminUserId).Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void GetGroupDetails_GivenValidGroupId_FetchesGroupDetails() {
+            string username = "abernard";
+            Mock<IUserManager> mockUserManager = new Mock<IUserManager>();
+            mockUserManager
+                .Setup(userManager => userManager.ExtractUsernameFromAuthHeader(It.IsAny<string>()))
+                .Returns(() => username);
+
+            Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
+            mockRepository
+                .Setup(repository => repository.GetPrayerGroupById(It.IsAny<int>()))
+                .Returns(MockPrayerGroupData.MockPrayerGroup);
+
+            IPrayerGroupManager manager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);
+            PrayerGroupDetails prayerGroupDetails = manager.GetPrayerGroupDetails("mockToken", 2);
+
+            Assert.Multiple(() => {
+                Assert.That(prayerGroupDetails.Id, Is.EqualTo(MockPrayerGroupData.MockPrayerGroup.Id));
+                Assert.That(prayerGroupDetails.GroupName, Is.EqualTo(MockPrayerGroupData.MockPrayerGroup.GroupName));
+            });
         }
     }
 }

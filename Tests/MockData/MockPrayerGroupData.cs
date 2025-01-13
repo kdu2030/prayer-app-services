@@ -1,12 +1,13 @@
 ﻿
 
 using PrayerAppServices.Files.Constants;
+using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.Entities;
 
 namespace Tests.MockData {
     public static class MockPrayerGroupData {
-        public static readonly IEnumerable<PrayerGroupAdminUser> prayerGroupAdminUsers = [
+        public static readonly IEnumerable<PrayerGroupAdminUser> MockPrayerGroupAdminUsers = [
             new PrayerGroupAdminUser {
                 Id = 1,
                 FullName = "Anakin Skywalker",
@@ -27,5 +28,27 @@ namespace Tests.MockData {
                 FileType = FileType.Image,
             }
         ];
+
+        public static readonly PrayerGroup MockPrayerGroup = new PrayerGroup {
+            Id = 2,
+            GroupName = "IMB",
+            Color = 65280,
+            Description = "Missionary organization",
+            Rules = "No explicit language",
+            ImageFile = new MediaFile {
+                Id = 1,
+                FileName = "imb-logo.jpg",
+                Url = "https://127.0.0.1:5000/static/4.jpg",
+                FileType = FileType.Image,
+            },
+        };
+
+        public static readonly PrayerGroupAppUser PrayerGroupAppUser = new PrayerGroupAppUser {
+            Id = 6,
+            FullName = "Commander Cody",
+            ImageFileId = 4,
+            FileName = "commander_cody.jpg",
+            FileType = FileType.Image,
+        };
     }
 }
