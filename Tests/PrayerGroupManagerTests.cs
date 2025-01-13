@@ -3,11 +3,12 @@ using PrayerAppServices.PrayerGroups;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
+using PrayerAppServices.Users.Models;
 
 namespace Tests {
     public class PrayerGroupManagerTests {
         [Test]
-        public void CreatePrayerGroup_GivenValidUser_CreatesPrayerGroup() {
+        public void CreatePrayerGroup_GivenValidPrayerGroupRequest_CreatesPrayerGroup() {
             string username = "abernard";
             Mock<IUserManager> mockUserManager = new Mock<IUserManager>();
             mockUserManager
@@ -76,6 +77,36 @@ namespace Tests {
                 Assert.That(details.ImageFile?.Url, Is.EqualTo(mockUrl));
             });
 
+        }
+
+        [Test]
+        public void CreatePrayerGroup_GivenUser_AddsUserToAdminList() {
+            string username = "abernard";
+            Mock<IUserManager> mockUserManager = new Mock<IUserManager>();
+            mockUserManager
+                .Setup(userManager => userManager.ExtractUsernameFromAuthHeader(It.IsAny<string>()))
+                .Returns(() => username);
+
+            CreatePrayerGroupResponse response = new CreatePrayerGroupResponse {
+                Id = 1,
+                GroupName = "Dunder Mifflin",
+                AdminUserId = 1,
+                AdminFullName = "Andy Bernard",
+            };
+            NewPrayerGroupRequest newPrayerGroup = new NewPrayerGroupRequest {
+                GroupName = "Dunder Mifflin"
+            };
+
+            Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
+            mockRepository
+                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<NewPrayerGroup>()))
+                .Returns(response);
+
+            IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);
+            PrayerGroupDetails details = prayerGroupManager.CreatePrayerGroup("mockToken", newPrayerGroup);
+
+            IEnumerable<UserSummary> adminUsers = details.Admins ?? [];
+            Assert.That(adminUsers.Where(admin => admin.Id == response?.AdminUserId).Count, Is.EqualTo(1));
         }
     }
 }
