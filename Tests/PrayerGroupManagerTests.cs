@@ -32,8 +32,10 @@ namespace Tests {
             IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);
             PrayerGroupDetails details = prayerGroupManager.CreatePrayerGroup("mockToken", newPrayerGroup);
 
-            Assert.IsTrue((details.GroupName ?? "").Equals(newPrayerGroup.GroupName));
-            Assert.IsNotNull(details.Id);
+            Assert.Multiple(() => {
+                Assert.That((details.GroupName ?? "").Equals(newPrayerGroup.GroupName), Is.True);
+                Assert.That(details.Id, Is.Not.Null);
+            });
         }
     }
 }
