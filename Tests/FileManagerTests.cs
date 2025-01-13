@@ -54,8 +54,8 @@ namespace Tests {
             MediaFileBase fileEntity = await fileManager.UploadFileAsync(file);
 
             Assert.Multiple(() => {
-                Assert.That(fileEntity.Type, Is.EqualTo(FileType.Image));
-                Assert.That(fileEntity.Name, Is.EqualTo("test.png"));
+                Assert.That(fileEntity.FileType, Is.EqualTo(FileType.Image));
+                Assert.That(fileEntity.FileName, Is.EqualTo("test.png"));
             });
 
         }
@@ -77,7 +77,7 @@ namespace Tests {
                 ResponseStatus = ResponseStatus.Completed
             };
 
-            MediaFile file = new MediaFile { Id = 1, Name = "leslieknope.png", Type = FileType.Image, Url = "http://localhost:5000/static/2.png" };
+            MediaFile file = new MediaFile { Id = 1, FileName = "leslieknope.png", FileType = FileType.Image, Url = "http://localhost:5000/static/2.png" };
 
             _serviceProvider = CreateServiceProviderForDeleteTests(new List<FileDeleteError>(), fileDeleteResponse, file);
             using IServiceScope scope = _serviceProvider.CreateScope();

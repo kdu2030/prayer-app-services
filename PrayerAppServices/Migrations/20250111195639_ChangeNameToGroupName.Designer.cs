@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrayerAppServices.Data;
@@ -11,9 +12,11 @@ using PrayerAppServices.Data;
 namespace PrayerAppServices.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250111195639_ChangeNameToGroupName")]
+    partial class ChangeNameToGroupName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,14 +198,14 @@ namespace PrayerAppServices.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
 
-                    b.Property<string>("FileName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
-                        .HasColumnName("file_name");
+                        .HasColumnName("name");
 
-                    b.Property<int>("FileType")
+                    b.Property<int>("Type")
                         .HasColumnType("integer")
-                        .HasColumnName("file_type");
+                        .HasColumnName("type");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -234,7 +237,7 @@ namespace PrayerAppServices.Migrations
 
                     b.Property<string>("GroupName")
                         .IsRequired()
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("text")
                         .HasColumnName("group_name");
 
                     b.Property<int?>("ImageFileId")
@@ -247,9 +250,6 @@ namespace PrayerAppServices.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_prayer_groups");
-
-                    b.HasAlternateKey("GroupName")
-                        .HasName("ak_prayer_groups_group_name");
 
                     b.HasIndex("ImageFileId")
                         .HasDatabaseName("ix_prayer_groups_image_file_id");
