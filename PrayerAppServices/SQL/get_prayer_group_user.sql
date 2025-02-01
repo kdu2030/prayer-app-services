@@ -16,9 +16,9 @@ BEGIN
         a.id,
         a.full_name,
         a.image_file_id,
-        f.name,
+        f.file_name,
         f.url,
-        f.type,
+        f.file_type,
         pgu.role
     FROM 
         asp_net_users a

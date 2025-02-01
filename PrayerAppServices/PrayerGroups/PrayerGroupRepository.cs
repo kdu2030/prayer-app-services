@@ -28,15 +28,21 @@ namespace PrayerAppServices.PrayerGroups {
             return response;
         }
 
-        public PrayerGroup? GetPrayerGroupById(int id) {
+        public Task<PrayerGroup?> GetPrayerGroupByIdAsync(int id) {
             return _dbContext.PrayerGroups
                 .Include(group => group.ImageFile)
-                .FirstOrDefault(group => group.Id == id);
+                .FirstOrDefaultAsync(group => group.Id == id);
         }
 
-        public IEnumerable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId) {
-            FormattableString query = $"SELECT * FROM get_prayer_group_admins({prayerGroupId})";
-            return _dbContext.Database.SqlQuery<PrayerGroupAdminUser>(query);
+        public async Task<IEnumerable<PrayerGroupAdminUser>> GetPrayerGroupAdminsAsync(int prayerGroupId) {
+            using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("prayer_group_id", prayerGroupId);
+
+            string sql = "SELECT * FROM get_prayer_group_admins(@prayer_group_id)";
+            IEnumerable<PrayerGroupAdminUser> adminUsers = await connection.QueryAsync<PrayerGroupAdminUser>(sql, parameters);
+            return adminUsers;
         }
 
         public PrayerGroupAppUser? GetPrayerGroupAppUser(int prayerGroupId, string username) {

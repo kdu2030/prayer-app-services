@@ -43,15 +43,19 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupDetails;
         }
 
-        public PrayerGroupDetails GetPrayerGroupDetails(string authHeader, int prayerGroupId) {
+        public async Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
 
-            PrayerGroup? prayerGroup = _prayerGroupRepository.GetPrayerGroupById(prayerGroupId);
+            Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
+            Task<IEnumerable<PrayerGroupAdminUser>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupAdminsAsync(prayerGroupId);
+
+            PrayerGroup? prayerGroup = await prayerGroupTask;
+            IEnumerable<PrayerGroupAdminUser> adminUsers = await adminUsersTask;
+
             if (prayerGroup == null) {
                 throw new ArgumentException($"A prayer group with id {prayerGroupId} does not exist");
             }
 
-            IEnumerable<PrayerGroupAdminUser> adminUsers = _prayerGroupRepository.GetPrayerGroupAdmins(prayerGroupId);
             PrayerGroupAppUser? appUser = _prayerGroupRepository.GetPrayerGroupAppUser(prayerGroupId, username);
 
             IEnumerable<UserSummary> adminUserSummaries = GetAdminUserSummaries(adminUsers);
