@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using PrayerAppServices.Data;
 using PrayerAppServices.PrayerGroups.Constants;
+using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
-using PrayerAppServices.PrayerGroups.Models;
 
 namespace PrayerAppServices.PrayerGroups {
     public class PrayerGroupRepository(AppDbContext dbContext, IConfiguration configuration) : IPrayerGroupRepository {
@@ -17,9 +17,7 @@ namespace PrayerAppServices.PrayerGroups {
             }
         }
 
-
-
-        public async Task<CreatePrayerGroupResponse> CreatePrayerGroupAsync(string adminUsername, NewPrayerGroup newPrayerGroup) {
+        public async Task<CreatePrayerGroupResponse> CreatePrayerGroupAsync(string adminUsername, PrayerGroupDTO newPrayerGroup) {
             using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             DynamicParameters parameters = new DynamicParameters();
 

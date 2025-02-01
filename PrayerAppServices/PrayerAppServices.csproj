@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="PrayerGroups\新文件夹\**" />
+    <Content Remove="PrayerGroups\新文件夹\**" />
+    <EmbeddedResource Remove="PrayerGroups\新文件夹\**" />
+    <None Remove="PrayerGroups\新文件夹\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
     <PackageReference Include="Isopoh.Cryptography.Argon2" Version="2.0.0" />

@@ -1,5 +1,6 @@
 ﻿using Moq;
 using PrayerAppServices.PrayerGroups;
+using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
@@ -22,13 +23,13 @@ namespace Tests {
                 AdminUserId = 1,
                 AdminFullName = "Andy Bernard",
             };
-            NewPrayerGroupRequest newPrayerGroup = new NewPrayerGroupRequest {
+            PrayerGroupRequest newPrayerGroup = new PrayerGroupRequest {
                 GroupName = "Dunder Mifflin"
             };
 
             Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
             mockRepository
-                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<NewPrayerGroup>()))
+                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<PrayerGroupDTO>()))
                 .Returns(response);
 
             IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);
@@ -59,14 +60,14 @@ namespace Tests {
                 GroupImageFileUrl = mockUrl
             };
 
-            NewPrayerGroupRequest groupRequest = new NewPrayerGroupRequest {
+            PrayerGroupRequest groupRequest = new PrayerGroupRequest {
                 GroupName = "Dunder Mifflin",
                 ImageFileId = 2,
             };
 
             Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
             mockRepository
-                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<NewPrayerGroup>()))
+                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<PrayerGroupDTO>()))
                 .Returns(response);
 
             IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);
@@ -94,13 +95,13 @@ namespace Tests {
                 AdminUserId = 1,
                 AdminFullName = "Andy Bernard",
             };
-            NewPrayerGroupRequest newPrayerGroup = new NewPrayerGroupRequest {
+            PrayerGroupRequest newPrayerGroup = new PrayerGroupRequest {
                 GroupName = "Dunder Mifflin"
             };
 
             Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
             mockRepository
-                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<NewPrayerGroup>()))
+                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<PrayerGroupDTO>()))
                 .Returns(response);
 
             IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);

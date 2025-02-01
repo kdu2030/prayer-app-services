@@ -1,6 +1,7 @@
 ﻿using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
+using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
@@ -12,11 +13,11 @@ namespace PrayerAppServices.PrayerGroups {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
         private readonly IUserManager _userManager = userManager;
 
-        public async Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, NewPrayerGroupRequest newPrayerGroupRequest) {
+        public async Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
             string? colorStr = newPrayerGroupRequest.Color;
             int? color = colorStr != null ? ColorUtils.ColorHexStringToInt(colorStr) : null;
-            NewPrayerGroup newPrayerGroup = new NewPrayerGroup {
+            PrayerGroupDTO newPrayerGroup = new PrayerGroupDTO {
                 GroupName = newPrayerGroupRequest.GroupName,
                 Description = newPrayerGroupRequest.Description,
                 Rules = newPrayerGroupRequest.Rules,

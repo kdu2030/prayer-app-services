@@ -1,9 +1,9 @@
 ﻿namespace PrayerAppServices.PrayerGroups.Models {
-    public class NewPrayerGroup {
+    public class PrayerGroupRequest {
         public required string GroupName { get; set; }
         public string? Description { get; set; }
         public string? Rules { get; set; }
-        public int? Color { get; set; }
+        public string? Color { get; set; }
         public int? ImageFileId { get; set; }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using PrayerAppServices.PrayerGroups.Constants;
+using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
-using PrayerAppServices.PrayerGroups.Models;
 
 namespace PrayerAppServices.PrayerGroups {
     public interface IPrayerGroupRepository {
-        Task<CreatePrayerGroupResponse> CreatePrayerGroupAsync(string adminUsername, NewPrayerGroup newPrayerGroup);
+        Task<CreatePrayerGroupResponse> CreatePrayerGroupAsync(string adminUsername, PrayerGroupDTO newPrayerGroup);
         Task<PrayerGroup?> GetPrayerGroupByIdAsync(int id);
         Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupAdminsAsync(int prayerGroupId);
         Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole> prayerGroupRoles);
