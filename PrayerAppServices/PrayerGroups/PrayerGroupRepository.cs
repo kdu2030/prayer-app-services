@@ -11,6 +11,12 @@ namespace PrayerAppServices.PrayerGroups {
         private readonly AppDbContext _dbContext = dbContext;
         private readonly string? _connectionString = configuration.GetConnectionString("DefaultConnection");
 
+        private NpgsqlConnection Connection {
+            get {
+                return new NpgsqlConnection(_connectionString);
+            }
+        }
+
 
 
         public async Task<CreatePrayerGroupResponse> CreatePrayerGroupAsync(string adminUsername, NewPrayerGroup newPrayerGroup) {
@@ -60,9 +66,16 @@ namespace PrayerAppServices.PrayerGroups {
             return users;
         }
 
-        public PrayerGroupAppUser? GetPrayerGroupAppUser(int prayerGroupId, string username) {
-            FormattableString query = $"SELECT * FROM get_prayer_group_user({prayerGroupId}, {username})";
-            return _dbContext.Database.SqlQuery<PrayerGroupAppUser>(query).FirstOrDefault();
+        public async Task<PrayerGroupAppUser?> GetPrayerGroupAppUserAsync(int prayerGroupId, string username) {
+            using NpgsqlConnection connection = Connection;
+
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("prayer_group_id", prayerGroupId);
+            parameters.Add("username", username);
+
+            string sql = "SELECT * FROM get_prayer_group_user(@prayer_group_id, @username)";
+            PrayerGroupAppUser? appUser = await connection.QueryFirstOrDefaultAsync<PrayerGroupAppUser>(sql, parameters);
+            return appUser;
         }
 
         public PrayerGroup? GetPrayerGroupByName(string groupName) {

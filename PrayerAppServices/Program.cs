@@ -10,6 +10,8 @@ IConfiguration configuration = new ConfigurationBuilder()
     .AddEnvironmentVariables()
     .Build();
 
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
 builder.Configuration.AddConfiguration(configuration);
 
 // Add services to the container.

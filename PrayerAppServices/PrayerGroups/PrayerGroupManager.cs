@@ -48,15 +48,15 @@ namespace PrayerAppServices.PrayerGroups {
 
             Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
             Task<IEnumerable<PrayerGroupUserEntity>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
+            Task<PrayerGroupAppUser?> appUserTask = _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
 
             PrayerGroup? prayerGroup = await prayerGroupTask;
             IEnumerable<PrayerGroupUserEntity> adminUsers = await adminUsersTask;
+            PrayerGroupAppUser? appUser = await appUserTask;
 
             if (prayerGroup == null) {
                 throw new ArgumentException($"A prayer group with id {prayerGroupId} does not exist");
             }
-
-            PrayerGroupAppUser? appUser = _prayerGroupRepository.GetPrayerGroupAppUser(prayerGroupId, username);
 
             IEnumerable<UserSummary> adminUserSummaries = GetAdminUserSummaries(adminUsers);
             string? colorString = prayerGroup.Color.HasValue ? ColorUtils.ColorIntToHexString(prayerGroup.Color ?? 0) : null;
