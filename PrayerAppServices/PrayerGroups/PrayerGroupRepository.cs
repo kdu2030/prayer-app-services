@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using PrayerAppServices.Data;
+using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 
@@ -9,6 +10,7 @@ namespace PrayerAppServices.PrayerGroups {
     public class PrayerGroupRepository(AppDbContext dbContext, IConfiguration configuration) : IPrayerGroupRepository {
         private readonly AppDbContext _dbContext = dbContext;
         private readonly string? _connectionString = configuration.GetConnectionString("DefaultConnection");
+
 
 
         public async Task<CreatePrayerGroupResponse> CreatePrayerGroupAsync(string adminUsername, NewPrayerGroup newPrayerGroup) {
@@ -34,15 +36,28 @@ namespace PrayerAppServices.PrayerGroups {
                 .FirstOrDefaultAsync(group => group.Id == id);
         }
 
-        public async Task<IEnumerable<PrayerGroupAdminUser>> GetPrayerGroupAdminsAsync(int prayerGroupId) {
+        public async Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupAdminsAsync(int prayerGroupId) {
             using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
 
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("prayer_group_id", prayerGroupId);
 
             string sql = "SELECT * FROM get_prayer_group_admins(@prayer_group_id)";
-            IEnumerable<PrayerGroupAdminUser> adminUsers = await connection.QueryAsync<PrayerGroupAdminUser>(sql, parameters);
+            IEnumerable<PrayerGroupUserEntity> adminUsers = await connection.QueryAsync<PrayerGroupUserEntity>(sql, parameters);
             return adminUsers;
+        }
+
+        public async Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole> prayerGroupRoles) {
+            using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            PrayerGroupRole[] rolesToQuery = prayerGroupRoles.ToArray();
+
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("prayer_group_id", prayerGroupId);
+            parameters.Add("prayer_group_roles", Array.ConvertAll(rolesToQuery, role => (int)role), System.Data.DbType.Object);
+
+            string sql = "SELECT * FROM get_prayer_group_users(@prayer_group_id, @prayer_group_roles)";
+            IEnumerable<PrayerGroupUserEntity> users = await connection.QueryAsync<PrayerGroupUserEntity>(sql, parameters);
+            return users;
         }
 
         public PrayerGroupAppUser? GetPrayerGroupAppUser(int prayerGroupId, string username) {

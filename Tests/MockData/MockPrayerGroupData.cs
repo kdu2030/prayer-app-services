@@ -7,8 +7,8 @@ using PrayerAppServices.PrayerGroups.Entities;
 
 namespace Tests.MockData {
     public static class MockPrayerGroupData {
-        public static readonly IEnumerable<PrayerGroupAdminUser> MockPrayerGroupAdminUsers = [
-            new PrayerGroupAdminUser {
+        public static readonly IEnumerable<PrayerGroupUserEntity> MockPrayerGroupAdminUsers = [
+            new PrayerGroupUserEntity {
                 Id = 1,
                 FullName = "Anakin Skywalker",
                 GroupRole = PrayerGroupRole.Admin,
@@ -16,11 +16,11 @@ namespace Tests.MockData {
                 FileName = "anakin_skywalker.png",
                 FileType = FileType.Image,
             },
-            new PrayerGroupAdminUser {
+            new PrayerGroupUserEntity {
                 Id = 2,
                 FullName = "Obi Wan Kenobi"
             },
-            new PrayerGroupAdminUser {
+            new PrayerGroupUserEntity {
                 Id = 3,
                 FullName = "Count Dooku",
                 ImageFileId = 4,

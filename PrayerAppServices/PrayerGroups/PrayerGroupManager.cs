@@ -47,10 +47,10 @@ namespace PrayerAppServices.PrayerGroups {
             string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
 
             Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
-            Task<IEnumerable<PrayerGroupAdminUser>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupAdminsAsync(prayerGroupId);
+            Task<IEnumerable<PrayerGroupUserEntity>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
 
             PrayerGroup? prayerGroup = await prayerGroupTask;
-            IEnumerable<PrayerGroupAdminUser> adminUsers = await adminUsersTask;
+            IEnumerable<PrayerGroupUserEntity> adminUsers = await adminUsersTask;
 
             if (prayerGroup == null) {
                 throw new ArgumentException($"A prayer group with id {prayerGroupId} does not exist");
@@ -142,7 +142,7 @@ namespace PrayerAppServices.PrayerGroups {
             return [adminUserSummary];
         }
 
-        private IEnumerable<UserSummary> GetAdminUserSummaries(IEnumerable<PrayerGroupAdminUser> adminUsers) {
+        private IEnumerable<UserSummary> GetAdminUserSummaries(IEnumerable<PrayerGroupUserEntity> adminUsers) {
             return adminUsers.Where(adminUser => adminUser.Id != null)
                 .Select(adminUser => new UserSummary {
                     Id = adminUser.Id ?? -1,

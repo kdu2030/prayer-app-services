@@ -2,7 +2,7 @@
 using PrayerAppServices.PrayerGroups.Constants;
 
 namespace PrayerAppServices.PrayerGroups.Entities {
-    public class PrayerGroupAdminUser {
+    public class PrayerGroupUserEntity {
         public int? Id { get; set; }
         public string? FullName { get; set; }
         public PrayerGroupRole? GroupRole { get; set; }
