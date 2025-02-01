@@ -3,7 +3,7 @@ using PrayerAppServices.PrayerGroups.Models;
 
 namespace PrayerAppServices.PrayerGroups {
     public interface IPrayerGroupRepository {
-        CreatePrayerGroupResponse CreatePrayerGroup(string adminUsername, NewPrayerGroup newPrayerGroup);
+        Task<CreatePrayerGroupResponse> CreatePrayerGroupAsync(string adminUsername, NewPrayerGroup newPrayerGroup);
         PrayerGroup? GetPrayerGroupById(int id);
         IEnumerable<PrayerGroupAdminUser> GetPrayerGroupAdmins(int prayerGroupId);
         PrayerGroupAppUser? GetPrayerGroupAppUser(int prayerGroupId, string username);

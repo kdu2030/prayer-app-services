@@ -1,26 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using PrayerAppServices.Data;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 
 namespace PrayerAppServices.PrayerGroups {
-    public class PrayerGroupRepository(AppDbContext dbContext) : IPrayerGroupRepository {
+    public class PrayerGroupRepository(AppDbContext dbContext, IConfiguration configuration) : IPrayerGroupRepository {
         private readonly AppDbContext _dbContext = dbContext;
-
-        public CreatePrayerGroupResponse CreatePrayerGroup(string adminUsername, NewPrayerGroup newPrayerGroup) {
-            FormattableString sqlQuery = $@"SELECT * FROM create_prayer_group(
-                {adminUsername},
-                {newPrayerGroup.GroupName},
-                {newPrayerGroup.Description},
-                {newPrayerGroup.Rules},
-                {newPrayerGroup.Color},
-                {newPrayerGroup.ImageFileId}
-            )";
+        private readonly string? _connectionString = configuration.GetConnectionString("DefaultConnection");
 
 
-            return _dbContext.Database.SqlQuery<CreatePrayerGroupResponse>(
-               sqlQuery
-            ).First();
+        public async Task<CreatePrayerGroupResponse> CreatePrayerGroupAsync(string adminUsername, NewPrayerGroup newPrayerGroup) {
+            using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            DynamicParameters parameters = new DynamicParameters();
+
+            parameters.Add("admin_username", adminUsername);
+            parameters.Add("group_name", newPrayerGroup.GroupName);
+            parameters.Add("description", newPrayerGroup.Description);
+            parameters.Add("rules", newPrayerGroup.Rules);
+            parameters.Add("color", newPrayerGroup.Color);
+            parameters.Add("image_file_id", newPrayerGroup.ImageFileId);
+
+            string sql = "SELECT * FROM create_prayer_group(@admin_username, @group_name, @description, @rules, @color, @image_file_id)";
+            CreatePrayerGroupResponse response = await connection.QueryFirstAsync<CreatePrayerGroupResponse>(sql, parameters);
+
+            return response;
         }
 
         public PrayerGroup? GetPrayerGroupById(int id) {

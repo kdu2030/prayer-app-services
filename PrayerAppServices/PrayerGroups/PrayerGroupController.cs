@@ -10,8 +10,9 @@ namespace PrayerAppServices.PrayerGroups {
 
         [HttpPost]
         [Authorize]
-        public ActionResult<PrayerGroupDetails> CreatePrayerGroup([FromHeader(Name = "Authorization")] string authHeader, NewPrayerGroupRequest newPrayerGroupRequest) {
-            return Ok(_prayerGroupManager.CreatePrayerGroup(authHeader, newPrayerGroupRequest));
+        public async Task<ActionResult<PrayerGroupDetails>> CreatePrayerGroupAsync([FromHeader(Name = "Authorization")] string authHeader, NewPrayerGroupRequest newPrayerGroupRequest) {
+            PrayerGroupDetails details = await _prayerGroupManager.CreatePrayerGroupAsync(authHeader, newPrayerGroupRequest);
+            return Ok(details);
         }
 
         [HttpGet("{prayerGroupId}")]

@@ -12,7 +12,7 @@ namespace PrayerAppServices.PrayerGroups {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
         private readonly IUserManager _userManager = userManager;
 
-        public PrayerGroupDetails CreatePrayerGroup(string authToken, NewPrayerGroupRequest newPrayerGroupRequest) {
+        public async Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, NewPrayerGroupRequest newPrayerGroupRequest) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
             string? colorStr = newPrayerGroupRequest.Color;
             int? color = colorStr != null ? ColorUtils.ColorHexStringToInt(colorStr) : null;
@@ -24,7 +24,7 @@ namespace PrayerAppServices.PrayerGroups {
                 ImageFileId = newPrayerGroupRequest.ImageFileId
             };
 
-            CreatePrayerGroupResponse createResponse = _prayerGroupRepository.CreatePrayerGroup(username, newPrayerGroup); ;
+            CreatePrayerGroupResponse createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup); ;
             MediaFileBase? groupImage = GetGroupImageFromCreateResponse(createResponse);
             IEnumerable<UserSummary>? adminUsers = GetAdminUserFromCreateResponse(createResponse);
 
