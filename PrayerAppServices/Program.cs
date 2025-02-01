@@ -28,6 +28,8 @@ builder.Services.AddJwtConfiguration(configuration);
 
 builder.Services.RegisterServices();
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

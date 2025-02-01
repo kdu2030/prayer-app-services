@@ -1,4 +1,5 @@
-﻿using PrayerAppServices.Files.Constants;
+﻿using Microsoft.EntityFrameworkCore;
+using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.DTOs;
@@ -25,7 +26,7 @@ namespace PrayerAppServices.PrayerGroups {
                 ImageFileId = newPrayerGroupRequest.ImageFileId
             };
 
-            CreatePrayerGroupResponse createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup); ;
+            PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup); ;
             MediaFileBase? groupImage = GetGroupImageFromCreateResponse(createResponse);
             IEnumerable<UserSummary>? adminUsers = GetAdminUserFromCreateResponse(createResponse);
 
@@ -47,7 +48,7 @@ namespace PrayerAppServices.PrayerGroups {
         public async Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
 
-            Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
+            Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId, true);
             Task<IEnumerable<PrayerGroupUserEntity>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
             Task<PrayerGroupAppUser?> appUserTask = _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
 
@@ -92,6 +93,17 @@ namespace PrayerAppServices.PrayerGroups {
             return searchResults.Select(GetPrayerGroupDetailFromSearchResult);
         }
 
+        public async Task<PrayerGroup> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupDTO prayerGroupDTO) {
+            PrayerGroup? prayerGroup = await _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
+            if (prayerGroup == null) {
+                throw new KeyNotFoundException($"A prayer group with id {prayerGroupId} does not exist");
+            }
+
+            int? imageFileId = prayerGroupDTO.ImageFileId;
+            //MediaFile? mediaFile = imageFileId.HasValue ? _dbContext.MediaFiles.First(mediaFile => mediaFile.Id == imageFileId) : null;
+            throw new NotImplementedException();
+        }
+
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
             MediaFileBase? mediaFile = searchResult.ImageFileId != null
                 ? new MediaFileBase {
@@ -108,7 +120,7 @@ namespace PrayerAppServices.PrayerGroups {
             };
         }
 
-        private static MediaFileBase? GetGroupImageFromCreateResponse(CreatePrayerGroupResponse response) {
+        private static MediaFileBase? GetGroupImageFromCreateResponse(PrayerGroupDetailsEntity response) {
             if (response.ImageFileId == null) {
                 return null;
             }
@@ -120,7 +132,7 @@ namespace PrayerAppServices.PrayerGroups {
             };
         }
 
-        private static IEnumerable<UserSummary>? GetAdminUserFromCreateResponse(CreatePrayerGroupResponse response) {
+        private static IEnumerable<UserSummary>? GetAdminUserFromCreateResponse(PrayerGroupDetailsEntity response) {
             if (response.AdminUserId == null) {
                 return null;
             }

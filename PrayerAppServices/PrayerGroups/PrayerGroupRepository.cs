@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using PrayerAppServices.Data;
+using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
@@ -17,7 +18,7 @@ namespace PrayerAppServices.PrayerGroups {
             }
         }
 
-        public async Task<CreatePrayerGroupResponse> CreatePrayerGroupAsync(string adminUsername, PrayerGroupDTO newPrayerGroup) {
+        public async Task<PrayerGroupDetailsEntity> CreatePrayerGroupAsync(string adminUsername, PrayerGroupDTO newPrayerGroup) {
             using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
             DynamicParameters parameters = new DynamicParameters();
 
@@ -29,14 +30,19 @@ namespace PrayerAppServices.PrayerGroups {
             parameters.Add("image_file_id", newPrayerGroup.ImageFileId);
 
             string sql = "SELECT * FROM create_prayer_group(@admin_username, @group_name, @description, @rules, @color, @image_file_id)";
-            CreatePrayerGroupResponse response = await connection.QueryFirstAsync<CreatePrayerGroupResponse>(sql, parameters);
+            PrayerGroupDetailsEntity response = await connection.QueryFirstAsync<PrayerGroupDetailsEntity>(sql, parameters);
 
             return response;
         }
 
-        public Task<PrayerGroup?> GetPrayerGroupByIdAsync(int id) {
+        public Task<PrayerGroup?> GetPrayerGroupByIdAsync(int id, bool includeImage = false) {
+            if (includeImage) {
+                return _dbContext.PrayerGroups
+                    .Include(group => group.ImageFile)
+                    .FirstOrDefaultAsync(group => group.Id == id);
+            }
+
             return _dbContext.PrayerGroups
-                .Include(group => group.ImageFile)
                 .FirstOrDefaultAsync(group => group.Id == id);
         }
 

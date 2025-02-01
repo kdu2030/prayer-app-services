@@ -17,7 +17,7 @@ namespace Tests {
                 .Setup(userManager => userManager.ExtractUsernameFromAuthHeader(It.IsAny<string>()))
                 .Returns(() => username);
 
-            CreatePrayerGroupResponse response = new CreatePrayerGroupResponse {
+            PrayerGroupDetailsEntity response = new PrayerGroupDetailsEntity {
                 Id = 1,
                 GroupName = "Dunder Mifflin",
                 AdminUserId = 1,
@@ -50,7 +50,7 @@ namespace Tests {
             string mockFileName = "group_image.png";
             string mockUrl = "http://127.0.0.1:5000/group_image.png";
 
-            CreatePrayerGroupResponse response = new CreatePrayerGroupResponse {
+            PrayerGroupDetailsEntity response = new PrayerGroupDetailsEntity {
                 Id = 1,
                 GroupName = "Dunder Mifflin",
                 AdminUserId = 1,
@@ -89,7 +89,7 @@ namespace Tests {
                 .Setup(userManager => userManager.ExtractUsernameFromAuthHeader(It.IsAny<string>()))
                 .Returns(() => username);
 
-            CreatePrayerGroupResponse response = new CreatePrayerGroupResponse {
+            PrayerGroupDetailsEntity response = new PrayerGroupDetailsEntity {
                 Id = 1,
                 GroupName = "Dunder Mifflin",
                 AdminUserId = 1,
