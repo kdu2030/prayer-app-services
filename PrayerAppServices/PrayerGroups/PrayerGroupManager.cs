@@ -115,7 +115,7 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? prayerGroupRoles) {
-            IEnumerable<PrayerGroupRole> rolesToSearch = prayerGroupRoles ?? [PrayerGroupRole.Member, PrayerGroupRole.Admin];
+            IEnumerable<PrayerGroupRole> rolesToSearch = prayerGroupRoles == null || prayerGroupRoles.Count() == 0 ? [PrayerGroupRole.Member, PrayerGroupRole.Admin] : prayerGroupRoles;
             IEnumerable<PrayerGroupUserEntity> prayerGroupUsers = await _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, rolesToSearch);
             IEnumerable<PrayerGroupUserSummary> prayerGroupUserSummaries = _mapper.Map<IEnumerable<PrayerGroupUserSummary>>(prayerGroupUsers);
             return new PrayerGroupUsersResponse { Users = prayerGroupUserSummaries };
