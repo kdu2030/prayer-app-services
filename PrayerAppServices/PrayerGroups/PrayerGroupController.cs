@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrayerAppServices.PrayerGroups.DTOs;
+using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 
 namespace PrayerAppServices.PrayerGroups {
@@ -34,7 +36,13 @@ namespace PrayerAppServices.PrayerGroups {
         public ActionResult<IEnumerable<PrayerGroupDetails>> SearchByGroupName([FromQuery(Name = "name")] string nameQuery, [FromQuery(Name = "maxResults")] int maxResults) {
             IEnumerable<PrayerGroupDetails> prayerGroups = _prayerGroupManager.SearchPrayerGroupsByName(nameQuery, maxResults);
             return Ok(prayerGroups);
+        }
 
+        [HttpPut("{prayerGroupId}")]
+        [Authorize]
+        public async Task<ActionResult<PrayerGroupDetails>> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
+            PrayerGroupDetails prayerGroup = await _prayerGroupManager.UpdatePrayerGroupAsync(prayerGroupId, prayerGroupRequest);
+            return Ok(prayerGroup);
         }
     }
 }

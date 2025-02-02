@@ -1,4 +1,6 @@
-﻿using PrayerAppServices.PrayerGroups.Models;
+﻿using PrayerAppServices.PrayerGroups.DTOs;
+using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.PrayerGroups.Models;
 
 namespace PrayerAppServices.PrayerGroups {
     public interface IPrayerGroupManager {
@@ -6,5 +8,6 @@ namespace PrayerAppServices.PrayerGroups {
         Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId);
         GroupNameValidationResponse ValidateGroupName(string groupName);
         IEnumerable<PrayerGroupDetails> SearchPrayerGroupsByName(string nameQuery, int maxNumResults);
+        Task<PrayerGroupDetails> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using PrayerAppServices.Files;
 using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
@@ -10,9 +12,11 @@ using PrayerAppServices.Users.Models;
 using PrayerAppServices.Utils;
 
 namespace PrayerAppServices.PrayerGroups {
-    public class PrayerGroupManager(IPrayerGroupRepository prayerGroupRepository, IUserManager userManager) : IPrayerGroupManager {
+    public class PrayerGroupManager(IPrayerGroupRepository prayerGroupRepository, IUserManager userManager, IMediaFileRepository mediaFileRepository, IMapper mapper) : IPrayerGroupManager {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
         private readonly IUserManager _userManager = userManager;
+        private readonly IMediaFileRepository _mediaFileRepository = mediaFileRepository;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
@@ -93,15 +97,17 @@ namespace PrayerAppServices.PrayerGroups {
             return searchResults.Select(GetPrayerGroupDetailFromSearchResult);
         }
 
-        public async Task<PrayerGroup> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupDTO prayerGroupDTO) {
-            PrayerGroup? prayerGroup = await _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
-            if (prayerGroup == null) {
-                throw new KeyNotFoundException($"A prayer group with id {prayerGroupId} does not exist");
-            }
+        public async Task<PrayerGroupDetails> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
+            int? imageFileId = prayerGroupRequest.ImageFileId;
+            MediaFile? mediaFile = imageFileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(imageFileId ?? -1) : null;
 
-            int? imageFileId = prayerGroupDTO.ImageFileId;
-            //MediaFile? mediaFile = imageFileId.HasValue ? _dbContext.MediaFiles.First(mediaFile => mediaFile.Id == imageFileId) : null;
-            throw new NotImplementedException();
+            PrayerGroup updatedPrayerGroup = _mapper.Map<PrayerGroup>(prayerGroupRequest, opts => {
+                opts.Items["Id"] = prayerGroupId;
+                opts.Items["ImageFile"] = mediaFile;
+            });
+
+            await _prayerGroupRepository.UpdatePrayerGroupAsync(updatedPrayerGroup);
+            return _mapper.Map<PrayerGroupDetails>(updatedPrayerGroup);
         }
 
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {

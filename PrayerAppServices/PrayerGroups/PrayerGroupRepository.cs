@@ -92,5 +92,10 @@ namespace PrayerAppServices.PrayerGroups {
             return _dbContext.Database.SqlQuery<PrayerGroupSearchResult>(query);
         }
 
+        public async Task UpdatePrayerGroupAsync(PrayerGroup prayerGroup) {
+            _dbContext.PrayerGroups.Update(prayerGroup);
+            await _dbContext.SaveChangesAsync();
+        }
+
     }
 }
