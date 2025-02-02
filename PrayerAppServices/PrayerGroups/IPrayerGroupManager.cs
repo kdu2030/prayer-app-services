@@ -1,6 +1,4 @@
-﻿using PrayerAppServices.PrayerGroups.DTOs;
-using PrayerAppServices.PrayerGroups.Entities;
-using PrayerAppServices.PrayerGroups.Models;
+﻿using PrayerAppServices.PrayerGroups.Models;
 
 namespace PrayerAppServices.PrayerGroups {
     public interface IPrayerGroupManager {
