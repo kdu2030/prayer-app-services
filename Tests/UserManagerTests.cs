@@ -12,7 +12,6 @@ using PrayerAppServices.Users.Models;
 namespace Tests {
     public class UserManagerTests {
         private ServiceProvider _serviceProvider;
-        private Mock<PrayerGroupRepository> _mockPrayerGroupRepository = new Mock<PrayerGroupRepository>();
 
         [SetUp]
         public void Setup() {
