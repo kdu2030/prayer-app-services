@@ -98,6 +98,10 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task<PrayerGroupDetails> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
+            if (_prayerGroupRepository.GetPrayerGroupByName(prayerGroupRequest.GroupName) != null) {
+                throw new ArgumentException("A prayer group with this name already exists.");
+            }
+
             int? imageFileId = prayerGroupRequest.ImageFileId;
             MediaFile? mediaFile = imageFileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(imageFileId ?? -1) : null;
 
