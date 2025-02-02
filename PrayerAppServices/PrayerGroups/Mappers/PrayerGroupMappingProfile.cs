@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using PrayerAppServices.Files.Constants;
+using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Utils;
@@ -32,6 +34,13 @@ namespace PrayerAppServices.PrayerGroups.Mappers {
                 .ForMember(dest => dest.Rules, options => options.MapFrom(src => src.Rules))
                 .ForMember(dest => dest.Color, options => options.MapFrom(src => src.Color != null ? ColorUtils.ColorIntToHexString(src.Color.Value) : null))
                 .ForMember(dest => dest.ImageFile, options => options.MapFrom(src => src.ImageFile));
+
+            CreateMap<PrayerGroupUserEntity, PrayerGroupUserSummary>()
+                .ForMember(dest => dest.Id, options => options.MapFrom(src => src.Id))
+                .ForMember(dest => dest.FullName, options => options.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.Role, options => options.MapFrom(src => src.GroupRole))
+                .ForMember(dest => dest.Image, options => options.MapFrom(src => src.ImageFileId != null ? new MediaFile { Id = src.ImageFileId, FileName = src.FileName ?? "", Url = src.FileUrl ?? "", FileType = FileType.Image } : null));
+
 
         }
 
