@@ -202,6 +202,25 @@ namespace Tests {
             IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
             Assert.ThrowsAsync<ArgumentException>(() => manager.UpdatePrayerGroupAsync(1, request));
         }
-    }
 
+        [Test]
+        public async Task UpdatePrayerGroupAsync_OmitsOptionalFields_UpdatesPrayerGroup() {
+            PrayerGroupRequest request = new PrayerGroupRequest {
+                GroupName = "Dunder Mifflin",
+                Description = "The best paper company in Scranton",
+            };
+
+            _mockPrayerGroupRepository.Setup(repository => repository.UpdatePrayerGroupAsync(It.IsAny<PrayerGroup>())).Returns(Task.CompletedTask);
+
+            IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            PrayerGroupDetails updatedGroup = await manager.UpdatePrayerGroupAsync(1, request);
+
+            Assert.Multiple(() => {
+                Assert.That(updatedGroup.Id, Is.EqualTo(1));
+                Assert.That(updatedGroup.GroupName, Is.EqualTo(request.GroupName));
+                Assert.That(updatedGroup.Description, Is.EqualTo(request.Description));
+            });
+        }
+
+    }
 }
