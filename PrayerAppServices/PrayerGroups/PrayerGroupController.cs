@@ -48,7 +48,7 @@ namespace PrayerAppServices.PrayerGroups {
 
         [HttpGet("{prayerGroupId}/users")]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, [FromQuery(Name = "roles")] IEnumerable<PrayerGroupRole>? roles) {
+        public async Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, [FromQuery(Name = "role")] IEnumerable<PrayerGroupRole>? roles) {
             PrayerGroupUsersResponse prayerGroupUsersResponse = await _prayerGroupManager.GetPrayerGroupUsersAsync(prayerGroupId, roles);
             return Ok(prayerGroupUsersResponse);
         }
