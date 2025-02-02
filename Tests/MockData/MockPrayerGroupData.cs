@@ -50,5 +50,12 @@ namespace Tests.MockData {
             FileName = "commander_cody.jpg",
             FileType = FileType.Image,
         };
+
+        public static readonly MediaFile MockMediaFile = new MediaFile {
+            Id = 1,
+            FileName = "dunder-mifflin-logo.jpg",
+            Url = "https://127.0.0.1:5000/static/1.jpg",
+            FileType = FileType.Image,
+        };
     }
 }

@@ -14,6 +14,8 @@ namespace Tests {
     public class PrayerGroupManagerTests {
         private IMapper _mapper;
         private Mock<IMediaFileRepository> _mockMediaFileRepository = new Mock<IMediaFileRepository>();
+        private Mock<IPrayerGroupRepository> _mockPrayerGroupRepository = new Mock<IPrayerGroupRepository>();
+        private Mock<IUserManager> _mockUserManager = new Mock<IUserManager>();
 
         [OneTimeSetUp]
         public void OneTimeSetUp() {
@@ -26,6 +28,8 @@ namespace Tests {
         [TearDown]
         public void TearDown() {
             _mockMediaFileRepository.Reset();
+            _mockPrayerGroupRepository.Reset();
+            _mockUserManager.Reset();
         }
 
         [Test]
@@ -43,6 +47,7 @@ namespace Tests {
                 AdminFullName = "Andy Bernard",
             };
             PrayerGroupRequest newPrayerGroup = new PrayerGroupRequest {
+                Description = "The best paper company in Scranton",
                 GroupName = "Dunder Mifflin"
             };
 
@@ -81,6 +86,7 @@ namespace Tests {
 
             PrayerGroupRequest groupRequest = new PrayerGroupRequest {
                 GroupName = "Dunder Mifflin",
+                Description = "The best paper company in Scranton",
                 ImageFileId = 2,
             };
 
@@ -115,7 +121,8 @@ namespace Tests {
                 AdminFullName = "Andy Bernard",
             };
             PrayerGroupRequest newPrayerGroup = new PrayerGroupRequest {
-                GroupName = "Dunder Mifflin"
+                GroupName = "Dunder Mifflin",
+                Description = "The best paper company in Scranton",
             };
 
             Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
@@ -150,6 +157,29 @@ namespace Tests {
             Assert.Multiple(() => {
                 Assert.That(prayerGroupDetails.Id, Is.EqualTo(MockPrayerGroupData.MockPrayerGroup.Id));
                 Assert.That(prayerGroupDetails.GroupName, Is.EqualTo(MockPrayerGroupData.MockPrayerGroup.GroupName));
+            });
+        }
+
+        [Test]
+        public async Task UpdatePrayerGroupAsync_GivenValidPrayerGroupRequest_UpdatesPrayerGroup() {
+            PrayerGroupRequest request = new PrayerGroupRequest {
+                GroupName = "Dunder Mifflin",
+                Description = "The best paper company in Scranton",
+                Rules = "No horseplay",
+                Color = "#ffffff",
+                ImageFileId = 1
+            };
+
+            _mockMediaFileRepository.Setup(repository => repository.GetMediaFileByIdAsync(1)).ReturnsAsync(MockPrayerGroupData.MockMediaFile);
+            _mockPrayerGroupRepository.Setup(repository => repository.UpdatePrayerGroupAsync(It.IsAny<PrayerGroup>())).Returns(Task.CompletedTask);
+
+            IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            PrayerGroupDetails updatedGroup = await manager.UpdatePrayerGroupAsync(1, request);
+
+            Assert.Multiple(() => {
+                Assert.That(updatedGroup.Id, Is.EqualTo(1));
+                Assert.That(updatedGroup.GroupName, Is.EqualTo(request.GroupName));
+                Assert.That(updatedGroup.Description, Is.EqualTo(request.Description));
             });
         }
     }
