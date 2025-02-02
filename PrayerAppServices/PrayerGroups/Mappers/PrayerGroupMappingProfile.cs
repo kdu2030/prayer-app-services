@@ -41,6 +41,11 @@ namespace PrayerAppServices.PrayerGroups.Mappers {
                 .ForMember(dest => dest.Role, options => options.MapFrom(src => src.GroupRole))
                 .ForMember(dest => dest.Image, options => options.MapFrom(src => src.ImageFileId != null ? new MediaFile { Id = src.ImageFileId, FileName = src.FileName ?? "", Url = src.FileUrl ?? "", FileType = FileType.Image } : null));
 
+            CreateMap<PrayerGroupSummaryEntity, PrayerGroupDetails>()
+                .ForMember(dest => dest.Id, options => options.MapFrom(src => src.Id))
+                .ForMember(dest => dest.GroupName, options => options.MapFrom(src => src.GroupName))
+                .ForMember(dest => dest.ImageFile, options => options.MapFrom(src => src.ImageFileId != null ? new MediaFile { Id = src.ImageFileId, FileName = src.FileName ?? "", Url = src.Url ?? "", FileType = src.FileType ?? FileType.Image } : null));
+
 
         }
 

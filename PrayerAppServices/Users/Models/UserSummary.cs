@@ -1,4 +1,5 @@
 ﻿using PrayerAppServices.Files.Entities;
+using PrayerAppServices.PrayerGroups.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PrayerAppServices.Users.Models {
@@ -14,6 +15,8 @@ namespace PrayerAppServices.Users.Models {
         public UserTokenPair? Tokens { get; set; }
 
         public MediaFileBase? Image { get; set; }
+
+        public IEnumerable<PrayerGroupDetails>? PrayerGroups { get; set; }
 
     }
 }

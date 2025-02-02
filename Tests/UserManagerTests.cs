@@ -1,6 +1,10 @@
+using AutoMapper;
 using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using PrayerAppServices.PrayerGroups;
+using PrayerAppServices.PrayerGroups.Mappers;
 using PrayerAppServices.Users;
 using PrayerAppServices.Users.Entities;
 using PrayerAppServices.Users.Models;
@@ -8,12 +12,26 @@ using PrayerAppServices.Users.Models;
 namespace Tests {
     public class UserManagerTests {
         private ServiceProvider _serviceProvider;
+        private Mock<PrayerGroupRepository> _mockPrayerGroupRepository = new Mock<PrayerGroupRepository>();
 
         [SetUp]
         public void Setup() {
             IServiceCollection services = new ServiceCollection();
             services.AddTestServices();
             services.AddTransient<IUserManager, UserManager>();
+
+            Mock<IPrayerGroupRepository> mockPrayerGroupRepository = new Mock<IPrayerGroupRepository>();
+            mockPrayerGroupRepository.Setup(repository => repository.GetPrayerGroupSummariesByUserIdAsync(It.IsAny<int>()))
+                .ReturnsAsync([]);
+            services.AddTransient(options => mockPrayerGroupRepository.Object);
+
+            MapperConfiguration config = new MapperConfiguration(cfg => {
+                cfg.AddProfile<PrayerGroupMappingProfile>();
+            });
+            IMapper mapper = config.CreateMapper();
+
+            services.AddSingleton(mapper);
+
             _serviceProvider = services.BuildServiceProvider();
         }
 

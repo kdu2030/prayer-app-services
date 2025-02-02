@@ -97,5 +97,15 @@ namespace PrayerAppServices.PrayerGroups {
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<PrayerGroupSummaryEntity>> GetPrayerGroupSummariesByUserIdAsync(int userId) {
+            using NpgsqlConnection connection = Connection;
+            DynamicParameters dynamicParams = new DynamicParameters();
+            dynamicParams.Add("user_id", userId);
+
+            string sql = "SELECT * FROM get_prayer_groups_by_user(@user_id)";
+            IEnumerable<PrayerGroupSummaryEntity> prayerGroupSummaries = await connection.QueryAsync<PrayerGroupSummaryEntity>(sql, dynamicParams);
+            return prayerGroupSummaries;
+        }
+
     }
 }

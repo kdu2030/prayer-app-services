@@ -19,7 +19,7 @@ namespace Tests {
 
         [OneTimeSetUp]
         public void OneTimeSetUp() {
-            var config = new MapperConfiguration(cfg => {
+            MapperConfiguration config = new MapperConfiguration(cfg => {
                 cfg.AddProfile<PrayerGroupMappingProfile>();
             });
             _mapper = config.CreateMapper();

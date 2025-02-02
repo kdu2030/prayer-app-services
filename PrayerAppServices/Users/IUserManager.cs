@@ -6,7 +6,7 @@ namespace PrayerAppServices.Users {
 
         Task<UserSummary> GetUserSummaryFromCredentialsAsync(UserCredentials credentials);
 
-        UserSummary GetUserSummaryFromUserId(int userId);
+        Task<UserSummary> GetUserSummaryFromUserIdAsync(int userId);
 
         UserTokenPair GetUserTokenPair(string authHeader);
 
