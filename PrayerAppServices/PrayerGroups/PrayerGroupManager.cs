@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using PrayerAppServices.Files;
 using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
@@ -119,6 +118,16 @@ namespace PrayerAppServices.PrayerGroups {
             IEnumerable<PrayerGroupUserEntity> prayerGroupUsers = await _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, rolesToSearch);
             IEnumerable<PrayerGroupUserSummary> prayerGroupUserSummaries = _mapper.Map<IEnumerable<PrayerGroupUserSummary>>(prayerGroupUsers);
             return new PrayerGroupUsersResponse { Users = prayerGroupUserSummaries };
+        }
+
+        public async Task UpdatePrayerGroupAdminsAsync(int prayerGroupId, IEnumerable<int> userIds) {
+            IEnumerable<PrayerGroupUserEntity> prayerGroupUsers = await _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
+            IEnumerable<int> currentAdminUserIds = prayerGroupUsers.Select(user => user.Id ?? -1);
+            HashSet<int> currentAdminUserIdsSet = new HashSet<int>(currentAdminUserIds);
+            HashSet<int> updatedAdminUserIdsSet = new HashSet<int>(userIds);
+
+            IEnumerable<int> adminsToRemove = currentAdminUserIdsSet.Except(updatedAdminUserIdsSet);
+            IEnumerable<int> adminsToAdd = updatedAdminUserIdsSet.Except(currentAdminUserIdsSet);
         }
 
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
