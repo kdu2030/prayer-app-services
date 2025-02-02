@@ -1,7 +1,10 @@
-﻿using Moq;
+﻿using AutoMapper;
+using Moq;
+using PrayerAppServices.Files;
 using PrayerAppServices.PrayerGroups;
 using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.PrayerGroups.Mappers;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
 using PrayerAppServices.Users.Models;
@@ -9,8 +12,24 @@ using Tests.MockData;
 
 namespace Tests {
     public class PrayerGroupManagerTests {
+        private IMapper _mapper;
+        private Mock<IMediaFileRepository> _mockMediaFileRepository = new Mock<IMediaFileRepository>();
+
+        [OneTimeSetUp]
+        public void OneTimeSetUp() {
+            var config = new MapperConfiguration(cfg => {
+                cfg.AddProfile<PrayerGroupMappingProfile>();
+            });
+            _mapper = config.CreateMapper();
+        }
+
+        [TearDown]
+        public void TearDown() {
+            _mockMediaFileRepository.Reset();
+        }
+
         [Test]
-        public void CreatePrayerGroup_GivenValidPrayerGroupRequest_CreatesPrayerGroup() {
+        public async Task CreatePrayerGroup_GivenValidPrayerGroupRequest_CreatesPrayerGroup() {
             string username = "abernard";
             Mock<IUserManager> mockUserManager = new Mock<IUserManager>();
             mockUserManager
@@ -29,11 +48,11 @@ namespace Tests {
 
             Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
             mockRepository
-                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<PrayerGroupDTO>()))
-                .Returns(response);
+                .Setup(mockRepository => mockRepository.CreatePrayerGroupAsync(It.IsAny<string>(), It.IsAny<PrayerGroupDTO>()))
+                .ReturnsAsync(response);
 
-            IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);
-            PrayerGroupDetails details = prayerGroupManager.CreatePrayerGroup("mockToken", newPrayerGroup);
+            IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            PrayerGroupDetails details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", newPrayerGroup);
 
             Assert.Multiple(() => {
                 Assert.That((details.GroupName ?? "").Equals(newPrayerGroup.GroupName), Is.True);
@@ -42,7 +61,7 @@ namespace Tests {
         }
 
         [Test]
-        public void CreatePrayerGroup_GivenValidImage_AddImageToPrayerGroup() {
+        public async Task CreatePrayerGroup_GivenValidImage_AddImageToPrayerGroup() {
             Mock<IUserManager> mockUserManager = new Mock<IUserManager>();
             mockUserManager
                 .Setup(userManager => userManager.ExtractUsernameFromAuthHeader(It.IsAny<string>()))
@@ -67,11 +86,11 @@ namespace Tests {
 
             Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
             mockRepository
-                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<PrayerGroupDTO>()))
-                .Returns(response);
+                .Setup(mockRepository => mockRepository.CreatePrayerGroupAsync(It.IsAny<string>(), It.IsAny<PrayerGroupDTO>()))
+                .ReturnsAsync(response);
 
-            IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);
-            PrayerGroupDetails details = prayerGroupManager.CreatePrayerGroup("mockToken", groupRequest);
+            IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            PrayerGroupDetails details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", groupRequest);
 
             Assert.Multiple(() => {
                 Assert.That(details.ImageFile?.Id, Is.EqualTo(2));
@@ -82,7 +101,7 @@ namespace Tests {
         }
 
         [Test]
-        public void CreatePrayerGroup_GivenUser_AddsUserToAdminList() {
+        public async Task CreatePrayerGroup_GivenUser_AddsUserToAdminList() {
             string username = "abernard";
             Mock<IUserManager> mockUserManager = new Mock<IUserManager>();
             mockUserManager
@@ -101,18 +120,18 @@ namespace Tests {
 
             Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
             mockRepository
-                .Setup(mockRepository => mockRepository.CreatePrayerGroup(It.IsAny<string>(), It.IsAny<PrayerGroupDTO>()))
-                .Returns(response);
+                .Setup(mockRepository => mockRepository.CreatePrayerGroupAsync(It.IsAny<string>(), It.IsAny<PrayerGroupDTO>()))
+                .ReturnsAsync(response);
 
-            IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);
-            PrayerGroupDetails details = prayerGroupManager.CreatePrayerGroup("mockToken", newPrayerGroup);
+            IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            PrayerGroupDetails details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", newPrayerGroup);
 
             IEnumerable<UserSummary> adminUsers = details.Admins ?? [];
             Assert.That(adminUsers.Where(admin => admin.Id == response?.AdminUserId).Count, Is.EqualTo(1));
         }
 
         [Test]
-        public void GetGroupDetails_GivenValidGroupId_FetchesGroupDetails() {
+        public async Task GetGroupDetails_GivenValidGroupId_FetchesGroupDetails() {
             string username = "abernard";
             Mock<IUserManager> mockUserManager = new Mock<IUserManager>();
             mockUserManager
@@ -120,12 +139,13 @@ namespace Tests {
                 .Returns(() => username);
 
             Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
-            mockRepository
-                .Setup(repository => repository.GetPrayerGroupById(It.IsAny<int>()))
-                .Returns(MockPrayerGroupData.MockPrayerGroup);
 
-            IPrayerGroupManager manager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object);
-            PrayerGroupDetails prayerGroupDetails = manager.GetPrayerGroupDetails("mockToken", 2);
+            mockRepository
+                .Setup(repository => repository.GetPrayerGroupByIdAsync(It.IsAny<int>(), true))
+                .ReturnsAsync(MockPrayerGroupData.MockPrayerGroup);
+
+            IPrayerGroupManager manager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            PrayerGroupDetails prayerGroupDetails = await manager.GetPrayerGroupDetailsAsync("mockToken", 2);
 
             Assert.Multiple(() => {
                 Assert.That(prayerGroupDetails.Id, Is.EqualTo(MockPrayerGroupData.MockPrayerGroup.Id));
