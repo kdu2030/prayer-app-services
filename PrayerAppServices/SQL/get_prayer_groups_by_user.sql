@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTiON get_prayer_groups_by_user(user_id INT)
+CREATE OR REPLACE FUNCTION get_prayer_groups_by_user(user_id INT)
 RETURNS TABLE (
     id INT,
     group_name VARCHAR(255),
