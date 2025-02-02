@@ -13,9 +13,9 @@ using Tests.MockData;
 namespace Tests {
     public class PrayerGroupManagerTests {
         private IMapper _mapper;
-        private Mock<IMediaFileRepository> _mockMediaFileRepository = new Mock<IMediaFileRepository>();
-        private Mock<IPrayerGroupRepository> _mockPrayerGroupRepository = new Mock<IPrayerGroupRepository>();
-        private Mock<IUserManager> _mockUserManager = new Mock<IUserManager>();
+        private readonly Mock<IMediaFileRepository> _mockMediaFileRepository = new Mock<IMediaFileRepository>();
+        private readonly Mock<IPrayerGroupRepository> _mockPrayerGroupRepository = new Mock<IPrayerGroupRepository>();
+        private readonly Mock<IUserManager> _mockUserManager = new Mock<IUserManager>();
 
         [OneTimeSetUp]
         public void OneTimeSetUp() {
@@ -183,6 +183,25 @@ namespace Tests {
             });
         }
 
+        [Test]
+        public void UpdatePrayerGroupAsync_GivenDuplicateGroupName_ThrowsException() {
+            PrayerGroupRequest request = new PrayerGroupRequest {
+                GroupName = "Dunder Mifflin",
+                Description = "The best paper company in Scranton",
+                Rules = "No horseplay",
+                Color = "#ffffff",
+                ImageFileId = 1
+            };
 
+            PrayerGroup existingPrayerGroup = new PrayerGroup { Id = 2, GroupName = "Dunder Mifflin", Description = "Group Name Description" };
+
+            _mockMediaFileRepository.Setup(repository => repository.GetMediaFileByIdAsync(1)).ReturnsAsync(MockPrayerGroupData.MockMediaFile);
+            _mockPrayerGroupRepository.Setup(repository => repository.UpdatePrayerGroupAsync(It.IsAny<PrayerGroup>())).Returns(Task.CompletedTask);
+            _mockPrayerGroupRepository.Setup(repository => repository.GetPrayerGroupByName("Dunder Mifflin")).Returns(existingPrayerGroup);
+
+            IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            Assert.ThrowsAsync<ArgumentException>(() => manager.UpdatePrayerGroupAsync(1, request));
+        }
     }
+
 }
