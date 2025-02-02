@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
@@ -43,6 +44,13 @@ namespace PrayerAppServices.PrayerGroups {
         public async Task<ActionResult<PrayerGroupDetails>> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
             PrayerGroupDetails prayerGroup = await _prayerGroupManager.UpdatePrayerGroupAsync(prayerGroupId, prayerGroupRequest);
             return Ok(prayerGroup);
+        }
+
+        [HttpGet("{prayerGroupId}/users")]
+        [Authorize]
+        public async Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, [FromQuery(Name = "roles")] IEnumerable<PrayerGroupRole>? roles) {
+            PrayerGroupUsersResponse prayerGroupUsersResponse = await _prayerGroupManager.GetPrayerGroupUsersAsync(prayerGroupId, roles);
+            return Ok(prayerGroupUsersResponse);
         }
     }
 }
