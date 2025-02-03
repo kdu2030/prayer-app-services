@@ -120,14 +120,15 @@ namespace PrayerAppServices.PrayerGroups {
             return new PrayerGroupUsersResponse { Users = prayerGroupUserSummaries };
         }
 
-        public async Task UpdatePrayerGroupAdminsAsync(int prayerGroupId, IEnumerable<int> userIds) {
+        public async Task UpdatePrayerGroupAdminsAsync(int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest) {
             IEnumerable<PrayerGroupUserEntity> prayerGroupUsers = await _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
             IEnumerable<int> currentAdminUserIds = prayerGroupUsers.Select(user => user.Id ?? -1);
             HashSet<int> currentAdminUserIdsSet = new HashSet<int>(currentAdminUserIds);
-            HashSet<int> updatedAdminUserIdsSet = new HashSet<int>(userIds);
+            HashSet<int> updatedAdminUserIdsSet = new HashSet<int>(updateAdminsRequest.UserIds);
 
             IEnumerable<int> adminsToRemove = currentAdminUserIdsSet.Except(updatedAdminUserIdsSet);
             IEnumerable<int> adminsToAdd = updatedAdminUserIdsSet.Except(currentAdminUserIdsSet);
+            await _prayerGroupRepository.UpdatePrayerGroupAdminsAsync(prayerGroupId, adminsToAdd, adminsToRemove);
         }
 
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {

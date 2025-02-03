@@ -107,5 +107,20 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupSummaries;
         }
 
+        public async Task UpdatePrayerGroupAdminsAsync(int prayerGroupId, IEnumerable<int> adminUserIdsToAdd, IEnumerable<int> adminUserIdsToRemove) {
+            using NpgsqlConnection connection = Connection;
+
+            int[] adminUserIdsToAddArr = adminUserIdsToAdd.ToArray();
+            int[] adminUsersToRemoveIdArr = adminUserIdsToRemove.ToArray();
+
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("prayer_group_id", prayerGroupId);
+            parameters.Add("admin_user_ids_to_add", adminUserIdsToAddArr.Length > 0 ? adminUserIdsToAddArr : null, System.Data.DbType.Object);
+            parameters.Add("admin_user_ids_to_remove", adminUsersToRemoveIdArr.Length > 0 ? adminUsersToRemoveIdArr : null, System.Data.DbType.Object);
+
+            string sql = "CALL update_prayer_group_admins(@prayer_group_id, @admin_user_ids_to_add, @admin_user_ids_to_remove)";
+            await connection.ExecuteAsync(sql, parameters);
+        }
+
     }
 }

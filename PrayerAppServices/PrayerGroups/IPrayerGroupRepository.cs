@@ -13,5 +13,6 @@ namespace PrayerAppServices.PrayerGroups {
         IEnumerable<PrayerGroupSearchResult> SearchPrayerGroupsByName(string nameQuery, int maxNumResults);
         Task UpdatePrayerGroupAsync(PrayerGroup prayerGroup);
         Task<IEnumerable<PrayerGroupSummaryEntity>> GetPrayerGroupSummariesByUserIdAsync(int userId);
+        Task UpdatePrayerGroupAdminsAsync(int prayerGroupId, IEnumerable<int> adminUserIdsToAdd, IEnumerable<int> adminUserIdsToRemove);
     }
 }

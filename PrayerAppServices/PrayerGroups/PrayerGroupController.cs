@@ -52,5 +52,13 @@ namespace PrayerAppServices.PrayerGroups {
             PrayerGroupUsersResponse prayerGroupUsersResponse = await _prayerGroupManager.GetPrayerGroupUsersAsync(prayerGroupId, roles);
             return Ok(prayerGroupUsersResponse);
         }
+
+        [HttpPut("{prayerGroupId}/admins")]
+        //[Authorize]
+        public async Task<ActionResult> UpdatePrayerGroupAdminsAsync(int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest) {
+            await _prayerGroupManager.UpdatePrayerGroupAdminsAsync(prayerGroupId, updateAdminsRequest);
+            return Ok();
+        }
+
     }
 }
