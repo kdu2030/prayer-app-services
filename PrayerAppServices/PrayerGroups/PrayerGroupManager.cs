@@ -131,6 +131,10 @@ namespace PrayerAppServices.PrayerGroups {
             await _prayerGroupRepository.UpdatePrayerGroupAdminsAsync(prayerGroupId, adminsToAdd, adminsToRemove);
         }
 
+        public async Task AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request) {
+            await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, request.Users);
+        }
+
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
             MediaFileBase? mediaFile = searchResult.ImageFileId != null
                 ? new MediaFileBase {

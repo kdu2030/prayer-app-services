@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using PrayerAppServices.Data;
-using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
@@ -122,5 +121,15 @@ namespace PrayerAppServices.PrayerGroups {
             await connection.ExecuteAsync(sql, parameters);
         }
 
+        public async Task AddPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupAppUser> users) {
+            using NpgsqlConnection connection = Connection;
+
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("prayer_group_id", prayerGroupId);
+            parameters.Add("users_to_add", users);
+
+            string sql = "CALL add_prayer_group_users(@prayer_group_id, @users_to_add)";
+            await connection.ExecuteAsync(sql, parameters);
+        }
     }
 }
