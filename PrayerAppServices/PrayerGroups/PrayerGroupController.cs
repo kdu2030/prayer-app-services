@@ -59,7 +59,7 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         [HttpPost("{prayerGroupId}/users")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult> AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request) {
             await _prayerGroupManager.AddPrayerGroupUsersAsync(prayerGroupId, request);
             return Ok();
