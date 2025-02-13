@@ -253,5 +253,42 @@ namespace Tests {
             });
         }
 
+        [Test]
+        public async Task UpdatePrayerGroupAdminsAsync_GivenListWithNewAdmins_AddAdmins() {
+            if (MockPrayerGroupData.MockPrayerGroupAdminUsers == null) {
+                Assert.Fail("Prayer Group Admin Users is null");
+                return;
+            }
+
+            IEnumerable<int> adminsToAdd = [];
+            IEnumerable<int> adminsToRemove = [];
+
+            _mockPrayerGroupRepository
+                .Setup(repository => repository.UpdatePrayerGroupAdminsAsync(It.IsAny<int>(), It.IsAny<IEnumerable<int>>(), It.IsAny<IEnumerable<int>>()))
+                .Returns(Task.CompletedTask)
+                .Callback<int, IEnumerable<int>, IEnumerable<int>>((_prayerGroupIdArg, adminsToAddArg, adminsToRemoveArg) => {
+                    adminsToAdd = adminsToAddArg;
+                    adminsToRemove = adminsToRemoveArg;
+                });
+
+            IEnumerable<PrayerGroupUserEntity> existingAdminUsers = [MockPrayerGroupData.MockPrayerGroupAdminUsers.ElementAt(0)];
+            _mockPrayerGroupRepository.Setup(repository => repository.GetPrayerGroupUsersAsync(It.IsAny<int>(), It.IsAny<IEnumerable<PrayerGroupRole>>()))
+                .ReturnsAsync(existingAdminUsers);
+
+            IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            IEnumerable<int> prayerGroupAdminIds = MockPrayerGroupData.MockPrayerGroupAdminUsers
+                                                        .Select(admin => admin.Id)
+                                                        .OfType<int>();
+
+            await manager.UpdatePrayerGroupAdminsAsync(747, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds });
+
+            Assert.Multiple(() => {
+                Assert.That(adminsToRemove.ToArray().Length, Is.EqualTo(0));
+                Assert.That(adminsToAdd.Contains(MockPrayerGroupData.MockPrayerGroupAdminUsers.ElementAt(1).Id ?? -1), Is.True);
+                Assert.That(adminsToAdd.Contains(MockPrayerGroupData.MockPrayerGroupAdminUsers.ElementAt(2).Id ?? -1), Is.True);
+            });
+
+        }
+
     }
 }
