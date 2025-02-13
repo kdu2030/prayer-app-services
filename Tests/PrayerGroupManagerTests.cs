@@ -2,6 +2,7 @@
 using Moq;
 using PrayerAppServices.Files;
 using PrayerAppServices.PrayerGroups;
+using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Mappers;
@@ -219,6 +220,36 @@ namespace Tests {
                 Assert.That(updatedGroup.Id, Is.EqualTo(1));
                 Assert.That(updatedGroup.GroupName, Is.EqualTo(request.GroupName));
                 Assert.That(updatedGroup.Description, Is.EqualTo(request.Description));
+            });
+        }
+
+        [Test]
+        public async Task UpdatePrayerGroupAdminsAsync_GivenListWithoutExistingAdmin_RemovesAdmin() {
+            IEnumerable<int> adminsToAdd = [];
+            IEnumerable<int> adminsToRemove = [];
+
+            _mockPrayerGroupRepository
+                .Setup(repository => repository.UpdatePrayerGroupAdminsAsync(It.IsAny<int>(), It.IsAny<IEnumerable<int>>(), It.IsAny<IEnumerable<int>>()))
+                .Returns(Task.CompletedTask)
+                .Callback<int, IEnumerable<int>, IEnumerable<int>>((_prayerGroupIdArg, adminsToAddArg, adminsToRemoveArg) => {
+                    adminsToAdd = adminsToAddArg;
+                    adminsToRemove = adminsToRemoveArg;
+                });
+
+            _mockPrayerGroupRepository.Setup(repository => repository.GetPrayerGroupUsersAsync(It.IsAny<int>(), It.IsAny<IEnumerable<PrayerGroupRole>>()))
+                .ReturnsAsync(MockPrayerGroupData.MockPrayerGroupAdminUsers);
+
+            IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            IEnumerable<int> prayerGroupAdminIds = MockPrayerGroupData.MockPrayerGroupAdminUsers
+                                                        .Skip(1)
+                                                        .Select(admin => admin.Id)
+                                                        .OfType<int>();
+
+            await manager.UpdatePrayerGroupAdminsAsync(747, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds });
+
+            Assert.Multiple(() => {
+                Assert.That(adminsToAdd.ToArray().Length, Is.EqualTo(0));
+                Assert.That(adminsToRemove.Contains(MockPrayerGroupData.MockPrayerGroupAdminUsers?.ElementAt(0).Id ?? -1), Is.True);
             });
         }
 

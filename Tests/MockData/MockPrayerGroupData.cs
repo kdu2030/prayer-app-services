@@ -18,7 +18,8 @@ namespace Tests.MockData {
             },
             new PrayerGroupUserEntity {
                 Id = 2,
-                FullName = "Obi Wan Kenobi"
+                FullName = "Obi Wan Kenobi",
+                GroupRole = PrayerGroupRole.Admin
             },
             new PrayerGroupUserEntity {
                 Id = 3,
@@ -26,6 +27,7 @@ namespace Tests.MockData {
                 ImageFileId = 4,
                 FileName = "count_dooku.jpg",
                 FileType = FileType.Image,
+                GroupRole = PrayerGroupRole.Admin
             }
         ];
 
