@@ -136,6 +136,17 @@ namespace PrayerAppServices.PrayerGroups {
             await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, usersToAdd);
         }
 
+        public async Task DeletePrayerGroupUsersAsync(string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request) {
+            string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
+            PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
+
+            if (prayerGroupUser == null || prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin) {
+                throw new ArgumentException("User must be an admin to delete prayer group users.");
+            }
+
+            await _prayerGroupRepository.DeletePrayerGroupUsersAsync(prayerGroupId, request.UserIds);
+        }
+
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
             MediaFileBase? mediaFile = searchResult.ImageFileId != null
                 ? new MediaFileBase {

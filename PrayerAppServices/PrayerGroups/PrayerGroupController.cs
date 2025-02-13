@@ -65,5 +65,12 @@ namespace PrayerAppServices.PrayerGroups {
             return Ok();
         }
 
+        [HttpDelete("{prayerGroupId}/users")]
+        [Authorize]
+        public async Task<ActionResult> DeletePrayerGroupUsersAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request) {
+            await _prayerGroupManager.DeletePrayerGroupUsersAsync(authHeader, prayerGroupId, request);
+            return Ok();
+        }
+
     }
 }

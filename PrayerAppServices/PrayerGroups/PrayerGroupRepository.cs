@@ -131,5 +131,12 @@ namespace PrayerAppServices.PrayerGroups {
             string sql = "CALL add_prayer_group_users(@prayer_group_id, @users_to_add)";
             await connection.ExecuteAsync(sql, parameters);
         }
+
+        public async Task DeletePrayerGroupUsersAsync(int prayerGroupId, IEnumerable<int> userIds) {
+            _dbContext.PrayerGroupUsers.RemoveRange(
+                _dbContext.PrayerGroupUsers.Where(user => user.PrayerGroup.Id == prayerGroupId && userIds.Contains(user.AppUser.Id))
+            );
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

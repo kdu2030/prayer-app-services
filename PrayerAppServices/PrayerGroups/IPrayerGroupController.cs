@@ -12,5 +12,6 @@ namespace PrayerAppServices.PrayerGroups {
         Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? roles);
         Task<ActionResult> UpdatePrayerGroupAdminsAsync(int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest);
         Task<ActionResult> AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request);
+        Task<ActionResult> DeletePrayerGroupUsersAsync(string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request);
     }
 }
