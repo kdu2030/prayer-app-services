@@ -132,7 +132,8 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request) {
-            await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, request.Users);
+            IEnumerable<PrayerGroupUserToAdd> usersToAdd = _mapper.Map<IEnumerable<PrayerGroupUserToAdd>>(request.Users);
+            await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, usersToAdd);
         }
 
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {

@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE add_prayer_group_users(group_id INT, users_to_add prayer_group_users_to_add[])
+CREATE OR REPLACE PROCEDURE add_prayer_group_users(group_id INT, users_to_add prayer_group_user_to_add[])
 LANGUAGE plpgsql
 AS
 $$

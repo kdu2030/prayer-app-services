@@ -1,24 +1,24 @@
 ﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using NpgsqlTypes;
 using PrayerAppServices.Data;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
 
 namespace PrayerAppServices.PrayerGroups {
-    public class PrayerGroupRepository(AppDbContext dbContext, IConfiguration configuration) : IPrayerGroupRepository {
+    public class PrayerGroupRepository(AppDbContext dbContext, NpgsqlDataSource dataSource) : IPrayerGroupRepository {
         private readonly AppDbContext _dbContext = dbContext;
-        private readonly string? _connectionString = configuration.GetConnectionString("DefaultConnection");
 
         private NpgsqlConnection Connection {
             get {
-                return new NpgsqlConnection(_connectionString);
+                return dataSource.OpenConnection();
             }
         }
 
         public async Task<PrayerGroupDetailsEntity> CreatePrayerGroupAsync(string adminUsername, PrayerGroupDTO newPrayerGroup) {
-            using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            using NpgsqlConnection connection = Connection;
             DynamicParameters parameters = new DynamicParameters();
 
             parameters.Add("admin_username", adminUsername);
@@ -46,7 +46,7 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupAdminsAsync(int prayerGroupId) {
-            using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            using NpgsqlConnection connection = Connection;
 
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("prayer_group_id", prayerGroupId);
@@ -57,7 +57,7 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole> prayerGroupRoles) {
-            using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            using NpgsqlConnection connection = Connection;
             PrayerGroupRole[] rolesToQuery = prayerGroupRoles.ToArray();
 
             DynamicParameters parameters = new DynamicParameters();
@@ -121,12 +121,12 @@ namespace PrayerAppServices.PrayerGroups {
             await connection.ExecuteAsync(sql, parameters);
         }
 
-        public async Task AddPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupAppUser> users) {
+        public async Task AddPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupUserToAdd> users) {
             using NpgsqlConnection connection = Connection;
 
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("prayer_group_id", prayerGroupId);
-            parameters.Add("users_to_add", users);
+            parameters.Add("users_to_add", users.ToArray(), System.Data.DbType.Object);
 
             string sql = "CALL add_prayer_group_users(@prayer_group_id, @users_to_add)";
             await connection.ExecuteAsync(sql, parameters);
