@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using NpgsqlTypes;
 using PrayerAppServices.Data;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.DTOs;
