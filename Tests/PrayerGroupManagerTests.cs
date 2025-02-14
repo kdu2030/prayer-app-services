@@ -229,6 +229,10 @@ namespace Tests {
             IEnumerable<int> adminsToRemove = [];
 
             _mockPrayerGroupRepository
+                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(MockPrayerGroupData.PrayerGroupAppUser);
+
+            _mockPrayerGroupRepository
                 .Setup(repository => repository.UpdatePrayerGroupAdminsAsync(It.IsAny<int>(), It.IsAny<IEnumerable<int>>(), It.IsAny<IEnumerable<int>>()))
                 .Returns(Task.CompletedTask)
                 .Callback<int, IEnumerable<int>, IEnumerable<int>>((_prayerGroupIdArg, adminsToAddArg, adminsToRemoveArg) => {
@@ -245,7 +249,7 @@ namespace Tests {
                                                         .Select(admin => admin.Id)
                                                         .OfType<int>();
 
-            await manager.UpdatePrayerGroupAdminsAsync(747, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds });
+            await manager.UpdatePrayerGroupAdminsAsync("mockToken", 747, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds });
 
             Assert.Multiple(() => {
                 Assert.That(adminsToAdd.ToArray().Length, Is.EqualTo(0));
@@ -264,6 +268,10 @@ namespace Tests {
             IEnumerable<int> adminsToRemove = [];
 
             _mockPrayerGroupRepository
+                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(MockPrayerGroupData.PrayerGroupAppUser);
+
+            _mockPrayerGroupRepository
                 .Setup(repository => repository.UpdatePrayerGroupAdminsAsync(It.IsAny<int>(), It.IsAny<IEnumerable<int>>(), It.IsAny<IEnumerable<int>>()))
                 .Returns(Task.CompletedTask)
                 .Callback<int, IEnumerable<int>, IEnumerable<int>>((_prayerGroupIdArg, adminsToAddArg, adminsToRemoveArg) => {
@@ -280,7 +288,7 @@ namespace Tests {
                                                         .Select(admin => admin.Id)
                                                         .OfType<int>();
 
-            await manager.UpdatePrayerGroupAdminsAsync(747, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds });
+            await manager.UpdatePrayerGroupAdminsAsync("mockToken", 747, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds });
 
             Assert.Multiple(() => {
                 Assert.That(adminsToRemove.ToArray().Length, Is.EqualTo(0));

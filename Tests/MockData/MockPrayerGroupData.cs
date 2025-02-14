@@ -51,6 +51,7 @@ namespace Tests.MockData {
             ImageFileId = 4,
             FileName = "commander_cody.jpg",
             FileType = FileType.Image,
+            PrayerGroupRole = PrayerGroupRole.Admin,
         };
 
         public static readonly MediaFile MockMediaFile = new MediaFile {
