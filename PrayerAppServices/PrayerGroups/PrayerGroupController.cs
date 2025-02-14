@@ -53,8 +53,8 @@ namespace PrayerAppServices.PrayerGroups {
 
         [HttpPut("{prayerGroupId}/admins")]
         [Authorize]
-        public async Task<ActionResult> UpdatePrayerGroupAdminsAsync(int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest) {
-            await _prayerGroupManager.UpdatePrayerGroupAdminsAsync(prayerGroupId, updateAdminsRequest);
+        public async Task<ActionResult> UpdatePrayerGroupAdminsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest) {
+            await _prayerGroupManager.UpdatePrayerGroupAdminsAsync(authHeader, prayerGroupId, updateAdminsRequest);
             return Ok();
         }
 

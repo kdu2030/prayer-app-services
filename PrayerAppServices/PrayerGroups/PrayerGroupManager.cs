@@ -120,7 +120,11 @@ namespace PrayerAppServices.PrayerGroups {
             return new PrayerGroupUsersResponse { Users = prayerGroupUserSummaries };
         }
 
-        public async Task UpdatePrayerGroupAdminsAsync(int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest) {
+        public async Task UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest) {
+            if (await IsPrayerGroupAdminAsync(authHeader, prayerGroupId)) {
+                throw new ArgumentException("User must be an admin to update prayer group admins.");
+            }
+
             IEnumerable<PrayerGroupUserEntity> prayerGroupUsers = await _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
             IEnumerable<int> currentAdminUserIds = prayerGroupUsers.Select(user => user.Id ?? -1);
             HashSet<int> currentAdminUserIdsSet = new HashSet<int>(currentAdminUserIds);
@@ -137,14 +141,17 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task DeletePrayerGroupUsersAsync(string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request) {
-            string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
-            PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
-
-            if (prayerGroupUser == null || prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin) {
+            if (await IsPrayerGroupAdminAsync(authHeader, prayerGroupId)) {
                 throw new ArgumentException("User must be an admin to delete prayer group users.");
             }
 
             await _prayerGroupRepository.DeletePrayerGroupUsersAsync(prayerGroupId, request.UserIds);
+        }
+
+        public async Task<bool> IsPrayerGroupAdminAsync(string authHeader, int prayerGroupId) {
+            string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
+            PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
+            return prayerGroupUser != null && prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin;
         }
 
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
