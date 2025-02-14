@@ -54,6 +54,14 @@ namespace Tests.MockData {
             PrayerGroupRole = PrayerGroupRole.Admin,
         };
 
+        public static readonly PrayerGroupAppUser MockPrayerGroupMember = new PrayerGroupAppUser {
+            Id = 7,
+            FullName = "Commander Fox",
+            ImageFileId = 5,
+            FileType = FileType.Image,
+            PrayerGroupRole = PrayerGroupRole.Member,
+        };
+
         public static readonly MediaFile MockMediaFile = new MediaFile {
             Id = 1,
             FileName = "dunder-mifflin-logo.jpg",

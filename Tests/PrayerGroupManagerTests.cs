@@ -298,5 +298,19 @@ namespace Tests {
 
         }
 
+        [Test]
+        public void UpdatePrayerGroupAdminsAsync_NonAdminUpdatesAdmins_ThrowsException() {
+            _mockPrayerGroupRepository
+                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(MockPrayerGroupData.MockPrayerGroupMember);
+
+            IEnumerable<int> prayerGroupAdminIds = MockPrayerGroupData.MockPrayerGroupAdminUsers
+                                                       .Select(admin => admin.Id)
+                                                       .OfType<int>();
+
+            IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            Assert.ThrowsAsync<ArgumentException>(() => prayerGroupManager.UpdatePrayerGroupAdminsAsync("mockToken", 68, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds }));
+        }
+
     }
 }
