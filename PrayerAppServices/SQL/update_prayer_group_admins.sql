@@ -1,3 +1,5 @@
+CREATE TYPE prayer_group_user_to_add AS (id INT, prayer_group_role INT);
+
 CREATE OR REPLACE PROCEDURE update_prayer_group_admins(group_id INT, admin_user_ids_to_add INT[], admin_user_ids_to_remove INT[])
 LANGUAGE plpgsql
 AS
