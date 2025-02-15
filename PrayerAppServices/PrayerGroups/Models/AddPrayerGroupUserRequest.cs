@@ -2,6 +2,6 @@
 
 namespace PrayerAppServices.PrayerGroups.Models {
     public class AddPrayerGroupUserRequest {
-        public IEnumerable<PrayerGroupAppUser> Users { get; set; }
+        public required IEnumerable<PrayerGroupAppUser> Users { get; set; }
     }
 }
