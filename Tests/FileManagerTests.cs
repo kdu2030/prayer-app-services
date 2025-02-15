@@ -121,7 +121,7 @@ namespace Tests {
                 .Returns(fileDeleteErrors);
 
             mockFileRepository
-                .Setup(mockFileRepository => mockFileRepository.GetMediaFileByIdAsync(It.IsAny<int>()))
+                .Setup(mockFileRepository => mockFileRepository.GetMediaFileByIdAsync(It.IsAny<int>(), It.IsAny<bool>()))
                 .ReturnsAsync(file);
 
             _mockFileServicesClient.Setup(_mockServicesClient => _mockServicesClient.ExecuteAsync<FileDeleteResponse>(It.IsAny<RestRequest>())).ReturnsAsync(

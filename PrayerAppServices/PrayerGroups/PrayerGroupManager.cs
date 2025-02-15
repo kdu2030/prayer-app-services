@@ -26,11 +26,15 @@ namespace PrayerAppServices.PrayerGroups {
                 Description = newPrayerGroupRequest.Description,
                 Rules = newPrayerGroupRequest.Rules,
                 Color = color,
-                ImageFileId = newPrayerGroupRequest.ImageFileId
+                ImageFileId = newPrayerGroupRequest.ImageFileId,
+                BannerImageFileId = newPrayerGroupRequest.BannerImageFileId,
             };
 
             PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup); ;
+
             MediaFileBase? groupImage = GetGroupImageFromCreateResponse(createResponse);
+            MediaFileBase? bannerImage = GetGroupBannerImageFromCreateResponse(createResponse);
+
             IEnumerable<UserSummary>? adminUsers = GetAdminUserFromCreateResponse(createResponse);
 
             PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails {
@@ -40,6 +44,7 @@ namespace PrayerAppServices.PrayerGroups {
                 Rules = createResponse.Rules,
                 Color = colorStr,
                 ImageFile = groupImage,
+                BannerImageFile = bannerImage,
                 Admins = adminUsers,
                 IsUserJoined = true,
                 UserRole = PrayerGroupRole.Admin,
@@ -72,6 +77,7 @@ namespace PrayerAppServices.PrayerGroups {
                 Description = prayerGroup.Description,
                 Rules = prayerGroup.Rules,
                 ImageFile = prayerGroup.ImageFile,
+                BannerImageFile = prayerGroup.BannerImageFile,
                 Admins = adminUserSummaries,
                 Color = colorString,
                 IsUserJoined = appUser != null,
@@ -81,9 +87,9 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupDetails;
         }
 
-        public GroupNameValidationResponse ValidateGroupName(string groupName) {
+        public async Task<GroupNameValidationResponse> ValidateGroupNameAsync(string groupName) {
             List<string> errors = new List<string>();
-            PrayerGroup? prayerGroup = _prayerGroupRepository.GetPrayerGroupByName(groupName);
+            PrayerGroup? prayerGroup = await _prayerGroupRepository.GetPrayerGroupByNameAsync(groupName);
             if (prayerGroup != null) {
                 errors.Add("A prayer group with this name already exists.");
             }
@@ -97,16 +103,31 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task<PrayerGroupDetails> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
-            if (_prayerGroupRepository.GetPrayerGroupByName(prayerGroupRequest.GroupName) != null) {
+            PrayerGroup? existingPrayerGroup = await _prayerGroupRepository.GetPrayerGroupByNameAsync(prayerGroupRequest.GroupName, false);
+
+            if (existingPrayerGroup != null && existingPrayerGroup?.Id != prayerGroupId) {
                 throw new ArgumentException("A prayer group with this name already exists.");
             }
 
             int? imageFileId = prayerGroupRequest.ImageFileId;
-            MediaFile? mediaFile = imageFileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(imageFileId ?? -1) : null;
+            int? bannerImageFileId = prayerGroupRequest.BannerImageFileId;
+
+
+            MediaFile? groupImageFile = await GetMediaFileByNullableIdAsync(imageFileId);
+            MediaFile? bannerImageFile = await GetMediaFileByNullableIdAsync(bannerImageFileId);
+
+            if (groupImageFile != null && groupImageFile.FileType != FileType.Image) {
+                throw new ArgumentException("Cannot use a non-image as a prayer group image");
+            }
+
+            if (bannerImageFile != null && bannerImageFile.FileType != FileType.Image) {
+                throw new ArgumentException("Cannot use a non-image as a prayer group banner image.");
+            }
 
             PrayerGroup updatedPrayerGroup = _mapper.Map<PrayerGroup>(prayerGroupRequest, opts => {
                 opts.Items["Id"] = prayerGroupId;
-                opts.Items["ImageFile"] = mediaFile;
+                opts.Items["ImageFile"] = groupImageFile;
+                opts.Items["BannerImageFile"] = bannerImageFile;
             });
 
             await _prayerGroupRepository.UpdatePrayerGroupAsync(updatedPrayerGroup);
@@ -154,6 +175,10 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupUser != null && prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin;
         }
 
+        private async Task<MediaFile?> GetMediaFileByNullableIdAsync(int? fileId) {
+            return fileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(fileId ?? -1, false) : null;
+        }
+
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
             MediaFileBase? mediaFile = searchResult.ImageFileId != null
                 ? new MediaFileBase {
@@ -178,6 +203,18 @@ namespace PrayerAppServices.PrayerGroups {
                 Id = response.ImageFileId,
                 FileName = response.GroupImageFileName ?? "",
                 Url = response.GroupImageFileUrl ?? "",
+                FileType = FileType.Image,
+            };
+        }
+
+        private static MediaFileBase? GetGroupBannerImageFromCreateResponse(PrayerGroupDetailsEntity response) {
+            if (response.BannerImageFileId == null) {
+                return null;
+            }
+            return new MediaFileBase {
+                Id = response.BannerImageFileId,
+                FileName = response.BannerImageFileName ?? "",
+                Url = response.BannerImageFileUrl ?? "",
                 FileType = FileType.Image,
             };
         }

@@ -5,7 +5,7 @@ namespace PrayerAppServices.PrayerGroups {
     public interface IPrayerGroupManager {
         Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest);
         Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId);
-        GroupNameValidationResponse ValidateGroupName(string groupName);
+        Task<GroupNameValidationResponse> ValidateGroupNameAsync(string groupName);
         IEnumerable<PrayerGroupDetails> SearchPrayerGroupsByName(string nameQuery, int maxNumResults);
         Task<PrayerGroupDetails> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest);
         Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? prayerGroupRoles);

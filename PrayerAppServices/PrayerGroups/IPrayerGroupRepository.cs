@@ -9,7 +9,7 @@ namespace PrayerAppServices.PrayerGroups {
         Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupAdminsAsync(int prayerGroupId);
         Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole> prayerGroupRoles);
         Task<PrayerGroupAppUser?> GetPrayerGroupAppUserAsync(int prayerGroupId, string username);
-        PrayerGroup? GetPrayerGroupByName(string groupName);
+        Task<PrayerGroup?> GetPrayerGroupByNameAsync(string groupName, bool enableTracking = true);
         IEnumerable<PrayerGroupSearchResult> SearchPrayerGroupsByName(string nameQuery, int maxNumResults);
         Task UpdatePrayerGroupAsync(PrayerGroup prayerGroup);
         Task<IEnumerable<PrayerGroupSummaryEntity>> GetPrayerGroupSummariesByUserIdAsync(int userId);

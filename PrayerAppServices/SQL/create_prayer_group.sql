@@ -1,10 +1,13 @@
+DROP FUNCTION IF EXISTS create_prayer_group;
+
 CREATE OR REPLACE FUNCTION create_prayer_group(
     username VARCHAR(255),
     new_group_name VARCHAR(255),
     group_description TEXT,
     group_rules TEXT,
     group_color INT,
-    group_image_file_id INT
+    group_image_file_id INT,
+    group_banner_image_file_id INT
 ) RETURNS TABLE (
     id INT,
     group_name VARCHAR(255),
@@ -14,6 +17,9 @@ CREATE OR REPLACE FUNCTION create_prayer_group(
     image_file_id INT,
     group_image_file_name VARCHAR(255),
     group_image_file_url VARCHAR(255),
+    banner_image_file_id INT,
+    banner_image_file_name VARCHAR(255),
+    banner_image_file_url VARCHAR(255),
     admin_user_id INT,
     admin_full_name VARCHAR(255),
     admin_image_file_id INT,
@@ -59,7 +65,7 @@ BEGIN
         f.url,
         f.file_type
     FROM media_files f, temp_admin_user a
-    WHERE f.id = a.image_file_id OR f.id = group_image_file_id;
+    WHERE f.id IN (a.image_file_id, group_image_file_id, banner_image_file_id);
 
     IF NOT EXISTS (SELECT 1 FROM temp_admin_user)
     THEN
@@ -76,9 +82,9 @@ BEGIN
 
 
     INSERT INTO
-        prayer_groups (group_name, description, rules, color, image_file_id)
+        prayer_groups (group_name, description, rules, color, image_file_id, banner_image_file_id)
     VALUES
-        (new_group_name, group_description, group_rules, group_color, group_image_file_id)
+        (new_group_name, group_description, group_rules, group_color, group_image_file_id, banner_image_file_id)
     RETURNING prayer_groups.id INTO new_group_id;
 
     INSERT INTO
@@ -100,6 +106,9 @@ BEGIN
             group_image_file_id,
             f2.file_name,
             f2.url,
+            banner_image_file_id,
+            f3.file_name,
+            f3.url,
             a.id,
             a.full_name,
             a.image_file_id,
@@ -107,7 +116,8 @@ BEGIN
             f1.url
         FROM temp_admin_user a 
         LEFT JOIN temp_relevant_files f1 ON a.image_file_id = f1.id
-        LEFT JOIN temp_relevant_files f2 ON f2.id = group_image_file_id;
+        LEFT JOIN temp_relevant_files f2 ON f2.id = group_image_file_id
+        LEFT JOIN temp_relevant_files f3 ON f3.id = banner_image_file_id;
     DROP TABLE IF EXISTS temp_admin_user;
     DROP TABLE IF EXISTS temp_relevant_files;
     RETURN;

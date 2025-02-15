@@ -8,6 +8,8 @@ namespace PrayerAppServices.Files.Entities {
 
         public ICollection<AppUser>? AppUsers { get; set; }
 
+        public ICollection<PrayerGroup>? BannerPrayerGroups { get; set; }
+
         public static FileType GetFileTypeFromContentType(string contentType) {
             switch (contentType) {
                 case ContentType.Jpg:

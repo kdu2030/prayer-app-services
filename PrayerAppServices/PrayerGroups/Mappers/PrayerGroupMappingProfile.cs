@@ -12,6 +12,9 @@ namespace PrayerAppServices.PrayerGroups.Mappers {
             CreateMap<PrayerGroupRequest, PrayerGroup>()
                 .ForMember(dest => dest.Id, options => options.MapFrom((src, dest, destMember, context) => context.Items["Id"]))
                 .ForMember(dest => dest.ImageFile, options => options.MapFrom((src, dest, destMember, context) => context.Items["ImageFile"]))
+                .ForMember(dest => dest.ImageFileId, options => options.MapFrom(src => src.ImageFileId))
+                .ForMember(dest => dest.BannerImageFile, options => options.MapFrom((src, dest, destMember, context) => context.Items["BannerImageFile"]))
+                .ForMember(dest => dest.BannerImageFileId, options => options.MapFrom(src => src.BannerImageFileId))
                 .ForMember(dest => dest.GroupName, options => options.MapFrom(src => src.GroupName))
                 .ForMember(dest => dest.Description, options => options.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Rules, options => options.MapFrom(src => src.Rules))
@@ -24,6 +27,7 @@ namespace PrayerAppServices.PrayerGroups.Mappers {
                 .ForMember(dest => dest.Rules, options => options.MapFrom(src => src.Rules))
                 .ForMember(dest => dest.Color, options => options.MapFrom(src => src.Color != null ? ColorUtils.ColorIntToHexString(src.Color.Value) : null))
                 .ForMember(dest => dest.ImageFile, options => options.MapFrom(src => src.ImageFile))
+                .ForMember(dest => dest.BannerImageFile, options => options.MapFrom(src => src.BannerImageFile))
                 .ForMember(dest => dest.IsUserJoined, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("IsUserJoined")))
                 .ForMember(dest => dest.Admins, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("Admins")))
                 .ForMember(dest => dest.UserRole, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("UserRole")));

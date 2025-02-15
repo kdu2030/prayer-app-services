@@ -18,13 +18,20 @@ namespace PrayerAppServices.Files {
                 );
         }
 
-        public async Task<MediaFile?> GetMediaFileByIdAsync(int fileId) {
-            return await _dbContext.MediaFiles.FindAsync(fileId);
+        public async Task<MediaFile?> GetMediaFileByIdAsync(int fileId, bool enableTracking = true) {
+            if (enableTracking) {
+                return await _dbContext.MediaFiles.FindAsync(fileId);
+            }
+
+            return await _dbContext.MediaFiles
+                .AsNoTracking()
+                .FirstOrDefaultAsync((file) => file.Id == fileId);
         }
 
         public async Task DeleteMediaFileAsync(MediaFile mediaFile) {
             _dbContext.Remove(mediaFile);
             await _dbContext.SaveChangesAsync();
         }
+
     }
 }

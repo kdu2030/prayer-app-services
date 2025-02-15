@@ -10,8 +10,10 @@ namespace PrayerAppServices.PrayerGroups.Entities {
         public string? Description { get; set; }
         public string? Rules { get; set; }
         public int? Color { get; set; }
-
+        public int? ImageFileId { get; set; }
         public MediaFile? ImageFile { get; set; }
+        public int? BannerImageFileId { get; set; }
+        public MediaFile? BannerImageFile { get; set; }
 
         public IEnumerable<PrayerGroupUser>? Users { get; set; }
     }

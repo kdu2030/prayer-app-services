@@ -37,7 +37,18 @@ namespace PrayerAppServices.Data {
                 }
 
             }
+
+            modelBuilder.Entity<PrayerGroup>()
+                .HasOne(group => group.ImageFile)
+                .WithMany(file => file.PrayerGroups)
+                .HasForeignKey(group => group.ImageFileId);
+
+            modelBuilder.Entity<PrayerGroup>()
+                .HasOne(group => group.BannerImageFile)
+                .WithMany(file => file.BannerPrayerGroups)
+                .HasForeignKey(group => group.BannerImageFileId);
         }
+
 
         private string GetSnakeCase(string name) {
             return string.Concat(name.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
