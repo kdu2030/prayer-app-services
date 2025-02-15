@@ -87,9 +87,9 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupDetails;
         }
 
-        public GroupNameValidationResponse ValidateGroupName(string groupName) {
+        public async Task<GroupNameValidationResponse> ValidateGroupNameAsync(string groupName) {
             List<string> errors = new List<string>();
-            PrayerGroup? prayerGroup = _prayerGroupRepository.GetPrayerGroupByName(groupName);
+            PrayerGroup? prayerGroup = await _prayerGroupRepository.GetPrayerGroupByNameAsync(groupName);
             if (prayerGroup != null) {
                 errors.Add("A prayer group with this name already exists.");
             }
@@ -103,18 +103,32 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task<PrayerGroupDetails> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
-            if (_prayerGroupRepository.GetPrayerGroupByName(prayerGroupRequest.GroupName) != null) {
+            PrayerGroup? existingPrayerGroup = await _prayerGroupRepository.GetPrayerGroupByNameAsync(prayerGroupRequest.GroupName, false);
+
+            if (existingPrayerGroup?.Id != prayerGroupId) {
                 throw new ArgumentException("A prayer group with this name already exists.");
             }
 
             int? imageFileId = prayerGroupRequest.ImageFileId;
             int? bannerImageFileId = prayerGroupRequest.BannerImageFileId;
 
-            // TODO: Remove?
-            //MediaFile?[] groupMediaFiles = await Task.WhenAll(GetMediaFileByNullableIdAsync(imageFileId), GetMediaFileByNullableIdAsync(bannerImageFileId));
+            MediaFile?[] groupMediaFiles = await Task.WhenAll(GetMediaFileByNullableIdAsync(imageFileId), GetMediaFileByNullableIdAsync(bannerImageFileId));
+
+            MediaFile? groupImageFile = groupMediaFiles[0];
+            MediaFile? bannerImageFile = groupMediaFiles[1];
+
+            if (groupImageFile != null && groupImageFile.FileType != FileType.Image) {
+                throw new ArgumentException("Cannot use a non-image as a prayer group image");
+            }
+
+            if (bannerImageFile != null && bannerImageFile.FileType != FileType.Image) {
+                throw new ArgumentException("Cannot use a non-image as a prayer group banner image.");
+            }
 
             PrayerGroup updatedPrayerGroup = _mapper.Map<PrayerGroup>(prayerGroupRequest, opts => {
                 opts.Items["Id"] = prayerGroupId;
+                opts.Items["ImageFile"] = groupMediaFiles[0];
+                opts.Items["BannerImageFile"] = groupMediaFiles[1];
             });
 
             await _prayerGroupRepository.UpdatePrayerGroupAsync(updatedPrayerGroup);
@@ -163,7 +177,7 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         private async Task<MediaFile?> GetMediaFileByNullableIdAsync(int? fileId) {
-            return fileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(fileId ?? -1) : null;
+            return fileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(fileId ?? -1, false) : null;
         }
 
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {

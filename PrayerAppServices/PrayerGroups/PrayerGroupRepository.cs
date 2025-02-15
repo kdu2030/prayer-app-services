@@ -82,9 +82,15 @@ namespace PrayerAppServices.PrayerGroups {
             return appUser;
         }
 
-        public PrayerGroup? GetPrayerGroupByName(string groupName) {
+        public Task<PrayerGroup?> GetPrayerGroupByNameAsync(string groupName, bool enableTracking = true) {
+            if (enableTracking) {
+                return _dbContext.PrayerGroups.Where(group => group.GroupName == groupName)
+               .FirstOrDefaultAsync();
+            }
+
             return _dbContext.PrayerGroups.Where(group => group.GroupName == groupName)
-                .FirstOrDefault();
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
 
         public IEnumerable<PrayerGroupSearchResult> SearchPrayerGroupsByName(string nameQuery, int maxNumResults) {

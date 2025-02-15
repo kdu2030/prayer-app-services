@@ -17,7 +17,7 @@ namespace PrayerAppServices.Configuration {
             services.AddDbContext<AppDbContext>(options =>
               options.UseNpgsql(connectionString)
                 .UseSnakeCaseNamingConvention()
-            );
+            , ServiceLifetime.Transient);
 
             services.AddIdentityApiEndpoints<AppUser>()
                 .AddEntityFrameworkStores<AppDbContext>();

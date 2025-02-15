@@ -25,8 +25,8 @@ namespace PrayerAppServices.PrayerGroups {
 
         [HttpGet("validate-name")]
         [Authorize]
-        public ActionResult<GroupNameValidationResponse> ValidateGroupName([FromQuery(Name = "name")] string prayerGroupName) {
-            GroupNameValidationResponse validationResponse = _prayerGroupManager.ValidateGroupName(prayerGroupName);
+        public async Task<ActionResult<GroupNameValidationResponse>> ValidateGroupNameAsync([FromQuery(Name = "name")] string prayerGroupName) {
+            GroupNameValidationResponse validationResponse = await _prayerGroupManager.ValidateGroupNameAsync(prayerGroupName);
             return Ok(validationResponse);
         }
 
