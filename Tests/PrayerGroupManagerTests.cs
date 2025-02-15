@@ -312,5 +312,42 @@ namespace Tests {
             Assert.ThrowsAsync<ArgumentException>(() => prayerGroupManager.UpdatePrayerGroupAdminsAsync("mockToken", 68, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds }));
         }
 
+        [Test]
+        public async Task DeletePrayerGroupUsersAsync_NonAdminAttemptsToDelete_ThrowsException() {
+            IEnumerable<int> userIds = [1, 2, 3];
+            IEnumerable<int> deletedUserIds = [];
+
+
+            _mockPrayerGroupRepository
+                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(MockPrayerGroupData.PrayerGroupAppUser);
+
+            _mockPrayerGroupRepository
+                .Setup(repository => repository.DeletePrayerGroupUsersAsync(It.IsAny<int>(), It.IsAny<IEnumerable<int>>()))
+                .Returns(Task.CompletedTask)
+                .Callback<int, IEnumerable<int>>((prayerGroupId, userIds) => {
+                    deletedUserIds = userIds;
+                });
+
+            IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            await manager.DeletePrayerGroupUsersAsync("mockToken", 1, new PrayerGroupDeleteRequest { UserIds = userIds });
+            Assert.That(deletedUserIds.ToArray().ToString(), Is.EquivalentTo(userIds.ToArray().ToString()));
+        }
+
+        [Test]
+        public Task DeletePrayerGroupUsersAsync_GivenValidRequest_DeletesUsers() {
+            IEnumerable<int> userIds = [1, 2, 3];
+            _mockPrayerGroupRepository
+                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .ReturnsAsync(MockPrayerGroupData.PrayerGroupAppUser);
+
+            _mockPrayerGroupRepository
+                .Setup(repository => repository.DeletePrayerGroupUsersAsync(It.IsAny<int>(), It.IsAny<IEnumerable<int>>()))
+                .Returns(Task.CompletedTask);
+
+            IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
+            return manager.DeletePrayerGroupUsersAsync("mockToken", 1, new PrayerGroupDeleteRequest { UserIds = userIds });
+        }
+
     }
 }
