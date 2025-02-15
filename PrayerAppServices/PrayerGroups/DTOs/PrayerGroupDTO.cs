@@ -5,5 +5,7 @@
         public string? Rules { get; set; }
         public int? Color { get; set; }
         public int? ImageFileId { get; set; }
+
+        public int? BannerImageFileId { get; set; }
     }
 }

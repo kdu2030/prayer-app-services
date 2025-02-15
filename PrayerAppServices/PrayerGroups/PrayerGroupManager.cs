@@ -26,11 +26,15 @@ namespace PrayerAppServices.PrayerGroups {
                 Description = newPrayerGroupRequest.Description,
                 Rules = newPrayerGroupRequest.Rules,
                 Color = color,
-                ImageFileId = newPrayerGroupRequest.ImageFileId
+                ImageFileId = newPrayerGroupRequest.ImageFileId,
+                BannerImageFileId = newPrayerGroupRequest.BannerImageFileId,
             };
 
             PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup); ;
+
             MediaFileBase? groupImage = GetGroupImageFromCreateResponse(createResponse);
+            MediaFileBase? bannerImage = GetGroupBannerImageFromCreateResponse(createResponse);
+
             IEnumerable<UserSummary>? adminUsers = GetAdminUserFromCreateResponse(createResponse);
 
             PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails {
@@ -40,6 +44,7 @@ namespace PrayerAppServices.PrayerGroups {
                 Rules = createResponse.Rules,
                 Color = colorStr,
                 ImageFile = groupImage,
+                BannerImageFile = bannerImage,
                 Admins = adminUsers,
                 IsUserJoined = true,
                 UserRole = PrayerGroupRole.Admin,
@@ -72,6 +77,7 @@ namespace PrayerAppServices.PrayerGroups {
                 Description = prayerGroup.Description,
                 Rules = prayerGroup.Rules,
                 ImageFile = prayerGroup.ImageFile,
+                BannerImageFile = prayerGroup.BannerImageFile,
                 Admins = adminUserSummaries,
                 Color = colorString,
                 IsUserJoined = appUser != null,
@@ -178,6 +184,18 @@ namespace PrayerAppServices.PrayerGroups {
                 Id = response.ImageFileId,
                 FileName = response.GroupImageFileName ?? "",
                 Url = response.GroupImageFileUrl ?? "",
+                FileType = FileType.Image,
+            };
+        }
+
+        private static MediaFileBase? GetGroupBannerImageFromCreateResponse(PrayerGroupDetailsEntity response) {
+            if (response.GroupBannerImageFileId == null) {
+                return null;
+            }
+            return new MediaFileBase {
+                Id = response.GroupBannerImageFileId,
+                FileName = response.BannerImageFileName ?? "",
+                Url = response.BannerImageFileUrl ?? "",
                 FileType = FileType.Image,
             };
         }

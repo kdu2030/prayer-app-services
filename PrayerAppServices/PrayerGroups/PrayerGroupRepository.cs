@@ -25,9 +25,10 @@ namespace PrayerAppServices.PrayerGroups {
             parameters.Add("description", newPrayerGroup.Description);
             parameters.Add("rules", newPrayerGroup.Rules);
             parameters.Add("color", newPrayerGroup.Color);
-            parameters.Add("image_file_id", newPrayerGroup.ImageFileId);
+            parameters.Add("group_image_file_id", newPrayerGroup.ImageFileId);
+            parameters.Add("banner_image_file_id", newPrayerGroup.BannerImageFileId);
 
-            string sql = "SELECT * FROM create_prayer_group(@admin_username, @group_name, @description, @rules, @color, @image_file_id)";
+            string sql = "SELECT * FROM create_prayer_group(@admin_username, @group_name, @description, @rules, @color, @group_image_file_id, @banner_image_file_id)";
             PrayerGroupDetailsEntity response = await connection.QueryFirstAsync<PrayerGroupDetailsEntity>(sql, parameters);
 
             return response;
@@ -37,6 +38,7 @@ namespace PrayerAppServices.PrayerGroups {
             if (includeImage) {
                 return _dbContext.PrayerGroups
                     .Include(group => group.ImageFile)
+                    .Include(group => group.BannerImageFile)
                     .FirstOrDefaultAsync(group => group.Id == id);
             }
 
