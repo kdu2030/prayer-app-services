@@ -171,7 +171,7 @@ namespace Tests {
                 ImageFileId = 1
             };
 
-            _mockMediaFileRepository.Setup(repository => repository.GetMediaFileByIdAsync(1)).ReturnsAsync(MockPrayerGroupData.MockMediaFile);
+            _mockMediaFileRepository.Setup(repository => repository.GetMediaFileByIdAsync(1, It.IsAny<bool>())).ReturnsAsync(MockPrayerGroupData.MockMediaFile);
             _mockPrayerGroupRepository.Setup(repository => repository.UpdatePrayerGroupAsync(It.IsAny<PrayerGroup>())).Returns(Task.CompletedTask);
 
             IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
@@ -196,9 +196,9 @@ namespace Tests {
 
             PrayerGroup existingPrayerGroup = new PrayerGroup { Id = 2, GroupName = "Dunder Mifflin", Description = "Group Name Description" };
 
-            _mockMediaFileRepository.Setup(repository => repository.GetMediaFileByIdAsync(1)).ReturnsAsync(MockPrayerGroupData.MockMediaFile);
+            _mockMediaFileRepository.Setup(repository => repository.GetMediaFileByIdAsync(1, It.IsAny<bool>())).ReturnsAsync(MockPrayerGroupData.MockMediaFile);
             _mockPrayerGroupRepository.Setup(repository => repository.UpdatePrayerGroupAsync(It.IsAny<PrayerGroup>())).Returns(Task.CompletedTask);
-            _mockPrayerGroupRepository.Setup(repository => repository.GetPrayerGroupByName("Dunder Mifflin")).Returns(existingPrayerGroup);
+            _mockPrayerGroupRepository.Setup(repository => repository.GetPrayerGroupByNameAsync("Dunder Mifflin", It.IsAny<bool>())).ReturnsAsync(existingPrayerGroup);
 
             IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
             Assert.ThrowsAsync<ArgumentException>(() => manager.UpdatePrayerGroupAsync(1, request));

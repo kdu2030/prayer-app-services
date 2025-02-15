@@ -105,7 +105,7 @@ namespace PrayerAppServices.PrayerGroups {
         public async Task<PrayerGroupDetails> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
             PrayerGroup? existingPrayerGroup = await _prayerGroupRepository.GetPrayerGroupByNameAsync(prayerGroupRequest.GroupName, false);
 
-            if (existingPrayerGroup?.Id != prayerGroupId) {
+            if (existingPrayerGroup != null && existingPrayerGroup?.Id != prayerGroupId) {
                 throw new ArgumentException("A prayer group with this name already exists.");
             }
 
