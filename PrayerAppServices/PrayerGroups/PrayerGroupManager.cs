@@ -108,11 +108,14 @@ namespace PrayerAppServices.PrayerGroups {
             }
 
             int? imageFileId = prayerGroupRequest.ImageFileId;
-            MediaFile? mediaFile = imageFileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(imageFileId ?? -1) : null;
+            int? bannerImageFileId = prayerGroupRequest.BannerImageFileId;
+
+            MediaFile?[] groupMediaFiles = await Task.WhenAll(GetMediaFileByNullableIdAsync(imageFileId), GetMediaFileByNullableIdAsync(bannerImageFileId));
 
             PrayerGroup updatedPrayerGroup = _mapper.Map<PrayerGroup>(prayerGroupRequest, opts => {
                 opts.Items["Id"] = prayerGroupId;
-                opts.Items["ImageFile"] = mediaFile;
+                opts.Items["ImageFile"] = groupMediaFiles[0];
+                opts.Items["BannerImageFile"] = groupMediaFiles[1];
             });
 
             await _prayerGroupRepository.UpdatePrayerGroupAsync(updatedPrayerGroup);
@@ -158,6 +161,10 @@ namespace PrayerAppServices.PrayerGroups {
             string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
             PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
             return prayerGroupUser != null && prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin;
+        }
+
+        private async Task<MediaFile?> GetMediaFileByNullableIdAsync(int? fileId) {
+            return fileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(fileId ?? -1) : null;
         }
 
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
