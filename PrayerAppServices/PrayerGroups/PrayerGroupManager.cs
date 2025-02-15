@@ -112,10 +112,9 @@ namespace PrayerAppServices.PrayerGroups {
             int? imageFileId = prayerGroupRequest.ImageFileId;
             int? bannerImageFileId = prayerGroupRequest.BannerImageFileId;
 
-            MediaFile?[] groupMediaFiles = await Task.WhenAll(GetMediaFileByNullableIdAsync(imageFileId), GetMediaFileByNullableIdAsync(bannerImageFileId));
 
-            MediaFile? groupImageFile = groupMediaFiles[0];
-            MediaFile? bannerImageFile = groupMediaFiles[1];
+            MediaFile? groupImageFile = await GetMediaFileByNullableIdAsync(imageFileId);
+            MediaFile? bannerImageFile = await GetMediaFileByNullableIdAsync(bannerImageFileId);
 
             if (groupImageFile != null && groupImageFile.FileType != FileType.Image) {
                 throw new ArgumentException("Cannot use a non-image as a prayer group image");
@@ -127,8 +126,8 @@ namespace PrayerAppServices.PrayerGroups {
 
             PrayerGroup updatedPrayerGroup = _mapper.Map<PrayerGroup>(prayerGroupRequest, opts => {
                 opts.Items["Id"] = prayerGroupId;
-                opts.Items["ImageFile"] = groupMediaFiles[0];
-                opts.Items["BannerImageFile"] = groupMediaFiles[1];
+                opts.Items["ImageFile"] = groupImageFile;
+                opts.Items["BannerImageFile"] = bannerImageFile;
             });
 
             await _prayerGroupRepository.UpdatePrayerGroupAsync(updatedPrayerGroup);
