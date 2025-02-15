@@ -10,6 +10,8 @@ IConfiguration configuration = new ConfigurationBuilder()
     .AddEnvironmentVariables()
     .Build();
 
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
 builder.Configuration.AddConfiguration(configuration);
 
 // Add services to the container.
@@ -25,6 +27,8 @@ builder.Services.AddDbContext(configuration);
 builder.Services.AddJwtConfiguration(configuration);
 
 builder.Services.RegisterServices();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

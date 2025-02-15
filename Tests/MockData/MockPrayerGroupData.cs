@@ -7,8 +7,8 @@ using PrayerAppServices.PrayerGroups.Entities;
 
 namespace Tests.MockData {
     public static class MockPrayerGroupData {
-        public static readonly IEnumerable<PrayerGroupAdminUser> MockPrayerGroupAdminUsers = [
-            new PrayerGroupAdminUser {
+        public static readonly IEnumerable<PrayerGroupUserEntity> MockPrayerGroupAdminUsers = [
+            new PrayerGroupUserEntity {
                 Id = 1,
                 FullName = "Anakin Skywalker",
                 GroupRole = PrayerGroupRole.Admin,
@@ -16,16 +16,18 @@ namespace Tests.MockData {
                 FileName = "anakin_skywalker.png",
                 FileType = FileType.Image,
             },
-            new PrayerGroupAdminUser {
+            new PrayerGroupUserEntity {
                 Id = 2,
-                FullName = "Obi Wan Kenobi"
+                FullName = "Obi Wan Kenobi",
+                GroupRole = PrayerGroupRole.Admin
             },
-            new PrayerGroupAdminUser {
+            new PrayerGroupUserEntity {
                 Id = 3,
                 FullName = "Count Dooku",
                 ImageFileId = 4,
                 FileName = "count_dooku.jpg",
                 FileType = FileType.Image,
+                GroupRole = PrayerGroupRole.Admin
             }
         ];
 
@@ -48,6 +50,22 @@ namespace Tests.MockData {
             FullName = "Commander Cody",
             ImageFileId = 4,
             FileName = "commander_cody.jpg",
+            FileType = FileType.Image,
+            PrayerGroupRole = PrayerGroupRole.Admin,
+        };
+
+        public static readonly PrayerGroupAppUser MockPrayerGroupMember = new PrayerGroupAppUser {
+            Id = 7,
+            FullName = "Commander Fox",
+            ImageFileId = 5,
+            FileType = FileType.Image,
+            PrayerGroupRole = PrayerGroupRole.Member,
+        };
+
+        public static readonly MediaFile MockMediaFile = new MediaFile {
+            Id = 1,
+            FileName = "dunder-mifflin-logo.jpg",
+            Url = "https://127.0.0.1:5000/static/1.jpg",
             FileType = FileType.Image,
         };
     }

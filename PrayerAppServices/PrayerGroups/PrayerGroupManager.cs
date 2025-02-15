@@ -1,6 +1,9 @@
-﻿using PrayerAppServices.Files.Constants;
+﻿using AutoMapper;
+using PrayerAppServices.Files;
+using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
+using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
@@ -8,15 +11,17 @@ using PrayerAppServices.Users.Models;
 using PrayerAppServices.Utils;
 
 namespace PrayerAppServices.PrayerGroups {
-    public class PrayerGroupManager(IPrayerGroupRepository prayerGroupRepository, IUserManager userManager) : IPrayerGroupManager {
+    public class PrayerGroupManager(IPrayerGroupRepository prayerGroupRepository, IUserManager userManager, IMediaFileRepository mediaFileRepository, IMapper mapper) : IPrayerGroupManager {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
         private readonly IUserManager _userManager = userManager;
+        private readonly IMediaFileRepository _mediaFileRepository = mediaFileRepository;
+        private readonly IMapper _mapper = mapper;
 
-        public PrayerGroupDetails CreatePrayerGroup(string authToken, NewPrayerGroupRequest newPrayerGroupRequest) {
+        public async Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
             string? colorStr = newPrayerGroupRequest.Color;
             int? color = colorStr != null ? ColorUtils.ColorHexStringToInt(colorStr) : null;
-            NewPrayerGroup newPrayerGroup = new NewPrayerGroup {
+            PrayerGroupDTO newPrayerGroup = new PrayerGroupDTO {
                 GroupName = newPrayerGroupRequest.GroupName,
                 Description = newPrayerGroupRequest.Description,
                 Rules = newPrayerGroupRequest.Rules,
@@ -24,7 +29,7 @@ namespace PrayerAppServices.PrayerGroups {
                 ImageFileId = newPrayerGroupRequest.ImageFileId
             };
 
-            CreatePrayerGroupResponse createResponse = _prayerGroupRepository.CreatePrayerGroup(username, newPrayerGroup); ;
+            PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup); ;
             MediaFileBase? groupImage = GetGroupImageFromCreateResponse(createResponse);
             IEnumerable<UserSummary>? adminUsers = GetAdminUserFromCreateResponse(createResponse);
 
@@ -43,16 +48,20 @@ namespace PrayerAppServices.PrayerGroups {
             return prayerGroupDetails;
         }
 
-        public PrayerGroupDetails GetPrayerGroupDetails(string authHeader, int prayerGroupId) {
+        public async Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
 
-            PrayerGroup? prayerGroup = _prayerGroupRepository.GetPrayerGroupById(prayerGroupId);
+            Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId, true);
+            Task<IEnumerable<PrayerGroupUserEntity>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
+            Task<PrayerGroupAppUser?> appUserTask = _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
+
+            PrayerGroup? prayerGroup = await prayerGroupTask;
+            IEnumerable<PrayerGroupUserEntity> adminUsers = await adminUsersTask;
+            PrayerGroupAppUser? appUser = await appUserTask;
+
             if (prayerGroup == null) {
                 throw new ArgumentException($"A prayer group with id {prayerGroupId} does not exist");
             }
-
-            IEnumerable<PrayerGroupAdminUser> adminUsers = _prayerGroupRepository.GetPrayerGroupAdmins(prayerGroupId);
-            PrayerGroupAppUser? appUser = _prayerGroupRepository.GetPrayerGroupAppUser(prayerGroupId, username);
 
             IEnumerable<UserSummary> adminUserSummaries = GetAdminUserSummaries(adminUsers);
             string? colorString = prayerGroup.Color.HasValue ? ColorUtils.ColorIntToHexString(prayerGroup.Color ?? 0) : null;
@@ -87,6 +96,64 @@ namespace PrayerAppServices.PrayerGroups {
             return searchResults.Select(GetPrayerGroupDetailFromSearchResult);
         }
 
+        public async Task<PrayerGroupDetails> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
+            if (_prayerGroupRepository.GetPrayerGroupByName(prayerGroupRequest.GroupName) != null) {
+                throw new ArgumentException("A prayer group with this name already exists.");
+            }
+
+            int? imageFileId = prayerGroupRequest.ImageFileId;
+            MediaFile? mediaFile = imageFileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(imageFileId ?? -1) : null;
+
+            PrayerGroup updatedPrayerGroup = _mapper.Map<PrayerGroup>(prayerGroupRequest, opts => {
+                opts.Items["Id"] = prayerGroupId;
+                opts.Items["ImageFile"] = mediaFile;
+            });
+
+            await _prayerGroupRepository.UpdatePrayerGroupAsync(updatedPrayerGroup);
+            return _mapper.Map<PrayerGroupDetails>(updatedPrayerGroup);
+        }
+
+        public async Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? prayerGroupRoles) {
+            IEnumerable<PrayerGroupRole> rolesToSearch = prayerGroupRoles == null || prayerGroupRoles.Count() == 0 ? [PrayerGroupRole.Member, PrayerGroupRole.Admin] : prayerGroupRoles;
+            IEnumerable<PrayerGroupUserEntity> prayerGroupUsers = await _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, rolesToSearch);
+            IEnumerable<PrayerGroupUserSummary> prayerGroupUserSummaries = _mapper.Map<IEnumerable<PrayerGroupUserSummary>>(prayerGroupUsers);
+            return new PrayerGroupUsersResponse { Users = prayerGroupUserSummaries };
+        }
+
+        public async Task UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest) {
+            if (await IsPrayerGroupAdminAsync(authHeader, prayerGroupId)) {
+                throw new ArgumentException("User must be an admin to update prayer group admins.");
+            }
+
+            IEnumerable<PrayerGroupUserEntity> prayerGroupUsers = await _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
+            IEnumerable<int> currentAdminUserIds = prayerGroupUsers.Select(user => user.Id ?? -1);
+            HashSet<int> currentAdminUserIdsSet = new HashSet<int>(currentAdminUserIds);
+            HashSet<int> updatedAdminUserIdsSet = new HashSet<int>(updateAdminsRequest.UserIds);
+
+            IEnumerable<int> adminsToRemove = currentAdminUserIdsSet.Except(updatedAdminUserIdsSet);
+            IEnumerable<int> adminsToAdd = updatedAdminUserIdsSet.Except(currentAdminUserIdsSet);
+            await _prayerGroupRepository.UpdatePrayerGroupAdminsAsync(prayerGroupId, adminsToAdd, adminsToRemove);
+        }
+
+        public async Task AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request) {
+            IEnumerable<PrayerGroupUserToAdd> usersToAdd = _mapper.Map<IEnumerable<PrayerGroupUserToAdd>>(request.Users);
+            await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, usersToAdd);
+        }
+
+        public async Task DeletePrayerGroupUsersAsync(string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request) {
+            if (await IsPrayerGroupAdminAsync(authHeader, prayerGroupId)) {
+                throw new ArgumentException("User must be an admin to delete prayer group users.");
+            }
+
+            await _prayerGroupRepository.DeletePrayerGroupUsersAsync(prayerGroupId, request.UserIds);
+        }
+
+        public async Task<bool> IsPrayerGroupAdminAsync(string authHeader, int prayerGroupId) {
+            string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
+            PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
+            return prayerGroupUser != null && prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin;
+        }
+
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
             MediaFileBase? mediaFile = searchResult.ImageFileId != null
                 ? new MediaFileBase {
@@ -103,7 +170,7 @@ namespace PrayerAppServices.PrayerGroups {
             };
         }
 
-        private static MediaFileBase? GetGroupImageFromCreateResponse(CreatePrayerGroupResponse response) {
+        private static MediaFileBase? GetGroupImageFromCreateResponse(PrayerGroupDetailsEntity response) {
             if (response.ImageFileId == null) {
                 return null;
             }
@@ -115,7 +182,7 @@ namespace PrayerAppServices.PrayerGroups {
             };
         }
 
-        private static IEnumerable<UserSummary>? GetAdminUserFromCreateResponse(CreatePrayerGroupResponse response) {
+        private static IEnumerable<UserSummary>? GetAdminUserFromCreateResponse(PrayerGroupDetailsEntity response) {
             if (response.AdminUserId == null) {
                 return null;
             }
@@ -138,7 +205,7 @@ namespace PrayerAppServices.PrayerGroups {
             return [adminUserSummary];
         }
 
-        private IEnumerable<UserSummary> GetAdminUserSummaries(IEnumerable<PrayerGroupAdminUser> adminUsers) {
+        private IEnumerable<UserSummary> GetAdminUserSummaries(IEnumerable<PrayerGroupUserEntity> adminUsers) {
             return adminUsers.Where(adminUser => adminUser.Id != null)
                 .Select(adminUser => new UserSummary {
                     Id = adminUser.Id ?? -1,

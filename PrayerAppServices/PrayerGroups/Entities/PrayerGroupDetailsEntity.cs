@@ -1,5 +1,5 @@
 ﻿namespace PrayerAppServices.PrayerGroups.Entities {
-    public class CreatePrayerGroupResponse {
+    public class PrayerGroupDetailsEntity {
         public required int Id { get; set; }
         public required string GroupName { get; set; }
         public string? Description { get; set; }

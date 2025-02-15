@@ -1,6 +1,10 @@
-﻿using Isopoh.Cryptography.Argon2;
+﻿using AutoMapper;
+using Isopoh.Cryptography.Argon2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using PrayerAppServices.PrayerGroups;
+using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users.Entities;
 using PrayerAppServices.Users.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,10 +12,12 @@ using System.Security.Claims;
 using System.Text;
 
 namespace PrayerAppServices.Users {
-    public class UserManager(UserManager<AppUser> userManager, IConfiguration configuration, JwtSecurityTokenHandler jwtSecurityTokenHandler) : IUserManager {
+    public class UserManager(UserManager<AppUser> userManager, IConfiguration configuration, JwtSecurityTokenHandler jwtSecurityTokenHandler, IPrayerGroupRepository prayerGroupRepository, IMapper mapper) : IUserManager {
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly IConfiguration _configuration = configuration;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
+        private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
+        private readonly IMapper _mapper = mapper;
 
         private const int AccessTokenValidityMs = 60 * 60 * 1000;
         private const int RefreshTokenValidityMs = 15 * 24 * 60 * 60 * 1000;
@@ -35,7 +41,7 @@ namespace PrayerAppServices.Users {
             AppUser newUser = new AppUser(request.Username, request.FullName, request.Email, passwordHash);
             await _userManager.CreateAsync(newUser);
 
-            return CreateUserSummary(newUser);
+            return CreateUserSummary(newUser, []);
         }
 
         public async Task<UserSummary> GetUserSummaryFromCredentialsAsync(UserCredentials credentials) {
@@ -45,12 +51,18 @@ namespace PrayerAppServices.Users {
                 throw new UnauthorizedAccessException("Password is incorrect.");
             }
 
-            return CreateUserSummary(user);
+            IEnumerable<PrayerGroupSummaryEntity> prayerGroupSummaries = await _prayerGroupRepository.GetPrayerGroupSummariesByUserIdAsync(user.Id);
+            IEnumerable<PrayerGroupDetails> prayerGroups = _mapper.Map<IEnumerable<PrayerGroupDetails>>(prayerGroupSummaries);
+
+            return CreateUserSummary(user, prayerGroups);
         }
 
-        public UserSummary GetUserSummaryFromUserId(int userId) {
+        public async Task<UserSummary> GetUserSummaryFromUserIdAsync(int userId) {
             AppUser user = _userManager.Users.FirstOrDefault((user) => user.Id == userId) ?? throw new ArgumentException("User ID does not exist.");
-            return CreateUserSummary(user);
+            IEnumerable<PrayerGroupSummaryEntity> prayerGroupSummaries = await _prayerGroupRepository.GetPrayerGroupSummariesByUserIdAsync(user.Id);
+            IEnumerable<PrayerGroupDetails> prayerGroups = _mapper.Map<IEnumerable<PrayerGroupDetails>>(prayerGroupSummaries);
+
+            return CreateUserSummary(user, prayerGroups);
         }
 
         public UserTokenPair GetUserTokenPair(string authHeader) {
@@ -72,7 +84,7 @@ namespace PrayerAppServices.Users {
         }
 
 
-        private UserSummary CreateUserSummary(AppUser user) {
+        private UserSummary CreateUserSummary(AppUser user, IEnumerable<PrayerGroupDetails> prayerGroups) {
             string username = user.UserName ?? "";
 
             return new UserSummary {
@@ -83,7 +95,9 @@ namespace PrayerAppServices.Users {
                 Tokens = new UserTokenPair {
                     AccessToken = GenerateToken(username, AccessTokenValidityMs),
                     RefreshToken = GenerateToken(username, RefreshTokenValidityMs)
-                }
+                },
+                PrayerGroups = prayerGroups
+
             };
         }
 

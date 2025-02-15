@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION get_prayer_group_admins(group_id INT)
+CREATE OR REPLACE FUNCTION get_prayer_group_users(group_id INT, prayer_group_roles INT[] DEFAULT NULL)
 RETURNS TABLE (
     id INT,
     full_name VARCHAR(255),
@@ -27,7 +27,7 @@ BEGIN
     LEFT JOIN 
         media_files f ON f.id = a.image_file_id
     WHERE
-        role = 1 AND prayer_group_id = group_id;
+        prayer_group_id = group_id AND (prayer_group_roles IS NULL OR g.role = ANY(prayer_group_roles));
     RETURN;
 END;
 $$

@@ -28,8 +28,8 @@ namespace PrayerAppServices.Users {
         [Authorize]
         [Route("{userId}/summary")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
-        public IActionResult GetUserSummaryFromUserId(int userId) {
-            UserSummary userSummary = _userManager.GetUserSummaryFromUserId(userId);
+        public async Task<IActionResult> GetUserSummaryFromUserIdAsync(int userId) {
+            UserSummary userSummary = await _userManager.GetUserSummaryFromUserIdAsync(userId);
             return Ok(userSummary);
         }
 
