@@ -8,7 +8,7 @@
         public int? ImageFileId { get; set; }
         public string? GroupImageFileName { get; set; }
         public string? GroupImageFileUrl { get; set; }
-        public int? GroupBannerImageFileId { get; set; }
+        public int? BannerImageFileId { get; set; }
         public string? BannerImageFileName { get; set; }
         public string? BannerImageFileUrl { get; set; }
         public int? AdminUserId { get; set; }

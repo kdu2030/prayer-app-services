@@ -7,7 +7,7 @@ CREATE OR REPLACE FUNCTION create_prayer_group(
     group_rules TEXT,
     group_color INT,
     group_image_file_id INT,
-    banner_image_file_id INT
+    group_banner_image_file_id INT
 ) RETURNS TABLE (
     id INT,
     group_name VARCHAR(255),
@@ -17,7 +17,7 @@ CREATE OR REPLACE FUNCTION create_prayer_group(
     image_file_id INT,
     group_image_file_name VARCHAR(255),
     group_image_file_url VARCHAR(255),
-    group_banner_image_file_id INT,
+    banner_image_file_id INT,
     banner_image_file_name VARCHAR(255),
     banner_image_file_url VARCHAR(255),
     admin_user_id INT,
@@ -82,9 +82,9 @@ BEGIN
 
 
     INSERT INTO
-        prayer_groups (group_name, description, rules, color, image_file_id)
+        prayer_groups (group_name, description, rules, color, image_file_id, banner_image_file_id)
     VALUES
-        (new_group_name, group_description, group_rules, group_color, group_image_file_id)
+        (new_group_name, group_description, group_rules, group_color, group_image_file_id, banner_image_file_id)
     RETURNING prayer_groups.id INTO new_group_id;
 
     INSERT INTO

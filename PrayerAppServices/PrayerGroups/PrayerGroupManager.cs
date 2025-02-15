@@ -110,12 +110,11 @@ namespace PrayerAppServices.PrayerGroups {
             int? imageFileId = prayerGroupRequest.ImageFileId;
             int? bannerImageFileId = prayerGroupRequest.BannerImageFileId;
 
-            MediaFile?[] groupMediaFiles = await Task.WhenAll(GetMediaFileByNullableIdAsync(imageFileId), GetMediaFileByNullableIdAsync(bannerImageFileId));
+            // TODO: Remove?
+            //MediaFile?[] groupMediaFiles = await Task.WhenAll(GetMediaFileByNullableIdAsync(imageFileId), GetMediaFileByNullableIdAsync(bannerImageFileId));
 
             PrayerGroup updatedPrayerGroup = _mapper.Map<PrayerGroup>(prayerGroupRequest, opts => {
                 opts.Items["Id"] = prayerGroupId;
-                opts.Items["ImageFile"] = groupMediaFiles[0];
-                opts.Items["BannerImageFile"] = groupMediaFiles[1];
             });
 
             await _prayerGroupRepository.UpdatePrayerGroupAsync(updatedPrayerGroup);
@@ -196,11 +195,11 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         private static MediaFileBase? GetGroupBannerImageFromCreateResponse(PrayerGroupDetailsEntity response) {
-            if (response.GroupBannerImageFileId == null) {
+            if (response.BannerImageFileId == null) {
                 return null;
             }
             return new MediaFileBase {
-                Id = response.GroupBannerImageFileId,
+                Id = response.BannerImageFileId,
                 FileName = response.BannerImageFileName ?? "",
                 Url = response.BannerImageFileUrl ?? "",
                 FileType = FileType.Image,
