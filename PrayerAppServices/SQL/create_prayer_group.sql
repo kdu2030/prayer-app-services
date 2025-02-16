@@ -65,7 +65,7 @@ BEGIN
         f.url,
         f.file_type
     FROM media_files f, temp_admin_user a
-    WHERE f.id IN (a.image_file_id, group_image_file_id, banner_image_file_id);
+    WHERE f.id IN (a.image_file_id, group_image_file_id, group_banner_image_file_id);
 
     IF NOT EXISTS (SELECT 1 FROM temp_admin_user)
     THEN
@@ -80,11 +80,19 @@ BEGIN
         RAISE EXCEPTION 'Image file for group not found or file is not an image.';
     END IF;
 
+    IF group_banner_image_file_id IS NOT NULL AND NOT EXISTS (
+        SELECT 1 FROM temp_relevant_files f
+        WHERE f.id = group_banner_image_file_id AND file_type = 1
+    )
+    THEN
+        RAISE EXCEPTION 'Banner image file for group not found or file is not an image.';
+    END IF;
+
 
     INSERT INTO
         prayer_groups (group_name, description, rules, color, image_file_id, banner_image_file_id)
     VALUES
-        (new_group_name, group_description, group_rules, group_color, group_image_file_id, banner_image_file_id)
+        (new_group_name, group_description, group_rules, group_color, group_image_file_id, group_banner_image_file_id)
     RETURNING prayer_groups.id INTO new_group_id;
 
     INSERT INTO
@@ -106,7 +114,7 @@ BEGIN
             group_image_file_id,
             f2.file_name,
             f2.url,
-            banner_image_file_id,
+            group_banner_image_file_id,
             f3.file_name,
             f3.url,
             a.id,
@@ -117,7 +125,7 @@ BEGIN
         FROM temp_admin_user a 
         LEFT JOIN temp_relevant_files f1 ON a.image_file_id = f1.id
         LEFT JOIN temp_relevant_files f2 ON f2.id = group_image_file_id
-        LEFT JOIN temp_relevant_files f3 ON f3.id = banner_image_file_id;
+        LEFT JOIN temp_relevant_files f3 ON f3.id = group_banner_image_file_id;
     DROP TABLE IF EXISTS temp_admin_user;
     DROP TABLE IF EXISTS temp_relevant_files;
     RETURN;
