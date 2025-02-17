@@ -7,7 +7,7 @@ namespace PrayerAppServices.Migrations {
     public partial class AddGetPrayerGroupUser : Migration {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder) {
-            string filePath = @"../PrayerAppServices/SQL/AddGetPrayerGroupUser.sql";
+            string filePath = @"../PrayerAppServices/SQL/get_prayer_group_user.sql";
             migrationBuilder.Sql(File.ReadAllText(filePath));
         }
 
