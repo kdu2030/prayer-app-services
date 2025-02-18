@@ -9,6 +9,7 @@ BEGIN
         FROM
             unnest(users_to_add) AS u
         INNER JOIN prayer_group_users pgu ON pgu.app_user_id =(u).id
+        WHERE pgu.prayer_group_id = group_id
     )
     THEN
         RAISE EXCEPTION 'Users to add cannot contain users that are already in the Prayer Group.';
