@@ -169,8 +169,7 @@ namespace PrayerAppServices.PrayerGroups {
                 throw new ArgumentException("User must be a member of the prayer group to delete prayer group users.");
             }
 
-            bool isUserDeletingSelf = request.UserIds.Contains(prayerGroupUser.Id ?? -1);
-
+            bool isUserDeletingSelf = request.UserIds.ToArray().Length == 1 && request.UserIds.Contains(prayerGroupUser.Id ?? -1);
             if (!isUserDeletingSelf && prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin) {
                 throw new ArgumentException("User must be an admin to delete prayer group users.");
             }
