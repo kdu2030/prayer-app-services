@@ -162,7 +162,16 @@ namespace PrayerAppServices.PrayerGroups {
         }
 
         public async Task DeletePrayerGroupUsersAsync(string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request) {
-            if (await IsPrayerGroupAdminAsync(authHeader, prayerGroupId)) {
+            string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
+            PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
+
+            if (prayerGroupUser == null) {
+                throw new ArgumentException("User must be a member of the prayer group to delete prayer group users.");
+            }
+
+            bool isUserDeletingSelf = request.UserIds.Contains(prayerGroupUser.Id ?? -1);
+
+            if (!isUserDeletingSelf && prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin) {
                 throw new ArgumentException("User must be an admin to delete prayer group users.");
             }
 
