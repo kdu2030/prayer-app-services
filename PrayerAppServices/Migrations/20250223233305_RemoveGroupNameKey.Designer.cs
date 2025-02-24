@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrayerAppServices.Data;
@@ -11,9 +12,11 @@ using PrayerAppServices.Data;
 namespace PrayerAppServices.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250223233305_RemoveGroupNameKey")]
+    partial class RemoveGroupNameKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -254,10 +257,6 @@ namespace PrayerAppServices.Migrations
 
                     b.HasIndex("BannerImageFileId")
                         .HasDatabaseName("ix_prayer_groups_banner_image_file_id");
-
-                    b.HasIndex("GroupName")
-                        .IsUnique()
-                        .HasDatabaseName("ix_prayer_groups_group_name");
 
                     b.HasIndex("ImageFileId")
                         .HasDatabaseName("ix_prayer_groups_image_file_id");
