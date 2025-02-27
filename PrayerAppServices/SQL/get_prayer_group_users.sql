@@ -1,7 +1,10 @@
+DROP FUNCTION IF EXISTS get_prayer_group_users;
+
 CREATE OR REPLACE FUNCTION get_prayer_group_users(group_id INT, prayer_group_roles INT[] DEFAULT NULL)
 RETURNS TABLE (
     id INT,
     full_name VARCHAR(255),
+    user_name VARCHAR(255),
     group_role INT,
     image_file_id INT,
     file_name VARCHAR(255),
@@ -15,6 +18,7 @@ BEGIN
     SELECT
         a.id,
         a.full_name,
+        a.user_name,
         g.role,
         a.image_file_id,
         f.file_name,

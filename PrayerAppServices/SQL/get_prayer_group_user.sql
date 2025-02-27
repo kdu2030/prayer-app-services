@@ -1,7 +1,10 @@
+DROP FUNCTION IF EXISTS get_prayer_group_user;
+
 CREATE OR REPLACE FUNCTION get_prayer_group_user(group_id INT, username VARCHAR(255))
 RETURNS TABLE (
     id INT,
     full_name VARCHAR(255),
+    user_name VARCHAR(255),
     image_file_id INT,
     file_name VARCHAR(255),
     file_url VARCHAR(255),
@@ -15,6 +18,7 @@ BEGIN
     SELECT
         a.id,
         a.full_name,
+        a.user_name,
         a.image_file_id,
         f.file_name,
         f.url,
