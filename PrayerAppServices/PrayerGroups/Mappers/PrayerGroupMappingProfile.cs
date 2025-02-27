@@ -43,6 +43,7 @@ namespace PrayerAppServices.PrayerGroups.Mappers {
             CreateMap<PrayerGroupUserEntity, PrayerGroupUserSummary>()
                 .ForMember(dest => dest.Id, options => options.MapFrom(src => src.Id))
                 .ForMember(dest => dest.FullName, options => options.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.Username, options => options.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Role, options => options.MapFrom(src => src.GroupRole))
                 .ForMember(dest => dest.Image, options => options.MapFrom(src => src.ImageFileId != null ? new MediaFile { Id = src.ImageFileId, FileName = src.FileName ?? "", Url = src.FileUrl ?? "", FileType = FileType.Image } : null));
 
