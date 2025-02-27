@@ -46,17 +46,6 @@ namespace PrayerAppServices.PrayerGroups {
                 .FirstOrDefaultAsync(group => group.Id == id);
         }
 
-        public async Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupAdminsAsync(int prayerGroupId) {
-            await using NpgsqlConnection connection = await Connection;
-
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("prayer_group_id", prayerGroupId);
-
-            string sql = "SELECT * FROM get_prayer_group_admins(@prayer_group_id)";
-            IEnumerable<PrayerGroupUserEntity> adminUsers = await connection.QueryAsync<PrayerGroupUserEntity>(sql, parameters);
-            return adminUsers;
-        }
-
         public async Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole> prayerGroupRoles) {
             await using NpgsqlConnection connection = await Connection;
             PrayerGroupRole[] rolesToQuery = prayerGroupRoles.ToArray();
