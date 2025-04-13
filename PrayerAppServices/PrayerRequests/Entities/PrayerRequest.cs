@@ -1,4 +1,5 @@
 ﻿using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.Users.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrayerAppServices.PrayerRequests.Entities {
@@ -10,8 +11,10 @@ namespace PrayerAppServices.PrayerRequests.Entities {
         public required string RequestDescription { get; set; }
         public required DateTime CreatedDate { get; set; }
         public required PrayerGroup PrayerGroup { get; set; }
-
-        // TODO: Add additional fields, e.g. User that created it, expiration date, etc.
+        public required AppUser User { get; set; }
+        public required int LikeCount { get; set; }
+        public required int CommentCount { get; set; }
+        public required int PrayedCount { get; set; }
 
     }
 }
