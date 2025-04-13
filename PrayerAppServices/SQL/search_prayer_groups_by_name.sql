@@ -24,6 +24,7 @@ BEGIN
         media_files f ON f.id = g.image_file_id
     WHERE 
         to_tsvector(g.group_name) @@ websearch_to_tsquery(name_query)
+        OR g.group_name ILIKE '%' || name_query || '%'
     LIMIT max_num_results;
     RETURN;
 END;
