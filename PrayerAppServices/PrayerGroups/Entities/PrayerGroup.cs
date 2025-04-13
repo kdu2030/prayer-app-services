@@ -1,4 +1,5 @@
 ﻿using PrayerAppServices.Files.Entities;
+using PrayerAppServices.PrayerRequests.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrayerAppServices.PrayerGroups.Entities {
@@ -16,5 +17,6 @@ namespace PrayerAppServices.PrayerGroups.Entities {
         public MediaFile? BannerImageFile { get; set; }
 
         public IEnumerable<PrayerGroupUser>? Users { get; set; }
+        public IEnumerable<PrayerRequest>? PrayerRequests { get; set; }
     }
 }
