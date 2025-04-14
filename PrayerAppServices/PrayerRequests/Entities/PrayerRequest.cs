@@ -17,6 +17,6 @@ namespace PrayerAppServices.PrayerRequests.Entities {
         public required int PrayedCount { get; set; }
         public IEnumerable<PrayerRequestLike>? Likes { get; set; }
         public IEnumerable<PrayerRequestComment>? Comments { get; set; }
-        public DateTime? ExpirationDate;
+        public DateTime? ExpirationDate { get; set; }
     }
 }
