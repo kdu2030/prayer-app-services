@@ -8,6 +8,8 @@ namespace PrayerAppServices.PrayerRequests {
         private readonly IPrayerRequestRepository _prayerRequestRepository = prayerRequestRepository;
 
         public async Task CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest) {
+            // TODO: Think about saving timezones in UTC
+
             AppUser user = new AppUser {
                 Id = createRequest.UserId
             };
