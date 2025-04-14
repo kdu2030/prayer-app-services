@@ -1,13 +1,11 @@
 ﻿using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Models;
-using PrayerAppServices.Users;
 using PrayerAppServices.Users.Entities;
 
 namespace PrayerAppServices.PrayerRequests {
-    public class PrayerRequestManager(IPrayerRequestRepository prayerRequestRepository, IUserManager userManager) : IPrayerRequestManager {
+    public class PrayerRequestManager(IPrayerRequestRepository prayerRequestRepository) : IPrayerRequestManager {
         private readonly IPrayerRequestRepository _prayerRequestRepository = prayerRequestRepository;
-        private readonly IUserManager _userManager = userManager;
 
         public async Task CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest) {
             AppUser user = new AppUser {
@@ -33,3 +31,4 @@ namespace PrayerAppServices.PrayerRequests {
             await _prayerRequestRepository.CreatePrayerRequestAsync(prayerRequest);
         }
     }
+}
