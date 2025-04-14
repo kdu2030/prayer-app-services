@@ -7,7 +7,7 @@ namespace PrayerAppServices.PrayerRequests {
     public class PrayerRequestManager(IPrayerRequestRepository prayerRequestRepository) : IPrayerRequestManager {
         private readonly IPrayerRequestRepository _prayerRequestRepository = prayerRequestRepository;
 
-        public async Task CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest) {
+        public async Task CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest, CancellationToken token) {
             DateTime? expirationDate = createRequest.ExpirationDate.HasValue ? TimeZoneInfo.ConvertTimeToUtc(createRequest.ExpirationDate.Value) : null;
 
             AppUser user = new AppUser {
@@ -30,7 +30,7 @@ namespace PrayerAppServices.PrayerRequests {
                 PrayerGroup = prayerGroup
             };
 
-            await _prayerRequestRepository.CreatePrayerRequestAsync(prayerRequest);
+            await _prayerRequestRepository.CreatePrayerRequestAsync(prayerRequest, token);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace PrayerAppServices.PrayerRequests {
     public class PrayerRequestRepository(AppDbContext dbContext) : IPrayerRequestRepository {
         private readonly AppDbContext _dbContext = dbContext;
 
-        public async Task CreatePrayerRequestAsync(PrayerRequest prayerRequest) {
+        public async Task CreatePrayerRequestAsync(PrayerRequest prayerRequest, CancellationToken token) {
             if (prayerRequest.User != null) {
                 _dbContext.Attach(prayerRequest.User);
             }
@@ -15,7 +15,7 @@ namespace PrayerAppServices.PrayerRequests {
             }
 
             _dbContext.Add(prayerRequest);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(token);
         }
 
     }
