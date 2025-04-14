@@ -8,6 +8,7 @@ namespace PrayerAppServices.PrayerRequests {
         private readonly IPrayerRequestRepository _prayerRequestRepository = prayerRequestRepository;
 
         public async Task CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest, CancellationToken token) {
+            // TODO: Need to add check to see if the user is a member of the prayer group
             DateTime? expirationDate = createRequest.ExpirationDate.HasValue ? TimeZoneInfo.ConvertTimeToUtc(createRequest.ExpirationDate.Value) : null;
 
             AppUser user = new AppUser {
