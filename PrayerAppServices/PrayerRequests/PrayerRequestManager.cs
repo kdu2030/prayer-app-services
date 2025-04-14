@@ -8,7 +8,7 @@ namespace PrayerAppServices.PrayerRequests {
         private readonly IPrayerRequestRepository _prayerRequestRepository = prayerRequestRepository;
 
         public async Task CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest) {
-            // TODO: Think about saving timezones in UTC
+            DateTime? expirationDate = createRequest.ExpirationDate.HasValue ? TimeZoneInfo.ConvertTimeToUtc(createRequest.ExpirationDate.Value) : null;
 
             AppUser user = new AppUser {
                 Id = createRequest.UserId
@@ -25,7 +25,7 @@ namespace PrayerAppServices.PrayerRequests {
                 LikeCount = 0,
                 CommentCount = 0,
                 PrayedCount = 0,
-                ExpirationDate = createRequest.ExpirationDate,
+                ExpirationDate = expirationDate,
                 User = user,
                 PrayerGroup = prayerGroup
             };
