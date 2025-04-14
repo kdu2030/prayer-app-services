@@ -5,7 +5,7 @@ using PrayerAppServices.Users;
 using PrayerAppServices.Users.Entities;
 
 namespace PrayerAppServices.PrayerRequests {
-    public class PrayerRequestManager(IPrayerRequestRepository prayerRequestRepository, IUserManager userManager) {
+    public class PrayerRequestManager(IPrayerRequestRepository prayerRequestRepository, IUserManager userManager) : IPrayerRequestManager {
         private readonly IPrayerRequestRepository _prayerRequestRepository = prayerRequestRepository;
         private readonly IUserManager _userManager = userManager;
 
