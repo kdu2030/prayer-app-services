@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.PrayerRequests.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrayerAppServices.Users.Entities {
@@ -11,6 +12,7 @@ namespace PrayerAppServices.Users.Entities {
         public MediaFile? ImageFile { get; set; }
 
         public IEnumerable<PrayerGroupUser>? GroupUsers { get; set; }
+        public IEnumerable<PrayerRequest>? PrayerRequests { get; set; }
 
         public AppUser() : base() {
         }
