@@ -2,7 +2,7 @@
 using PrayerAppServices.PrayerRequests.Models;
 
 namespace PrayerAppServices.PrayerRequests {
-    public interface IPrayerRequestsController {
+    public interface IPrayerRequestController {
         Task<ActionResult> CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest);
     }
 }

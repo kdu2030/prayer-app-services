@@ -5,7 +5,7 @@ using PrayerAppServices.PrayerRequests.Models;
 namespace PrayerAppServices.PrayerRequests {
     [ApiController]
     [Route("/api/v1")]
-    public class PrayerRequestsController(IPrayerRequestManager prayerRequestManager) : ControllerBase, IPrayerRequestsController {
+    public class PrayerRequestController(IPrayerRequestManager prayerRequestManager) : ControllerBase, IPrayerRequestController {
         private readonly IPrayerRequestManager _prayerRequestManager = prayerRequestManager;
 
         [HttpPost("prayergroup/{prayerGroupId}/prayer-request")]
