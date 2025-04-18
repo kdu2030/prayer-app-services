@@ -1,6 +1,7 @@
 ﻿
 using Moq;
 using PrayerAppServices.PrayerGroups;
+using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerRequests;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Models;
@@ -49,6 +50,25 @@ namespace Tests {
                 Assert.That(createdPrayerRequest?.RequestTitle, Is.EqualTo(createRequest.RequestTitle));
                 Assert.That(createdPrayerRequest?.RequestDescription, Is.EqualTo(createRequest.RequestDescription));
                 Assert.That(createdPrayerRequest?.User?.Id, Is.EqualTo(createRequest.UserId));
+            });
+        }
+
+        [Test]
+        public void CreatePrayerRequestAsync_UserNotInGroup_ThrowsInvalidOperationException() {
+            _mockPrayerGroupRepository
+                .Setup(repo => repo.GetPrayerGroupUserByUserIdAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((PrayerGroupUser?)null);
+
+            PrayerRequestCreateRequest createRequest = new PrayerRequestCreateRequest {
+                UserId = 1,
+                RequestTitle = "Test Title",
+                RequestDescription = "Test Description"
+            };
+
+            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object);
+
+            Assert.ThrowsAsync<InvalidOperationException>(async () => {
+                await prayerRequestManager.CreatePrayerRequestAsync(1, createRequest, CancellationToken.None);
             });
         }
 
