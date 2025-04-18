@@ -135,10 +135,10 @@ namespace PrayerAppServices.PrayerGroups {
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<PrayerGroupUser?> GetPrayerGroupUserByUserIdAsync(int prayerGroupId, int userId) {
+        public async Task<PrayerGroupUser?> GetPrayerGroupUserByUserIdAsync(int prayerGroupId, int userId, CancellationToken token = default) {
             return await _dbContext.PrayerGroupUsers
                 .Where(user => user.PrayerGroup.Id == prayerGroupId && user.AppUser.Id == userId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(token);
         }
     }
 }

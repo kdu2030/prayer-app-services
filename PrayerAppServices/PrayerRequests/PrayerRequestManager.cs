@@ -10,7 +10,7 @@ namespace PrayerAppServices.PrayerRequests {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
 
         public async Task CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest, CancellationToken token) {
-            PrayerGroupUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupUserByUserIdAsync(prayerGroupId, createRequest.UserId);
+            PrayerGroupUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupUserByUserIdAsync(prayerGroupId, createRequest.UserId, token);
             if (prayerGroupUser == null) {
                 throw new InvalidOperationException($"User with ID {createRequest.UserId} is not a member of the prayer group with ID {prayerGroupId}.");
             }
