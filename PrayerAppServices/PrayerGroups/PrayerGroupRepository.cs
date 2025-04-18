@@ -59,7 +59,7 @@ namespace PrayerAppServices.PrayerGroups {
             return users;
         }
 
-        public async Task<PrayerGroupAppUser?> GetPrayerGroupAppUserAsync(int prayerGroupId, string username) {
+        public async Task<PrayerGroupAppUser?> GetPrayerGroupAppUserByUsernameAsync(int prayerGroupId, string username) {
             await using NpgsqlConnection connection = await Connection;
 
             DynamicParameters parameters = new DynamicParameters();
@@ -133,6 +133,12 @@ namespace PrayerAppServices.PrayerGroups {
                 _dbContext.PrayerGroupUsers.Where(user => user.PrayerGroup.Id == prayerGroupId && userIds.Contains(user.AppUser.Id))
             );
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<PrayerGroupUser?> GetPrayerGroupUserByUserIdAsync(int prayerGroupId, int userId, CancellationToken token = default) {
+            return await _dbContext.PrayerGroupUsers
+                .Where(user => user.PrayerGroup.Id == prayerGroupId && user.AppUser.Id == userId)
+                .FirstOrDefaultAsync(token);
         }
     }
 }

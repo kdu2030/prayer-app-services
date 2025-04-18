@@ -68,5 +68,6 @@ namespace Tests.MockData {
             Url = "https://127.0.0.1:5000/static/1.jpg",
             FileType = FileType.Image,
         };
+
     }
 }

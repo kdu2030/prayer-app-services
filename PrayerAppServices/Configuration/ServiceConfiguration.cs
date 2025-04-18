@@ -1,7 +1,7 @@
 ﻿using PrayerAppServices.Files;
 using PrayerAppServices.PrayerGroups;
+using PrayerAppServices.PrayerRequests;
 using PrayerAppServices.Users;
-using RestSharp;
 
 namespace PrayerAppServices.Configuration {
     public static class ServiceConfiguration {
@@ -13,6 +13,9 @@ namespace PrayerAppServices.Configuration {
             services.AddSingleton<IFileServicesClient, FileServicesClient>();
             services.AddScoped<IPrayerGroupRepository, PrayerGroupRepository>();
             services.AddScoped<IPrayerGroupManager, PrayerGroupManager>();
+            services.AddScoped<IPrayerRequestRepository, PrayerRequestRepository>();
+            services.AddScoped<IPrayerRequestManager, PrayerRequestManager>();
+
         }
 
     }

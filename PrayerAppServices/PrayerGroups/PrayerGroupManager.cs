@@ -30,7 +30,7 @@ namespace PrayerAppServices.PrayerGroups {
                 BannerImageFileId = newPrayerGroupRequest.BannerImageFileId,
             };
 
-            PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup); ;
+            PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup);
 
             MediaFileBase? groupImage = GetGroupImageFromCreateResponse(createResponse);
             MediaFileBase? bannerImage = GetGroupBannerImageFromCreateResponse(createResponse);
@@ -58,7 +58,7 @@ namespace PrayerAppServices.PrayerGroups {
 
             Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId, true);
             Task<IEnumerable<PrayerGroupUserEntity>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
-            Task<PrayerGroupAppUser?> appUserTask = _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
+            Task<PrayerGroupAppUser?> appUserTask = _prayerGroupRepository.GetPrayerGroupAppUserByUsernameAsync(prayerGroupId, username);
 
             PrayerGroup? prayerGroup = await prayerGroupTask;
             IEnumerable<PrayerGroupUserEntity> adminUsers = await adminUsersTask;
@@ -163,7 +163,7 @@ namespace PrayerAppServices.PrayerGroups {
 
         public async Task DeletePrayerGroupUsersAsync(string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
-            PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
+            PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserByUsernameAsync(prayerGroupId, username);
 
             if (prayerGroupUser == null) {
                 throw new ArgumentException("User must be a member of the prayer group to delete prayer group users.");
@@ -179,7 +179,7 @@ namespace PrayerAppServices.PrayerGroups {
 
         public async Task<bool> IsPrayerGroupAdminAsync(string authHeader, int prayerGroupId) {
             string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
-            PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserAsync(prayerGroupId, username);
+            PrayerGroupAppUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupAppUserByUsernameAsync(prayerGroupId, username);
             return prayerGroupUser != null && prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin;
         }
 
