@@ -10,7 +10,7 @@ namespace PrayerAppServices.PrayerRequests {
         private readonly IPrayerRequestManager _prayerRequestManager = prayerRequestManager;
 
         [HttpPost("prayergroup/{prayerGroupId}/prayer-request")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult> CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest, CancellationToken token) {
             await _prayerRequestManager.CreatePrayerRequestAsync(prayerGroupId, createRequest, token);
             return Created();

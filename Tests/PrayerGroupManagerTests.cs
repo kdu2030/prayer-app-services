@@ -229,7 +229,7 @@ namespace Tests {
             IEnumerable<int> adminsToRemove = [];
 
             _mockPrayerGroupRepository
-                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(repository => repository.GetPrayerGroupAppUserByUsernameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(MockPrayerGroupData.PrayerGroupAppUser);
 
             _mockPrayerGroupRepository
@@ -268,7 +268,7 @@ namespace Tests {
             IEnumerable<int> adminsToRemove = [];
 
             _mockPrayerGroupRepository
-                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(repository => repository.GetPrayerGroupAppUserByUsernameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(MockPrayerGroupData.PrayerGroupAppUser);
 
             _mockPrayerGroupRepository
@@ -301,7 +301,7 @@ namespace Tests {
         [Test]
         public void UpdatePrayerGroupAdminsAsync_NonAdminUpdatesAdmins_ThrowsException() {
             _mockPrayerGroupRepository
-                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(repository => repository.GetPrayerGroupAppUserByUsernameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(MockPrayerGroupData.MockPrayerGroupMember);
 
             IEnumerable<int> prayerGroupAdminIds = MockPrayerGroupData.MockPrayerGroupAdminUsers
@@ -319,7 +319,7 @@ namespace Tests {
 
 
             _mockPrayerGroupRepository
-                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(repository => repository.GetPrayerGroupAppUserByUsernameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(MockPrayerGroupData.PrayerGroupAppUser);
 
             _mockPrayerGroupRepository
@@ -338,7 +338,7 @@ namespace Tests {
         public Task DeletePrayerGroupUsersAsync_GivenValidRequest_DeletesUsers() {
             IEnumerable<int> userIds = [1, 2, 3];
             _mockPrayerGroupRepository
-                .Setup(repository => repository.GetPrayerGroupAppUserAsync(It.IsAny<int>(), It.IsAny<string>()))
+                .Setup(repository => repository.GetPrayerGroupAppUserByUsernameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(MockPrayerGroupData.PrayerGroupAppUser);
 
             _mockPrayerGroupRepository

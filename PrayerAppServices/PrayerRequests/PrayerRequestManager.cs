@@ -1,14 +1,20 @@
-﻿using PrayerAppServices.PrayerGroups.Entities;
+﻿using PrayerAppServices.PrayerGroups;
+using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Models;
 using PrayerAppServices.Users.Entities;
 
 namespace PrayerAppServices.PrayerRequests {
-    public class PrayerRequestManager(IPrayerRequestRepository prayerRequestRepository) : IPrayerRequestManager {
+    public class PrayerRequestManager(IPrayerRequestRepository prayerRequestRepository, IPrayerGroupRepository prayerGroupRepository) : IPrayerRequestManager {
         private readonly IPrayerRequestRepository _prayerRequestRepository = prayerRequestRepository;
+        private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
 
         public async Task CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest, CancellationToken token) {
-            // TODO: Need to add check to see if the user is a member of the prayer group
+            PrayerGroupUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupUserByUserIdAsync(prayerGroupId, createRequest.UserId);
+            if (prayerGroupUser == null) {
+                throw new InvalidOperationException($"User with ID {createRequest.UserId} is not a member of the prayer group with ID {prayerGroupId}.");
+            }
+
             DateTime? expirationDate = createRequest.ExpirationDate.HasValue ? TimeZoneInfo.ConvertTimeToUtc(createRequest.ExpirationDate.Value) : null;
 
             AppUser user = new AppUser {
