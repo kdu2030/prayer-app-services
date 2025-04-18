@@ -24,6 +24,11 @@ namespace PrayerAppServices.Error {
                 return;
             }
 
+            if (exception is InvalidOperationException invalidOperationException) {
+                await HandleInvalidOpertionExceptionAsync(context, invalidOperationException);
+                return;
+            }
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
@@ -85,6 +90,20 @@ namespace PrayerAppServices.Error {
                 Url = context.Request.Path,
                 RequestMethod = context.Request.Method,
                 Message = "A data validation error occurred."
+            };
+
+            await context.Response.WriteAsJsonAsync(error);
+        }
+
+        private static async Task HandleInvalidOpertionExceptionAsync(HttpContext context, InvalidOperationException exception) {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            DataValidationError error = new DataValidationError {
+                ErrorCode = ErrorCode.DataValidationError,
+                DataValidationErrors = [exception.Message],
+                Url = context.Request.Path,
+                RequestMethod = context.Request.Method,
+                Message = "Invalid operation"
             };
 
             await context.Response.WriteAsJsonAsync(error);
