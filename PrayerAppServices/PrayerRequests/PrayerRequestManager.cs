@@ -1,13 +1,15 @@
-﻿using PrayerAppServices.PrayerGroups;
+﻿using AutoMapper;
+using PrayerAppServices.PrayerGroups;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Models;
 using PrayerAppServices.Users.Entities;
 
 namespace PrayerAppServices.PrayerRequests {
-    public class PrayerRequestManager(IPrayerRequestRepository prayerRequestRepository, IPrayerGroupRepository prayerGroupRepository) : IPrayerRequestManager {
+    public class PrayerRequestManager(IPrayerRequestRepository prayerRequestRepository, IPrayerGroupRepository prayerGroupRepository, IMapper mapper) : IPrayerRequestManager {
         private readonly IPrayerRequestRepository _prayerRequestRepository = prayerRequestRepository;
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
+        private readonly IMapper _mapper = mapper;
 
         public async Task CreatePrayerRequestAsync(int prayerGroupId, PrayerRequestCreateRequest createRequest, CancellationToken token) {
             PrayerGroupUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupUserByUserIdAsync(prayerGroupId, createRequest.UserId, token);
@@ -40,10 +42,19 @@ namespace PrayerAppServices.PrayerRequests {
             await _prayerRequestRepository.CreatePrayerRequestAsync(prayerRequest, token);
         }
 
-        public async Task<IEnumerable<PrayerRequestModel>> GetPrayerRequestsAsync(int userId, PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
-            IEnumerable<PrayerRequest> prayerRequests = await _prayerRequestRepository.GetPrayerRequestsAsync(filterCriteria, token);
-            UserPrayerRequestData userPrayerRequestData = await _prayerRequestRepository.GetPrayerRequestUserDataAsync(userId, token);
+        public async Task<IEnumerable<PrayerRequestModel>> GetPrayerRequestsAsync(PrayerRequestFilterRequest request, CancellationToken token) {
+            IEnumerable<PrayerRequest> prayerRequests = await _prayerRequestRepository.GetPrayerRequestsAsync(request.FilterCriteria, token);
+            UserPrayerRequestData userPrayerRequestData = await _prayerRequestRepository.GetPrayerRequestUserDataAsync(request.UserId, token);
 
+            HashSet<int?> userLikedRequestIds = new HashSet<int?>(userPrayerRequestData.UserLikedRequestIds ?? []);
+            HashSet<int?> userCommentedRequestIds = new HashSet<int?>(userPrayerRequestData.UserCommentedPrayerRequestIds ?? []);
+
+            // TODO: Need to add support for prayed requests
+
+            return _mapper.Map<IEnumerable<PrayerRequest>, IEnumerable<PrayerRequestModel>>(prayerRequests, opts => {
+                opts.Items.Add("LikedRequestIds", userLikedRequestIds);
+                opts.Items.Add("CommentedRequestIds", userCommentedRequestIds);
+            });
 
         }
 

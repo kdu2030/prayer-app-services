@@ -23,23 +23,17 @@ namespace PrayerAppServices.PrayerRequests {
         }
 
         public async Task<IEnumerable<PrayerRequest>> GetPrayerRequestsAsync(PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
-            int? userId = filterCriteria.UserId;
             List<int> prayerGroupIds = new List<int>(filterCriteria.PrayerGroupIds ?? []);
             List<int> creatorUserIds = new List<int>(filterCriteria.CreatorUserIds ?? []);
 
             int pageIndex = filterCriteria.PageIndex ?? 0;
             int pageSize = filterCriteria.PageSize ?? 20;
 
-            if (!userId.HasValue && prayerGroupIds.Count == 0 || creatorUserIds.Count == 0) {
-                throw new ArgumentException("At least one of the following criteria must be provided: UserId, PrayerGroupIds, or CreatorUserIds.");
+            if (prayerGroupIds.Count == 0 || creatorUserIds.Count == 0) {
+                throw new ArgumentException("At least one of the following criteria must be provided: PrayerGroupIds or CreatorUserIds.");
             }
 
             IQueryable<PrayerRequest> query = _dbContext.PrayerRequests.AsQueryable();
-
-
-            if (userId.HasValue) {
-                query = query.Where(prayerRequest => prayerRequest.User != null && prayerRequest.User.Id == userId.Value);
-            }
 
             if (prayerGroupIds.Count > 0) {
                 query = query.Where(prayerRequest => prayerRequest.PrayerGroup != null && prayerGroupIds.Contains(prayerRequest.PrayerGroup.Id ?? -1));
@@ -58,7 +52,7 @@ namespace PrayerAppServices.PrayerRequests {
             query = ApplySorting(query, filterCriteria.SortConfig);
             query = query.Skip(pageIndex * pageSize).Take(pageSize);
 
-            query = query.Select(query => new PrayerRequest {
+            query = query.Select(query => new PrayerRequestDTO {
                 Id = query.Id,
                 RequestTitle = query.RequestTitle,
                 RequestDescription = query.RequestDescription,
@@ -76,7 +70,8 @@ namespace PrayerAppServices.PrayerRequests {
                     Id = query.PrayerGroup.Id,
                     GroupName = query.PrayerGroup.GroupName,
                     ImageFile = query.PrayerGroup.ImageFile,
-                } : null
+                } : null,
+
             });
 
             return await query.ToListAsync(token);

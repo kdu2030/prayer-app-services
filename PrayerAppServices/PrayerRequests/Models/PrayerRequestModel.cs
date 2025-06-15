@@ -1,5 +1,4 @@
 ﻿using PrayerAppServices.PrayerGroups.Models;
-using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.Users.Models;
 
 namespace PrayerAppServices.PrayerRequests.Models {
@@ -16,6 +15,6 @@ namespace PrayerAppServices.PrayerRequests.Models {
         public DateTime? ExpirationDate { get; set; }
         public bool? IsUserLiked { get; set; }
         public bool? IsUserPrayed { get; set; }
-        public IEnumerable<PrayerRequestComment>? Comments { get; set; }
+        public bool? IsUserCommented { get; set; }
     }
 }
