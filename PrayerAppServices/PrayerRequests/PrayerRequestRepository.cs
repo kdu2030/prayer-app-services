@@ -22,7 +22,7 @@ namespace PrayerAppServices.PrayerRequests {
             await _dbContext.SaveChangesAsync(token);
         }
 
-        public async Task<IEnumerable<PrayerRequest>> GetPrayerRequestsAsync(PrayerRequestFilterCriteria filterCriteria) {
+        public async Task<IEnumerable<PrayerRequest>> GetPrayerRequestsAsync(PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
             int? userId = filterCriteria.UserId;
             List<int> prayerGroupIds = new List<int>(filterCriteria.PrayerGroupIds ?? []);
             List<int> creatorUserIds = new List<int>(filterCriteria.CreatorUserIds ?? []);
@@ -55,7 +55,7 @@ namespace PrayerAppServices.PrayerRequests {
 
             query = ApplySorting(query, filterCriteria.SortConfig);
             query = query.Skip(pageIndex * pageSize).Take(pageSize);
-            return await query.ToListAsync();
+            return await query.ToListAsync(token);
         }
 
         private static IQueryable<PrayerRequest> ApplySorting(IQueryable<PrayerRequest> query, SortConfig sortConfig) {
