@@ -40,9 +40,11 @@ namespace PrayerAppServices.PrayerRequests {
             await _prayerRequestRepository.CreatePrayerRequestAsync(prayerRequest, token);
         }
 
-        public async Task<IEnumerable<PrayerRequest>> GetPrayerRequestsAsync(PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
-            // TODO: Need to add mapping to Prayer Request Model
-            return await _prayerRequestRepository.GetPrayerRequestsAsync(filterCriteria, token);
+        public async Task<IEnumerable<PrayerRequestModel>> GetPrayerRequestsAsync(int userId, PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
+            IEnumerable<PrayerRequest> prayerRequests = await _prayerRequestRepository.GetPrayerRequestsAsync(filterCriteria, token);
+            UserPrayerRequestData userPrayerRequestData = await _prayerRequestRepository.GetPrayerRequestUserDataAsync(userId, token);
+
+
         }
 
     }
