@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.Users.Entities;
 
 
@@ -13,6 +14,7 @@ namespace PrayerAppServices.Data {
         public DbSet<PrayerGroup> PrayerGroups { get; set; }
 
         public DbSet<PrayerGroupUser> PrayerGroupUsers { get; set; }
+        public DbSet<PrayerRequest> PrayerRequests { get; set; }
 
         private readonly string[] IdentityTableNames = ["AspNetUsers", "AspNetUserTokens", "AspNetUserLogins", "AspNetUserClaims", "AspNetRoles", "AspNetUserRoles", "AspNetRoleClaims"];
 
