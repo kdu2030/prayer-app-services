@@ -35,6 +35,8 @@ namespace PrayerAppServices.PrayerRequests {
             }
 
             IQueryable<PrayerRequest> query = _dbContext.PrayerRequests.AsQueryable();
+
+
             if (userId.HasValue) {
                 query = query.Where(prayerRequest => prayerRequest.User != null && prayerRequest.User.Id == userId.Value);
             }
@@ -55,6 +57,20 @@ namespace PrayerAppServices.PrayerRequests {
 
             query = ApplySorting(query, filterCriteria.SortConfig);
             query = query.Skip(pageIndex * pageSize).Take(pageSize);
+
+            /** 
+             * TODO: Add something like this to only select the prayer group and user fields we need
+             * var result = context.PrayerRequests
+            .Select(pr => new {
+                pr.Id,
+                pr.Title,
+                User = new {
+                    pr.User.Name,
+                    pr.User.Email
+                }
+            })
+            .ToList();**/
+
             return await query.ToListAsync(token);
         }
 
