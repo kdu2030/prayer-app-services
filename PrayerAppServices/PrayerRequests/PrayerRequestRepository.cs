@@ -29,7 +29,7 @@ namespace PrayerAppServices.PrayerRequests {
             int pageIndex = filterCriteria.PageIndex ?? 0;
             int pageSize = filterCriteria.PageSize ?? 20;
 
-            if (prayerGroupIds.Count == 0 || creatorUserIds.Count == 0) {
+            if (prayerGroupIds.Count == 0 && creatorUserIds.Count == 0) {
                 throw new ArgumentException("At least one of the following criteria must be provided: PrayerGroupIds or CreatorUserIds.");
             }
 
