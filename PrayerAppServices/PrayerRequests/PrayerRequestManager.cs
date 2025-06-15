@@ -51,7 +51,7 @@ namespace PrayerAppServices.PrayerRequests {
 
             // TODO: Need to add support for prayed requests
 
-            return _mapper.Map<IEnumerable<PrayerRequest>, IEnumerable<PrayerRequestModel>>(prayerRequests, opts => {
+            return _mapper.Map<List<PrayerRequest>, List<PrayerRequestModel>>(prayerRequests.ToList(), opts => {
                 opts.Items.Add("LikedRequestIds", userLikedRequestIds);
                 opts.Items.Add("CommentedRequestIds", userCommentedRequestIds);
             });
