@@ -14,10 +14,6 @@ namespace PrayerAppServices.Users.Entities {
         public IEnumerable<PrayerGroupUser>? GroupUsers { get; set; }
         public IEnumerable<PrayerRequest>? PrayerRequests { get; set; }
 
-        // TODO: Need to manually configure this, migration not created
-        public IEnumerable<PrayerRequest>? LikedPrayerRequests { get; set; }
-        public IEnumerable<PrayerRequest>? BookmarkedPrayerRequests { get; set; }
-
         public AppUser() : base() {
         }
 
