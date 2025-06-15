@@ -72,11 +72,11 @@ namespace PrayerAppServices.PrayerRequests {
                     FullName = query.User.FullName,
                     ImageFile = query.User.ImageFile,
                 } : null,
-                PrayerGroup = new() {
-                    Id = query.PrayerGroup != null ? query.PrayerGroup.Id : null,
-                    GroupName = query.PrayerGroup != null ? query.PrayerGroup.GroupName : null,
-                    ImageFile = query.PrayerGroup != null ? query.PrayerGroup.ImageFile : null,
-                }
+                PrayerGroup = query.PrayerGroup != null ? new() {
+                    Id = query.PrayerGroup.Id,
+                    GroupName = query.PrayerGroup.GroupName,
+                    ImageFile = query.PrayerGroup.ImageFile,
+                } : null
             });
 
             return await query.ToListAsync(token);
