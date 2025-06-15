@@ -52,7 +52,7 @@ namespace PrayerAppServices.PrayerRequests {
             query = ApplySorting(query, filterCriteria.SortConfig);
             query = query.Skip(pageIndex * pageSize).Take(pageSize);
 
-            query = query.Select(query => new PrayerRequestDTO {
+            query = query.Select(query => new PrayerRequest {
                 Id = query.Id,
                 RequestTitle = query.RequestTitle,
                 RequestDescription = query.RequestDescription,
