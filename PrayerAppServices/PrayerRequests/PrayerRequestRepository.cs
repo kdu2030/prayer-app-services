@@ -58,18 +58,26 @@ namespace PrayerAppServices.PrayerRequests {
             query = ApplySorting(query, filterCriteria.SortConfig);
             query = query.Skip(pageIndex * pageSize).Take(pageSize);
 
-            /** 
-             * TODO: Add something like this to only select the prayer group and user fields we need
-             * var result = context.PrayerRequests
-            .Select(pr => new {
-                pr.Id,
-                pr.Title,
-                User = new {
-                    pr.User.Name,
-                    pr.User.Email
+            query = query.Select(query => new PrayerRequest {
+                Id = query.Id,
+                RequestTitle = query.RequestTitle,
+                RequestDescription = query.RequestDescription,
+                CreatedDate = query.CreatedDate,
+                ExpirationDate = query.ExpirationDate,
+                LikeCount = query.LikeCount,
+                CommentCount = query.CommentCount,
+                PrayedCount = query.PrayedCount,
+                User = query.User != null ? new() {
+                    Id = query.User.Id,
+                    FullName = query.User.FullName,
+                    ImageFile = query.User.ImageFile,
+                } : null,
+                PrayerGroup = new() {
+                    Id = query.PrayerGroup != null ? query.PrayerGroup.Id : null,
+                    GroupName = query.PrayerGroup != null ? query.PrayerGroup.GroupName : null,
+                    ImageFile = query.PrayerGroup != null ? query.PrayerGroup.ImageFile : null,
                 }
-            })
-            .ToList();**/
+            });
 
             return await query.ToListAsync(token);
         }
