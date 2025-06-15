@@ -1,4 +1,7 @@
-﻿using PrayerAppServices.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PrayerAppServices.Common.Sorting;
+using PrayerAppServices.Data;
+using PrayerAppServices.PrayerRequests.Constants;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Models;
 
@@ -50,10 +53,45 @@ namespace PrayerAppServices.PrayerRequests {
                     prayerRequest.RequestBookmarks.Any(bookmark => bookmark.User != null && bookmark.User.Id == bookmarkedByUserId));
             }
 
-
-
+            query = ApplySorting(query, filterCriteria.SortConfig);
+            query = query.Skip(pageIndex * pageSize).Take(pageSize);
+            return await query.ToListAsync();
         }
 
+        private static IQueryable<PrayerRequest> ApplySorting(IQueryable<PrayerRequest> query, SortConfig sortConfig) {
+            switch (sortConfig.SortField) {
+                case PrayerRequestSortFields.PrayedCount:
+                    if (sortConfig.SortOrder == SortOrder.Ascending) {
+                        return query.OrderBy(prayerRequest => prayerRequest.PrayedCount);
+                    }
+                    else {
+                        return query.OrderByDescending(prayerRequest => prayerRequest.PrayedCount);
+                    }
+                case PrayerRequestSortFields.LikeCount:
+                    if (sortConfig.SortOrder == SortOrder.Ascending) {
+                        return query.OrderBy(prayerRequest => prayerRequest.LikeCount);
+                    }
+                    else {
+                        return query.OrderByDescending(prayerRequest => prayerRequest.LikeCount);
+                    }
+                case PrayerRequestSortFields.CommentCount:
+                    if (sortConfig.SortOrder == SortOrder.Ascending) {
+                        return query.OrderBy(prayerRequest => prayerRequest.CommentCount);
+                    }
+                    else {
+                        return query.OrderByDescending(prayerRequest => prayerRequest.CommentCount);
+                    }
+                case PrayerRequestSortFields.CreatedAt:
+                    if (sortConfig.SortOrder == SortOrder.Ascending) {
+                        return query.OrderBy(prayerRequest => prayerRequest.CreatedDate);
+                    }
+                    else {
+                        return query.OrderByDescending(prayerRequest => prayerRequest.CreatedDate);
+                    }
+                default:
+                    throw new ArgumentException($"Invalid sort field: {sortConfig.SortField}");
+            }
 
+        }
     }
 }
