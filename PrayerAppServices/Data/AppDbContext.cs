@@ -16,6 +16,10 @@ namespace PrayerAppServices.Data {
         public DbSet<PrayerGroupUser> PrayerGroupUsers { get; set; }
         public DbSet<PrayerRequest> PrayerRequests { get; set; }
 
+        public DbSet<PrayerRequestLike> PrayerRequestLikes { get; set; }
+
+        public DbSet<PrayerRequestComment> PrayerRequestComments { get; set; }
+
         private readonly string[] IdentityTableNames = ["AspNetUsers", "AspNetUserTokens", "AspNetUserLogins", "AspNetUserClaims", "AspNetRoles", "AspNetUserRoles", "AspNetRoleClaims"];
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {

@@ -82,6 +82,29 @@ namespace PrayerAppServices.PrayerRequests {
             return await query.ToListAsync(token);
         }
 
+        public async Task<UserPrayerRequestData> GetPrayerRequestUserDataAsync(int userId, CancellationToken token) {
+            IQueryable<int?> prayerRequestLikesQuery =
+                _dbContext.PrayerRequestLikes
+                    .Where(like => like.User != null && like.User.Id == userId)
+                    .Select(prayerRequest => prayerRequest.Id);
+
+            IQueryable<int?> prayerRequestCommentsQuery =
+                _dbContext.PrayerRequestComments
+                    .Where(comment => comment.User != null && comment.User.Id == userId)
+                    .Select(prayerRequest => prayerRequest.Id);
+
+            // TODO: Implement prayer request prayed count, leaving out for now
+            IEnumerable<int?> userLikedPrayerRequestIds = await prayerRequestLikesQuery.ToListAsync(token);
+            IEnumerable<int?> userCommentedPrayerRequestIds = await prayerRequestCommentsQuery.ToListAsync(token);
+
+            return new UserPrayerRequestData {
+                UserLikedRequestIds = userLikedPrayerRequestIds,
+                UserCommentedPrayerRequestIds = userCommentedPrayerRequestIds,
+            };
+
+
+        }
+
         private static IQueryable<PrayerRequest> ApplySorting(IQueryable<PrayerRequest> query, SortConfig sortConfig) {
             switch (sortConfig.SortField) {
                 case PrayerRequestSortFields.PrayedCount:
