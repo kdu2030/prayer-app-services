@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace PrayerAppServices.PrayerRequests.Entities {
-    public class PrayerRequestLike {
+    public class PrayerRequestBookmark {
         public int? Id { get; set; }
 
         [Required]

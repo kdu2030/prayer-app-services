@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrayerAppServices.Data;
@@ -11,9 +12,11 @@ using PrayerAppServices.Data;
 namespace PrayerAppServices.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250615014712_AddRequestLikesAndBookmarks")]
+    partial class AddRequestLikesAndBookmarks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -347,15 +350,15 @@ namespace PrayerAppServices.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_prayer_requests");
+                        .HasName("pk_prayer_request");
 
                     b.HasIndex("PrayerGroupId")
-                        .HasDatabaseName("ix_prayer_requests_prayer_group_id");
+                        .HasDatabaseName("ix_prayer_request_prayer_group_id");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_prayer_requests_user_id");
+                        .HasDatabaseName("ix_prayer_request_user_id");
 
-                    b.ToTable("prayer_requests", (string)null);
+                    b.ToTable("prayer_request", (string)null);
                 });
 
             modelBuilder.Entity("PrayerAppServices.PrayerRequests.Entities.PrayerRequestBookmark", b =>
@@ -414,15 +417,15 @@ namespace PrayerAppServices.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_prayer_request_comments");
+                        .HasName("pk_prayer_request_comment");
 
                     b.HasIndex("PrayerRequestId")
-                        .HasDatabaseName("ix_prayer_request_comments_prayer_request_id");
+                        .HasDatabaseName("ix_prayer_request_comment_prayer_request_id");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_prayer_request_comments_user_id");
+                        .HasDatabaseName("ix_prayer_request_comment_user_id");
 
-                    b.ToTable("prayer_request_comments", (string)null);
+                    b.ToTable("prayer_request_comment", (string)null);
                 });
 
             modelBuilder.Entity("PrayerAppServices.PrayerRequests.Entities.PrayerRequestLike", b =>
@@ -443,15 +446,15 @@ namespace PrayerAppServices.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_prayer_request_likes");
+                        .HasName("pk_prayer_request_like");
 
                     b.HasIndex("PrayerRequestId")
-                        .HasDatabaseName("ix_prayer_request_likes_prayer_request_id");
+                        .HasDatabaseName("ix_prayer_request_like_prayer_request_id");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_prayer_request_likes_user_id");
+                        .HasDatabaseName("ix_prayer_request_like_user_id");
 
-                    b.ToTable("prayer_request_likes", (string)null);
+                    b.ToTable("prayer_request_like", (string)null);
                 });
 
             modelBuilder.Entity("PrayerAppServices.Users.Entities.AppUser", b =>
@@ -650,14 +653,14 @@ namespace PrayerAppServices.Migrations
                         .HasForeignKey("PrayerGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_prayer_requests_prayer_groups_prayer_group_id");
+                        .HasConstraintName("fk_prayer_request_prayer_groups_prayer_group_id");
 
                     b.HasOne("PrayerAppServices.Users.Entities.AppUser", "User")
                         .WithMany("PrayerRequests")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_prayer_requests_users_user_id");
+                        .HasConstraintName("fk_prayer_request_users_user_id");
 
                     b.Navigation("PrayerGroup");
 
@@ -671,7 +674,7 @@ namespace PrayerAppServices.Migrations
                         .HasForeignKey("PrayerRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_prayer_request_bookmark_prayer_requests_prayer_request_id");
+                        .HasConstraintName("fk_prayer_request_bookmark_prayer_request_prayer_request_id");
 
                     b.HasOne("PrayerAppServices.Users.Entities.AppUser", "User")
                         .WithMany()
@@ -692,14 +695,14 @@ namespace PrayerAppServices.Migrations
                         .HasForeignKey("PrayerRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_prayer_request_comments_prayer_requests_prayer_request_id");
+                        .HasConstraintName("fk_prayer_request_comment_prayer_request_prayer_request_id");
 
                     b.HasOne("PrayerAppServices.Users.Entities.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_prayer_request_comments_users_user_id");
+                        .HasConstraintName("fk_prayer_request_comment_users_user_id");
 
                     b.Navigation("PrayerRequest");
 
@@ -713,14 +716,14 @@ namespace PrayerAppServices.Migrations
                         .HasForeignKey("PrayerRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_prayer_request_likes_prayer_requests_prayer_request_id");
+                        .HasConstraintName("fk_prayer_request_like_prayer_request_prayer_request_id");
 
                     b.HasOne("PrayerAppServices.Users.Entities.AppUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_prayer_request_likes_users_user_id");
+                        .HasConstraintName("fk_prayer_request_like_users_user_id");
 
                     b.Navigation("PrayerRequest");
 

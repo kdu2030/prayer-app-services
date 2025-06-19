@@ -1,16 +1,34 @@
 ﻿
+using AutoMapper;
 using Moq;
+using PrayerAppServices.Common.Sorting;
 using PrayerAppServices.PrayerGroups;
 using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.PrayerGroups.Mappers;
 using PrayerAppServices.PrayerRequests;
+using PrayerAppServices.PrayerRequests.Constants;
 using PrayerAppServices.PrayerRequests.Entities;
+using PrayerAppServices.PrayerRequests.Mappers;
 using PrayerAppServices.PrayerRequests.Models;
+using PrayerAppServices.Users.Mappers;
 using Tests.MockData;
 
 namespace Tests {
     public class PrayerRequestManagerTests {
         private readonly Mock<IPrayerGroupRepository> _mockPrayerGroupRepository = new Mock<IPrayerGroupRepository>();
         private readonly Mock<IPrayerRequestRepository> _mockPrayerRequestRepository = new Mock<IPrayerRequestRepository>();
+        private IMapper _mapper;
+
+        [SetUp]
+        public void Setup() {
+            MapperConfiguration configuration = new MapperConfiguration(cfg => {
+                cfg.AddProfile<UserMappingProfile>();
+                cfg.AddProfile<PrayerGroupMappingProfile>();
+                cfg.AddProfile<PrayerRequestModelMappingProfile>();
+
+            });
+            _mapper = configuration.CreateMapper();
+        }
 
         [TearDown]
         public void TearDown() {
@@ -39,7 +57,7 @@ namespace Tests {
                 ExpirationDate = DateTime.UtcNow.AddDays(1)
             };
 
-            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object);
+            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object, _mapper);
             await prayerRequestManager.CreatePrayerRequestAsync(1, createRequest, CancellationToken.None);
 
             if (createdPrayerRequest == null) {
@@ -65,12 +83,84 @@ namespace Tests {
                 RequestDescription = "Test Description"
             };
 
-            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object);
+            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object, _mapper);
 
             Assert.ThrowsAsync<InvalidOperationException>(async () => {
                 await prayerRequestManager.CreatePrayerRequestAsync(1, createRequest, CancellationToken.None);
             });
         }
 
+        [Test]
+        public async Task GetPrayerRequestsAsync_GivenValidFilterCriteria_ReturnsPrayerRequests() {
+            _mockPrayerRequestRepository
+              .Setup(repo => repo.GetPrayerRequestsAsync(It.IsAny<PrayerRequestFilterCriteria>(), It.IsAny<CancellationToken>()))
+              .ReturnsAsync(new List<PrayerRequest> { MockPrayerRequestData.MockPrayerRequest });
+
+            _mockPrayerRequestRepository
+                .Setup(repo => repo.GetPrayerRequestUserDataAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(MockPrayerRequestData.MockUserPrayerRequestData);
+            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object, _mapper);
+
+            PrayerRequestFilterRequest filterRequest = new PrayerRequestFilterRequest {
+                FilterCriteria = new PrayerRequestFilterCriteria {
+                    PrayerGroupIds = new List<int> { 3 },
+                    CreatorUserIds = new List<int> { 2 },
+                    PageIndex = 0,
+                    PageSize = 10,
+                    SortConfig = new SortConfig {
+                        SortField = PrayerRequestSortFields.CreatedAt,
+                        SortOrder = SortOrder.Descending,
+                    },
+                    IncludeExpiredRequests = false,
+
+                },
+                UserId = 2
+            };
+
+            IEnumerable<PrayerRequestModel> prayerRequests = await prayerRequestManager.GetPrayerRequestsAsync(filterRequest, CancellationToken.None);
+            PrayerRequestModel? prayerRequest = prayerRequests.FirstOrDefault();
+
+            Assert.That(prayerRequest, Is.Not.Null);
+            Assert.That(prayerRequest?.RequestTitle, Is.EqualTo(MockPrayerRequestData.MockPrayerRequest.RequestTitle));
+        }
+
+        [Test]
+        public async Task GetPrayerRequestsAsync_GivenEmptyLikedIds_ReturnsPrayerRequests() {
+            UserPrayerRequestData userPrayerRequestData = new UserPrayerRequestData {
+                UserLikedRequestIds = new List<int?>(),
+                UserCommentedPrayerRequestIds = new List<int?>()
+            };
+
+            _mockPrayerRequestRepository
+              .Setup(repo => repo.GetPrayerRequestsAsync(It.IsAny<PrayerRequestFilterCriteria>(), It.IsAny<CancellationToken>()))
+              .ReturnsAsync(new List<PrayerRequest> { MockPrayerRequestData.MockPrayerRequest });
+
+            _mockPrayerRequestRepository
+                .Setup(repo => repo.GetPrayerRequestUserDataAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(userPrayerRequestData);
+
+            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object, _mapper);
+
+            PrayerRequestFilterRequest filterRequest = new PrayerRequestFilterRequest {
+                FilterCriteria = new PrayerRequestFilterCriteria {
+                    PrayerGroupIds = new List<int> { 3 },
+                    CreatorUserIds = new List<int> { 2 },
+                    PageIndex = 0,
+                    PageSize = 10,
+                    SortConfig = new SortConfig {
+                        SortField = PrayerRequestSortFields.CreatedAt,
+                        SortOrder = SortOrder.Descending,
+                    },
+                    IncludeExpiredRequests = false,
+
+                },
+                UserId = 2
+            };
+
+            IEnumerable<PrayerRequestModel> prayerRequests = await prayerRequestManager.GetPrayerRequestsAsync(filterRequest, CancellationToken.None);
+            PrayerRequestModel? prayerRequest = prayerRequests.FirstOrDefault();
+
+            Assert.That(prayerRequest?.IsUserLiked, Is.False);
+        }
     }
 }

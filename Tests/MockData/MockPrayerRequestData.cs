@@ -2,6 +2,7 @@
 
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.Users.Entities;
 
 namespace Tests.MockData {
@@ -20,6 +21,33 @@ namespace Tests.MockData {
                 Description = "Missionary organization",
                 Rules = "No explicit language",
             },
+        };
+
+        public static readonly PrayerRequest MockPrayerRequest = new PrayerRequest {
+            Id = 34,
+            RequestTitle = "Test Prayer Request",
+            RequestDescription = "This is a test prayer request description.",
+            CreatedDate = DateTime.UtcNow,
+            PrayerGroup = new PrayerGroup {
+                Id = 3,
+                GroupName = "IMB",
+                Color = 65280,
+                Description = "Missionary organization",
+                Rules = "No explicit language",
+            },
+            User = new AppUser {
+                Id = 2,
+                FullName = "Anakin Skywalker",
+            },
+            LikeCount = 10,
+            PrayedCount = 3,
+            ExpirationDate = DateTime.UtcNow.AddDays(7),
+        };
+
+        public static readonly UserPrayerRequestData MockUserPrayerRequestData = new UserPrayerRequestData {
+            UserLikedRequestIds = new List<int?> { 34, 35, 36 },
+            UserCommentedPrayerRequestIds = new List<int?> { 34, 37 },
+            UserPrayedRequestIds = new List<int?> { 34, 38 }
         };
     }
 }
