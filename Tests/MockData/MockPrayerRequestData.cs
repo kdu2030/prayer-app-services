@@ -43,5 +43,11 @@ namespace Tests.MockData {
             PrayedCount = 3,
             ExpirationDate = DateTime.UtcNow.AddDays(7),
         };
+
+        public static readonly UserPrayerRequestData MockUserPrayerRequestData = new UserPrayerRequestData {
+            UserLikedRequestIds = new List<int?> { 34, 35, 36 },
+            UserCommentedPrayerRequestIds = new List<int?> { 34, 37 },
+            UserPrayedRequestIds = new List<int?> { 34, 38 }
+        };
     }
 }
