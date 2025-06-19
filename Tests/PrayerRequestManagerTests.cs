@@ -123,5 +123,44 @@ namespace Tests {
             Assert.That(prayerRequest, Is.Not.Null);
             Assert.That(prayerRequest?.RequestTitle, Is.EqualTo(MockPrayerRequestData.MockPrayerRequest.RequestTitle));
         }
+
+        [Test]
+        public async Task GetPrayerRequestsAsync_GivenEmptyLikedIds_ReturnsPrayerRequests() {
+            UserPrayerRequestData userPrayerRequestData = new UserPrayerRequestData {
+                UserLikedRequestIds = new List<int?>(),
+                UserCommentedPrayerRequestIds = new List<int?>()
+            };
+
+            _mockPrayerRequestRepository
+              .Setup(repo => repo.GetPrayerRequestsAsync(It.IsAny<PrayerRequestFilterCriteria>(), It.IsAny<CancellationToken>()))
+              .ReturnsAsync(new List<PrayerRequest> { MockPrayerRequestData.MockPrayerRequest });
+
+            _mockPrayerRequestRepository
+                .Setup(repo => repo.GetPrayerRequestUserDataAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(userPrayerRequestData);
+
+            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object, _mapper);
+
+            PrayerRequestFilterRequest filterRequest = new PrayerRequestFilterRequest {
+                FilterCriteria = new PrayerRequestFilterCriteria {
+                    PrayerGroupIds = new List<int> { 3 },
+                    CreatorUserIds = new List<int> { 2 },
+                    PageIndex = 0,
+                    PageSize = 10,
+                    SortConfig = new SortConfig {
+                        SortField = PrayerRequestSortFields.CreatedAt,
+                        SortOrder = SortOrder.Descending,
+                    },
+                    IncludeExpiredRequests = false,
+
+                },
+                UserId = 2
+            };
+
+            IEnumerable<PrayerRequestModel> prayerRequests = await prayerRequestManager.GetPrayerRequestsAsync(filterRequest, CancellationToken.None);
+            PrayerRequestModel? prayerRequest = prayerRequests.FirstOrDefault();
+
+            Assert.That(prayerRequest?.IsUserLiked, Is.False);
+        }
     }
 }
