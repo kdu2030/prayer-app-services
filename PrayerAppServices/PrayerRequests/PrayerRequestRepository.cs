@@ -94,7 +94,7 @@ namespace PrayerAppServices.PrayerRequests {
                     .Where(comment => comment.User != null && comment.User.Id == userId)
                     .Select(prayerRequest => prayerRequest.Id);
 
-            // TODO: Implement prayer request prayed count, leaving out for now
+            // TODO: 实现祷告事项的祷告次数统计，暂时不处理
             IEnumerable<int?> userLikedPrayerRequestIds = await prayerRequestLikesQuery.ToListAsync(token);
             IEnumerable<int?> userCommentedPrayerRequestIds = await prayerRequestCommentsQuery.ToListAsync(token);
 
