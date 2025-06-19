@@ -1,16 +1,31 @@
 ﻿
+using AutoMapper;
 using Moq;
 using PrayerAppServices.PrayerGroups;
 using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.PrayerGroups.Mappers;
 using PrayerAppServices.PrayerRequests;
 using PrayerAppServices.PrayerRequests.Entities;
+using PrayerAppServices.PrayerRequests.Mappers;
 using PrayerAppServices.PrayerRequests.Models;
+using PrayerAppServices.Users.Mappers;
 using Tests.MockData;
 
 namespace Tests {
     public class PrayerRequestManagerTests {
         private readonly Mock<IPrayerGroupRepository> _mockPrayerGroupRepository = new Mock<IPrayerGroupRepository>();
         private readonly Mock<IPrayerRequestRepository> _mockPrayerRequestRepository = new Mock<IPrayerRequestRepository>();
+        private readonly IMapper _mapper;
+
+        [SetUp]
+        public void Setup() {
+            MapperConfiguration configuration = new MapperConfiguration(cfg => {
+                cfg.AddProfile<UserMappingProfile>();
+                cfg.AddProfile<PrayerGroupMappingProfile>();
+                cfg.AddProfile<PrayerRequestModelMappingProfile>();
+
+            });
+        }
 
         [TearDown]
         public void TearDown() {
@@ -39,7 +54,7 @@ namespace Tests {
                 ExpirationDate = DateTime.UtcNow.AddDays(1)
             };
 
-            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object);
+            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object, _mapper);
             await prayerRequestManager.CreatePrayerRequestAsync(1, createRequest, CancellationToken.None);
 
             if (createdPrayerRequest == null) {
@@ -65,12 +80,14 @@ namespace Tests {
                 RequestDescription = "Test Description"
             };
 
-            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object);
+            PrayerRequestManager prayerRequestManager = new PrayerRequestManager(_mockPrayerRequestRepository.Object, _mockPrayerGroupRepository.Object, _mapper);
 
             Assert.ThrowsAsync<InvalidOperationException>(async () => {
                 await prayerRequestManager.CreatePrayerRequestAsync(1, createRequest, CancellationToken.None);
             });
         }
+
+
 
     }
 }

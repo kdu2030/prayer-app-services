@@ -23,6 +23,7 @@ namespace PrayerAppServices.PrayerRequests {
         }
 
         public async Task<IEnumerable<PrayerRequest>> GetPrayerRequestsAsync(PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
+
             List<int> prayerGroupIds = new List<int>(filterCriteria.PrayerGroupIds ?? []);
             List<int> creatorUserIds = new List<int>(filterCriteria.CreatorUserIds ?? []);
 
@@ -47,6 +48,10 @@ namespace PrayerAppServices.PrayerRequests {
                 int bookmarkedByUserId = filterCriteria.BookmarkedByUserId.Value;
                 query = query.Where(prayerRequest => prayerRequest.RequestBookmarks != null &&
                     prayerRequest.RequestBookmarks.Any(bookmark => bookmark.User != null && bookmark.User.Id == bookmarkedByUserId));
+            }
+
+            if (!filterCriteria.IncludeExpiredRequests) {
+                query = query.Where(prayerRequest => prayerRequest.ExpirationDate == null || prayerRequest.ExpirationDate > DateTime.UtcNow);
             }
 
             query = ApplySorting(query, filterCriteria.SortConfig);

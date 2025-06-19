@@ -9,5 +9,6 @@ namespace PrayerAppServices.PrayerRequests.Models {
         public int? PageSize { get; set; }
         public int? BookmarkedByUserId { get; set; }
         public required SortConfig SortConfig { get; set; }
+        public bool IncludeExpiredRequests { get; set; } = false;
     }
 }
