@@ -125,6 +125,20 @@ namespace PrayerAppServices.PrayerRequests {
                 .ExecuteUpdateAsync(prayerRequest => prayerRequest.SetProperty(pr => pr.LikeCount, pr => pr.LikeCount + 1), token);
         }
 
+        public async Task RemovePrayerRequestLikeAsync(int prayerRequestId, int userId, CancellationToken token) {
+            PrayerRequestLike? likeToDelete = _dbContext.PrayerRequestLikes
+                .Where(like =>
+                        like.PrayerRequest != null
+                        && like.PrayerRequest.Id == prayerRequestId
+                        && like.User != null
+                        && like.User.Id == userId
+                )
+                .First();
+
+            _dbContext.Remove(likeToDelete);
+            await _dbContext.SaveChangesAsync(token);
+        }
+
         private static IQueryable<PrayerRequest> ApplySorting(IQueryable<PrayerRequest> query, SortConfig sortConfig) {
             switch (sortConfig.SortField) {
                 case PrayerRequestSortFields.PrayedCount:
