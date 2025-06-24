@@ -4,6 +4,7 @@ using PrayerAppServices.Data;
 using PrayerAppServices.PrayerRequests.Constants;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Models;
+using PrayerAppServices.Users.Entities;
 
 namespace PrayerAppServices.PrayerRequests {
     public class PrayerRequestRepository(AppDbContext dbContext) : IPrayerRequestRepository {
@@ -104,6 +105,24 @@ namespace PrayerAppServices.PrayerRequests {
             };
 
 
+        }
+
+        public async Task AddPrayerRequestLikeAsync(int prayerRequestId, int userId, CancellationToken token) {
+            PrayerRequestLike prayerRequestLike = new PrayerRequestLike {
+                PrayerRequest = new PrayerRequest {
+                    Id = prayerRequestId,
+                },
+                User = new AppUser {
+                    Id = userId,
+                },
+            };
+
+            _dbContext.Add(prayerRequestLike);
+
+            await _dbContext.SaveChangesAsync(token);
+            await _dbContext.PrayerRequests
+                .Where(prayerRequest => prayerRequest.Id == prayerRequestId)
+                .ExecuteUpdateAsync(prayerRequest => prayerRequest.SetProperty(pr => pr.LikeCount, pr => pr.LikeCount + 1), token);
         }
 
         private static IQueryable<PrayerRequest> ApplySorting(IQueryable<PrayerRequest> query, SortConfig sortConfig) {
