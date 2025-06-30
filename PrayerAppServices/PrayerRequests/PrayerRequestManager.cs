@@ -63,5 +63,12 @@ namespace PrayerAppServices.PrayerRequests {
             };
         }
 
+        public async Task AddPrayerRequestLikeAsync(int userId, int prayerRequestId, CancellationToken token) {
+            await _prayerRequestRepository.AddPrayerRequestLikeAsync(prayerRequestId, userId, token);
+        }
+
+        public async Task RemovePrayerRequestLikeAsync(int userId, int prayerRequestId, CancellationToken token) {
+            await _prayerRequestRepository.RemovePrayerRequestLikeAsync(prayerRequestId, userId, token);
+        }
     }
 }

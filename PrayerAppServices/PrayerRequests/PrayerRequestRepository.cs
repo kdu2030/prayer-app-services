@@ -126,6 +126,8 @@ namespace PrayerAppServices.PrayerRequests {
                     Id = userId,
                 },
             };
+            _dbContext.Attach(prayerRequestLike.PrayerRequest);
+            _dbContext.Attach(prayerRequestLike.User);
 
             _dbContext.Add(prayerRequestLike);
 
@@ -145,8 +147,17 @@ namespace PrayerAppServices.PrayerRequests {
                 )
                 .First();
 
+            if (likeToDelete == null) {
+                throw new InvalidOperationException($"Like for PrayerRequest with ID {prayerRequestId} by User with ID {userId} does not exist.");
+            }
+
             _dbContext.Remove(likeToDelete);
+
             await _dbContext.SaveChangesAsync(token);
+
+            await _dbContext.PrayerRequests
+                .Where(prayerRequest => prayerRequest.Id == prayerRequestId)
+                .ExecuteUpdateAsync(prayerRequest => prayerRequest.SetProperty(pr => pr.LikeCount, pr => pr.LikeCount - 1), token);
         }
 
         private static IQueryable<PrayerRequest> ApplySorting(IQueryable<PrayerRequest> query, SortConfig sortConfig) {
