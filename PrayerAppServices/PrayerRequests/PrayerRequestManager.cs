@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PrayerAppServices.PrayerGroups;
 using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.PrayerRequests.DTOs;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Models;
 using PrayerAppServices.Users.Entities;
@@ -42,8 +43,8 @@ namespace PrayerAppServices.PrayerRequests {
             await _prayerRequestRepository.CreatePrayerRequestAsync(prayerRequest, token);
         }
 
-        public async Task<IEnumerable<PrayerRequestModel>> GetPrayerRequestsAsync(PrayerRequestFilterRequest request, CancellationToken token) {
-            IEnumerable<PrayerRequest> prayerRequests = await _prayerRequestRepository.GetPrayerRequestsAsync(request.FilterCriteria, token);
+        public async Task<PrayerRequestGetResponse> GetPrayerRequestsAsync(PrayerRequestFilterRequest request, CancellationToken token) {
+            PrayerRequestResponseDTO prayerRequestsResponse = await _prayerRequestRepository.GetPrayerRequestsAsync(request.FilterCriteria, token);
             UserPrayerRequestData userPrayerRequestData = await _prayerRequestRepository.GetPrayerRequestUserDataAsync(request.UserId, token);
 
             HashSet<int?> userLikedRequestIds = new HashSet<int?>(userPrayerRequestData.UserLikedRequestIds ?? []);
@@ -51,12 +52,23 @@ namespace PrayerAppServices.PrayerRequests {
 
             // TODO: Need to add support for prayed requests
 
-            return _mapper.Map<List<PrayerRequest>, List<PrayerRequestModel>>(prayerRequests.ToList(), opts => {
+            IEnumerable<PrayerRequestModel> prayerRequests = _mapper.Map<List<PrayerRequest>, List<PrayerRequestModel>>(prayerRequestsResponse.PrayerRequests.ToList(), opts => {
                 opts.Items.Add("LikedRequestIds", userLikedRequestIds);
                 opts.Items.Add("CommentedRequestIds", userCommentedRequestIds);
             });
 
+            return new PrayerRequestGetResponse {
+                TotalCount = prayerRequestsResponse.TotalCount,
+                PrayerRequests = prayerRequests
+            };
         }
 
+        public async Task AddPrayerRequestLikeAsync(int userId, int prayerRequestId, CancellationToken token) {
+            await _prayerRequestRepository.AddPrayerRequestLikeAsync(prayerRequestId, userId, token);
+        }
+
+        public async Task RemovePrayerRequestLikeAsync(int userId, int prayerRequestId, CancellationToken token) {
+            await _prayerRequestRepository.RemovePrayerRequestLikeAsync(prayerRequestId, userId, token);
+        }
     }
 }

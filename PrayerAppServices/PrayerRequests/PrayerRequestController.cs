@@ -18,9 +18,23 @@ namespace PrayerAppServices.PrayerRequests {
 
         [HttpPost("filter")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<PrayerRequestModel>>> GetPrayerRequestsAsync(PrayerRequestFilterRequest request, CancellationToken token) {
-            IEnumerable<PrayerRequestModel> prayerRequests = await _prayerRequestManager.GetPrayerRequestsAsync(request, token);
-            return Ok(prayerRequests);
+        public async Task<ActionResult<PrayerRequestGetResponse>> GetPrayerRequestsAsync(PrayerRequestFilterRequest request, CancellationToken token) {
+            PrayerRequestGetResponse prayerRequestsResponse = await _prayerRequestManager.GetPrayerRequestsAsync(request, token);
+            return Ok(prayerRequestsResponse);
+        }
+
+        [HttpPost("{prayerRequestId}/like")]
+        [Authorize]
+        public async Task<ActionResult> AddPrayerRequestLikeAsync(int prayerRequestId, [FromQuery] int userId, CancellationToken token) {
+            await _prayerRequestManager.AddPrayerRequestLikeAsync(userId, prayerRequestId, token);
+            return Ok();
+        }
+
+        [HttpDelete("{prayerRequestId}/like")]
+        [Authorize]
+        public async Task<ActionResult> RemovePrayerRequestLikeAsync(int prayerRequestId, [FromQuery] int userId, CancellationToken token) {
+            await _prayerRequestManager.RemovePrayerRequestLikeAsync(userId, prayerRequestId, token);
+            return Ok();
         }
     }
 }

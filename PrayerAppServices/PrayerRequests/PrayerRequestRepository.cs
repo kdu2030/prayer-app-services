@@ -2,8 +2,10 @@
 using PrayerAppServices.Common.Sorting;
 using PrayerAppServices.Data;
 using PrayerAppServices.PrayerRequests.Constants;
+using PrayerAppServices.PrayerRequests.DTOs;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Models;
+using PrayerAppServices.Users.Entities;
 
 namespace PrayerAppServices.PrayerRequests {
     public class PrayerRequestRepository(AppDbContext dbContext) : IPrayerRequestRepository {
@@ -22,7 +24,7 @@ namespace PrayerAppServices.PrayerRequests {
             await _dbContext.SaveChangesAsync(token);
         }
 
-        public async Task<IEnumerable<PrayerRequest>> GetPrayerRequestsAsync(PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
+        public async Task<PrayerRequestResponseDTO> GetPrayerRequestsAsync(PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
 
             List<int> prayerGroupIds = new List<int>(filterCriteria.PrayerGroupIds ?? []);
             List<int> creatorUserIds = new List<int>(filterCriteria.CreatorUserIds ?? []);
@@ -55,6 +57,9 @@ namespace PrayerAppServices.PrayerRequests {
             }
 
             query = ApplySorting(query, filterCriteria.SortConfig);
+
+            int totalCount = await query.CountAsync(token);
+
             query = query.Skip(pageIndex * pageSize).Take(pageSize);
 
             query = query.Select(query => new PrayerRequest {
@@ -80,7 +85,13 @@ namespace PrayerAppServices.PrayerRequests {
 
             });
 
-            return await query.ToListAsync(token);
+            IEnumerable<PrayerRequest> matchingPrayerRequests = await query.ToListAsync(token);
+            PrayerRequestResponseDTO prayerRequestGetResponse = new PrayerRequestResponseDTO {
+                TotalCount = totalCount,
+                PrayerRequests = matchingPrayerRequests,
+            };
+
+            return prayerRequestGetResponse;
         }
 
         public async Task<UserPrayerRequestData> GetPrayerRequestUserDataAsync(int userId, CancellationToken token) {
@@ -104,6 +115,49 @@ namespace PrayerAppServices.PrayerRequests {
             };
 
 
+        }
+
+        public async Task AddPrayerRequestLikeAsync(int prayerRequestId, int userId, CancellationToken token) {
+            PrayerRequestLike prayerRequestLike = new PrayerRequestLike {
+                PrayerRequest = new PrayerRequest {
+                    Id = prayerRequestId,
+                },
+                User = new AppUser {
+                    Id = userId,
+                },
+            };
+            _dbContext.Attach(prayerRequestLike.PrayerRequest);
+            _dbContext.Attach(prayerRequestLike.User);
+
+            _dbContext.Add(prayerRequestLike);
+
+            await _dbContext.SaveChangesAsync(token);
+            await _dbContext.PrayerRequests
+                .Where(prayerRequest => prayerRequest.Id == prayerRequestId)
+                .ExecuteUpdateAsync(prayerRequest => prayerRequest.SetProperty(pr => pr.LikeCount, pr => pr.LikeCount + 1), token);
+        }
+
+        public async Task RemovePrayerRequestLikeAsync(int prayerRequestId, int userId, CancellationToken token) {
+            PrayerRequestLike? likeToDelete = _dbContext.PrayerRequestLikes
+                .Where(like =>
+                        like.PrayerRequest != null
+                        && like.PrayerRequest.Id == prayerRequestId
+                        && like.User != null
+                        && like.User.Id == userId
+                )
+                .First();
+
+            if (likeToDelete == null) {
+                throw new InvalidOperationException($"Like for PrayerRequest with ID {prayerRequestId} by User with ID {userId} does not exist.");
+            }
+
+            _dbContext.Remove(likeToDelete);
+
+            await _dbContext.SaveChangesAsync(token);
+
+            await _dbContext.PrayerRequests
+                .Where(prayerRequest => prayerRequest.Id == prayerRequestId)
+                .ExecuteUpdateAsync(prayerRequest => prayerRequest.SetProperty(pr => pr.LikeCount, pr => pr.LikeCount - 1), token);
         }
 
         private static IQueryable<PrayerRequest> ApplySorting(IQueryable<PrayerRequest> query, SortConfig sortConfig) {
