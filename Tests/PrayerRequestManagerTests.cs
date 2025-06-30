@@ -7,6 +7,7 @@ using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Mappers;
 using PrayerAppServices.PrayerRequests;
 using PrayerAppServices.PrayerRequests.Constants;
+using PrayerAppServices.PrayerRequests.DTOs;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Mappers;
 using PrayerAppServices.PrayerRequests.Models;
@@ -92,9 +93,14 @@ namespace Tests {
 
         [Test]
         public async Task GetPrayerRequestsAsync_GivenValidFilterCriteria_ReturnsPrayerRequests() {
+            PrayerRequestResponseDTO prayerRequestResponse = new PrayerRequestResponseDTO {
+                PrayerRequests = new List<PrayerRequest> { MockPrayerRequestData.MockPrayerRequest },
+                TotalCount = 1
+            };
+
             _mockPrayerRequestRepository
               .Setup(repo => repo.GetPrayerRequestsAsync(It.IsAny<PrayerRequestFilterCriteria>(), It.IsAny<CancellationToken>()))
-              .ReturnsAsync(new List<PrayerRequest> { MockPrayerRequestData.MockPrayerRequest });
+              .ReturnsAsync(prayerRequestResponse);
 
             _mockPrayerRequestRepository
                 .Setup(repo => repo.GetPrayerRequestUserDataAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
@@ -117,8 +123,8 @@ namespace Tests {
                 UserId = 2
             };
 
-            IEnumerable<PrayerRequestModel> prayerRequests = await prayerRequestManager.GetPrayerRequestsAsync(filterRequest, CancellationToken.None);
-            PrayerRequestModel? prayerRequest = prayerRequests.FirstOrDefault();
+            PrayerRequestGetResponse prayerRequestGetResponse = await prayerRequestManager.GetPrayerRequestsAsync(filterRequest, CancellationToken.None);
+            PrayerRequestModel? prayerRequest = prayerRequestGetResponse.PrayerRequests.FirstOrDefault();
 
             Assert.That(prayerRequest, Is.Not.Null);
             Assert.That(prayerRequest?.RequestTitle, Is.EqualTo(MockPrayerRequestData.MockPrayerRequest.RequestTitle));
@@ -131,9 +137,14 @@ namespace Tests {
                 UserCommentedPrayerRequestIds = new List<int?>()
             };
 
+            PrayerRequestResponseDTO queryResponse = new PrayerRequestResponseDTO {
+                PrayerRequests = new List<PrayerRequest> { MockPrayerRequestData.MockPrayerRequest },
+                TotalCount = 1
+            };
+
             _mockPrayerRequestRepository
               .Setup(repo => repo.GetPrayerRequestsAsync(It.IsAny<PrayerRequestFilterCriteria>(), It.IsAny<CancellationToken>()))
-              .ReturnsAsync(new List<PrayerRequest> { MockPrayerRequestData.MockPrayerRequest });
+              .ReturnsAsync(queryResponse);
 
             _mockPrayerRequestRepository
                 .Setup(repo => repo.GetPrayerRequestUserDataAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
@@ -157,8 +168,8 @@ namespace Tests {
                 UserId = 2
             };
 
-            IEnumerable<PrayerRequestModel> prayerRequests = await prayerRequestManager.GetPrayerRequestsAsync(filterRequest, CancellationToken.None);
-            PrayerRequestModel? prayerRequest = prayerRequests.FirstOrDefault();
+            PrayerRequestGetResponse prayerRequestsResponse = await prayerRequestManager.GetPrayerRequestsAsync(filterRequest, CancellationToken.None);
+            PrayerRequestModel? prayerRequest = prayerRequestsResponse.PrayerRequests.FirstOrDefault();
 
             Assert.That(prayerRequest?.IsUserLiked, Is.False);
         }
