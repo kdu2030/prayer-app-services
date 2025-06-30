@@ -2,6 +2,7 @@
 using PrayerAppServices.Common.Sorting;
 using PrayerAppServices.Data;
 using PrayerAppServices.PrayerRequests.Constants;
+using PrayerAppServices.PrayerRequests.DTOs;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.PrayerRequests.Models;
 using PrayerAppServices.Users.Entities;
@@ -23,7 +24,7 @@ namespace PrayerAppServices.PrayerRequests {
             await _dbContext.SaveChangesAsync(token);
         }
 
-        public async Task<IEnumerable<PrayerRequest>> GetPrayerRequestsAsync(PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
+        public async Task<PrayerRequestResponseDTO> GetPrayerRequestsAsync(PrayerRequestFilterCriteria filterCriteria, CancellationToken token) {
 
             List<int> prayerGroupIds = new List<int>(filterCriteria.PrayerGroupIds ?? []);
             List<int> creatorUserIds = new List<int>(filterCriteria.CreatorUserIds ?? []);
@@ -56,6 +57,9 @@ namespace PrayerAppServices.PrayerRequests {
             }
 
             query = ApplySorting(query, filterCriteria.SortConfig);
+
+            int totalCount = await query.CountAsync(token);
+
             query = query.Skip(pageIndex * pageSize).Take(pageSize);
 
             query = query.Select(query => new PrayerRequest {
@@ -81,7 +85,13 @@ namespace PrayerAppServices.PrayerRequests {
 
             });
 
-            return await query.ToListAsync(token);
+            IEnumerable<PrayerRequest> matchingPrayerRequests = await query.ToListAsync(token);
+            PrayerRequestResponseDTO prayerRequestGetResponse = new PrayerRequestResponseDTO {
+                TotalCount = totalCount,
+                PrayerRequests = matchingPrayerRequests,
+            };
+
+            return prayerRequestGetResponse;
         }
 
         public async Task<UserPrayerRequestData> GetPrayerRequestUserDataAsync(int userId, CancellationToken token) {

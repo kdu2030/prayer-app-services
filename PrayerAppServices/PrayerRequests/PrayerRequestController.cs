@@ -18,9 +18,9 @@ namespace PrayerAppServices.PrayerRequests {
 
         [HttpPost("filter")]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<PrayerRequestModel>>> GetPrayerRequestsAsync(PrayerRequestFilterRequest request, CancellationToken token) {
-            IEnumerable<PrayerRequestModel> prayerRequests = await _prayerRequestManager.GetPrayerRequestsAsync(request, token);
-            return Ok(prayerRequests);
+        public async Task<ActionResult<PrayerRequestGetResponse>> GetPrayerRequestsAsync(PrayerRequestFilterRequest request, CancellationToken token) {
+            PrayerRequestGetResponse prayerRequestsResponse = await _prayerRequestManager.GetPrayerRequestsAsync(request, token);
+            return Ok(prayerRequestsResponse);
         }
     }
 }
