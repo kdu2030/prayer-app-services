@@ -97,13 +97,13 @@ namespace PrayerAppServices.PrayerRequests {
         public async Task<UserPrayerRequestData> GetPrayerRequestUserDataAsync(int userId, CancellationToken token) {
             IQueryable<int?> prayerRequestLikesQuery =
                 _dbContext.PrayerRequestLikes
-                    .Where(like => like.User != null && like.User.Id == userId)
-                    .Select(prayerRequest => prayerRequest.Id);
+                    .Where(like => like.User != null && like.User.Id == userId && like.PrayerRequest != null)
+                    .Select(like => like.PrayerRequest!.Id);
 
             IQueryable<int?> prayerRequestCommentsQuery =
                 _dbContext.PrayerRequestComments
-                    .Where(comment => comment.User != null && comment.User.Id == userId)
-                    .Select(prayerRequest => prayerRequest.Id);
+                    .Where(comment => comment.User != null && comment.User.Id == userId && comment.PrayerRequest != null)
+                    .Select(comment => comment.PrayerRequest.Id);
 
             // TODO: 实现祷告事项的祷告次数统计，暂时不处理
             IEnumerable<int?> userLikedPrayerRequestIds = await prayerRequestLikesQuery.ToListAsync(token);
