@@ -30,7 +30,7 @@ namespace PrayerAppServices.PrayerGroups.Mappers
                 .ForMember(dest => dest.Rules, options => options.MapFrom(src => src.Rules))
                 .ForMember(dest => dest.AvatarFile, options => options.MapFrom(src => src.AvatarFile))
                 .ForMember(dest => dest.BannerFile, options => options.MapFrom(src => src.BannerFile))
-                .ForMember(dest => dest.IsUserJoined, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("IsUserJoined")))
+                .ForMember(dest => dest.JoinStatus, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("JoinStatus")))
                 .ForMember(dest => dest.Admins, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("Admins")))
                 .ForMember(dest => dest.UserRole, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("UserRole")))
                 .ForMember(dest => dest.VisibilityLevel, options => options.MapFrom(src => src.VisibilityLevel));

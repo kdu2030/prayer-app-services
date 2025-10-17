@@ -14,7 +14,7 @@ namespace PrayerAppServices.PrayerGroups.Models
         public MediaFileBase? AvatarFile { get; set; }
         public MediaFileBase? BannerFile { get; set; }
         public IEnumerable<UserSummary>? Admins { get; set; }
-        public bool? IsUserJoined { get; set; }
+        public JoinStatus? JoinStatus { get; set; }
         public PrayerGroupRole? UserRole { get; set; }
 
     }

@@ -47,7 +47,7 @@ namespace PrayerAppServices.PrayerGroups
                 AvatarFile = groupImage,
                 BannerFile = bannerImage,
                 Admins = adminUsers,
-                IsUserJoined = true,
+                JoinStatus = JoinStatus.Joined,
                 UserRole = PrayerGroupRole.Admin,
             };
 
@@ -82,7 +82,6 @@ namespace PrayerAppServices.PrayerGroups
                 AvatarFile = prayerGroup.AvatarFile,
                 BannerFile = prayerGroup.BannerFile,
                 Admins = adminUserSummaries,
-                IsUserJoined = appUser != null,
                 UserRole = appUser?.PrayerGroupRole,
             };
 
