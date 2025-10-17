@@ -242,7 +242,7 @@ namespace PrayerAppServices.PrayerGroups {
                 : null;
 
             UserSummary adminUserSummary = new UserSummary {
-                Id = response.AdminUserId ?? -1,
+                UserId = response.AdminUserId ?? -1,
                 FullName = response.AdminFullName,
                 Image = userImage
             };
@@ -253,7 +253,7 @@ namespace PrayerAppServices.PrayerGroups {
         private IEnumerable<UserSummary> GetAdminUserSummaries(IEnumerable<PrayerGroupUserEntity> adminUsers) {
             return adminUsers.Where(adminUser => adminUser.Id != null)
                 .Select(adminUser => new UserSummary {
-                    Id = adminUser.Id ?? -1,
+                    UserId = adminUser.Id ?? -1,
                     FullName = adminUser.FullName,
                     Image = adminUser.ImageFileId != null ? new MediaFileBase {
                         MediaFileId = adminUser.ImageFileId,

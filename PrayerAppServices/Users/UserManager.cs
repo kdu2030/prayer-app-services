@@ -88,7 +88,7 @@ namespace PrayerAppServices.Users {
             string username = user.UserName ?? "";
 
             return new UserSummary {
-                Id = user.Id,
+                UserId = user.Id,
                 Username = username,
                 Email = user.Email ?? "",
                 FullName = user.FullName ?? "",

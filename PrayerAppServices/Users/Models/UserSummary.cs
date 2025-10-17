@@ -2,9 +2,11 @@
 using PrayerAppServices.PrayerGroups.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace PrayerAppServices.Users.Models {
-    public class UserSummary {
-        public int Id { get; set; }
+namespace PrayerAppServices.Users.Models
+{
+    public class UserSummary
+    {
+        public int UserId { get; set; }
         public string? Username { get; set; }
 
         [EmailAddress]

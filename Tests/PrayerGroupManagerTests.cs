@@ -135,7 +135,7 @@ namespace Tests {
             PrayerGroupDetails details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", newPrayerGroup);
 
             IEnumerable<UserSummary> adminUsers = details.Admins ?? [];
-            Assert.That(adminUsers.Where(admin => admin.Id == response?.AdminUserId).Count, Is.EqualTo(1));
+            Assert.That(adminUsers.Where(admin => admin.UserId == response?.AdminUserId).Count, Is.EqualTo(1));
         }
 
         [Test]

@@ -41,7 +41,7 @@ namespace PrayerAppServices.PrayerGroups.Mappers {
                 .ForMember(dest => dest.ImageFile, options => options.MapFrom(src => src.ImageFile));
 
             CreateMap<PrayerGroupUserEntity, PrayerGroupUserSummary>()
-                .ForMember(dest => dest.Id, options => options.MapFrom(src => src.Id))
+                .ForMember(dest => dest.UserId, options => options.MapFrom(src => src.Id))
                 .ForMember(dest => dest.FullName, options => options.MapFrom(src => src.FullName))
                 .ForMember(dest => dest.Username, options => options.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Role, options => options.MapFrom(src => src.GroupRole))
