@@ -22,16 +22,13 @@ namespace PrayerAppServices.PrayerGroups
         public async Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest)
         {
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
-            string? colorStr = newPrayerGroupRequest.Color;
-            int? color = colorStr != null ? ColorUtils.ColorHexStringToInt(colorStr) : null;
             PrayerGroupDTO newPrayerGroup = new PrayerGroupDTO
             {
                 GroupName = newPrayerGroupRequest.GroupName,
                 Description = newPrayerGroupRequest.Description,
                 Rules = newPrayerGroupRequest.Rules,
-                Color = color,
-                ImageFileId = newPrayerGroupRequest.ImageFileId,
-                BannerImageFileId = newPrayerGroupRequest.BannerImageFileId,
+                ImageFileId = newPrayerGroupRequest.AvatarFileId,
+                BannerImageFileId = newPrayerGroupRequest.BannerFileId,
             };
 
             PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup);
@@ -47,7 +44,6 @@ namespace PrayerAppServices.PrayerGroups
                 GroupName = createResponse.GroupName,
                 Description = createResponse.Description,
                 Rules = createResponse.Rules,
-                Color = colorStr,
                 AvatarFile = groupImage,
                 BannerFile = bannerImage,
                 Admins = adminUsers,
@@ -76,7 +72,6 @@ namespace PrayerAppServices.PrayerGroups
             }
 
             IEnumerable<UserSummary> adminUserSummaries = GetAdminUserSummaries(adminUsers);
-            string? colorString = prayerGroup.Color.HasValue ? ColorUtils.ColorIntToHexString(prayerGroup.Color ?? 0) : null;
 
             PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails
             {
@@ -87,7 +82,6 @@ namespace PrayerAppServices.PrayerGroups
                 AvatarFile = prayerGroup.AvatarFile,
                 BannerFile = prayerGroup.BannerFile,
                 Admins = adminUserSummaries,
-                Color = colorString,
                 IsUserJoined = appUser != null,
                 UserRole = appUser?.PrayerGroupRole,
             };
@@ -122,8 +116,8 @@ namespace PrayerAppServices.PrayerGroups
                 throw new ArgumentException("A prayer group with this name already exists.");
             }
 
-            int? imageFileId = prayerGroupRequest.ImageFileId;
-            int? bannerImageFileId = prayerGroupRequest.BannerImageFileId;
+            int? imageFileId = prayerGroupRequest.AvatarFileId;
+            int? bannerImageFileId = prayerGroupRequest.BannerFileId;
 
 
             MediaFile? groupImageFile = await GetMediaFileByNullableIdAsync(imageFileId);

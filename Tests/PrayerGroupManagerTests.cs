@@ -88,7 +88,7 @@ namespace Tests {
             PrayerGroupRequest groupRequest = new PrayerGroupRequest {
                 GroupName = "Dunder Mifflin",
                 Description = "The best paper company in Scranton",
-                ImageFileId = 2,
+                AvatarFileId = 2,
             };
 
             Mock<IPrayerGroupRepository> mockRepository = new Mock<IPrayerGroupRepository>();
@@ -168,7 +168,7 @@ namespace Tests {
                 Description = "The best paper company in Scranton",
                 Rules = "No horseplay",
                 Color = "#ffffff",
-                ImageFileId = 1
+                AvatarFileId = 1
             };
 
             _mockMediaFileRepository.Setup(repository => repository.GetMediaFileByIdAsync(1, It.IsAny<bool>())).ReturnsAsync(MockPrayerGroupData.MockMediaFile);
@@ -191,7 +191,7 @@ namespace Tests {
                 Description = "The best paper company in Scranton",
                 Rules = "No horseplay",
                 Color = "#ffffff",
-                ImageFileId = 1
+                AvatarFileId = 1
             };
 
             PrayerGroup existingPrayerGroup = new PrayerGroup { PrayerGroupId = 2, GroupName = "Dunder Mifflin", Description = "Group Name Description" };

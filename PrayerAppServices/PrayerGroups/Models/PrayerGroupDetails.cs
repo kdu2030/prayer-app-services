@@ -10,7 +10,7 @@ namespace PrayerAppServices.PrayerGroups.Models
         public string? GroupName { get; set; }
         public string? Description { get; set; }
         public string? Rules { get; set; }
-        public string? Color { get; set; }
+        public VisibilityLevel? VisibilityLevel { get; set; }
         public MediaFileBase? AvatarFile { get; set; }
         public MediaFileBase? BannerFile { get; set; }
         public IEnumerable<UserSummary>? Admins { get; set; }

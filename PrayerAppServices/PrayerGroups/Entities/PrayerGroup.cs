@@ -1,4 +1,5 @@
 ﻿using PrayerAppServices.Files.Entities;
+using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerRequests.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,7 +15,7 @@ namespace PrayerAppServices.PrayerGroups.Entities
         public string? GroupName { get; set; }
         public string? Description { get; set; }
         public string? Rules { get; set; }
-        public int? Color { get; set; }
+        public VisibilityLevel? VisibilityLevel { get; set; }
         public int? AvatarFileId { get; set; }
         public MediaFile? AvatarFile { get; set; }
         public int? BannerFileId { get; set; }
