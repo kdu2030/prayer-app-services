@@ -6,9 +6,9 @@ namespace PrayerAppServices.PrayerGroups.Entities
     {
         public int PrayerGroupId { get; set; }
         public required string GroupName { get; set; }
-        public int? ImageFileId { get; set; }
+        public int? MediaFileId { get; set; }
         public string? FileName { get; set; }
-        public string? Url { get; set; }
+        public string? FileUrl { get; set; }
         public FileType? FileType { get; set; }
     }
 }

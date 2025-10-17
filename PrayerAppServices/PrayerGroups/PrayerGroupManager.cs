@@ -48,8 +48,8 @@ namespace PrayerAppServices.PrayerGroups
                 Description = createResponse.Description,
                 Rules = createResponse.Rules,
                 Color = colorStr,
-                ImageFile = groupImage,
-                BannerImageFile = bannerImage,
+                AvatarFile = groupImage,
+                BannerFile = bannerImage,
                 Admins = adminUsers,
                 IsUserJoined = true,
                 UserRole = PrayerGroupRole.Admin,
@@ -84,8 +84,8 @@ namespace PrayerAppServices.PrayerGroups
                 GroupName = prayerGroup.GroupName,
                 Description = prayerGroup.Description,
                 Rules = prayerGroup.Rules,
-                ImageFile = prayerGroup.AvatarFile,
-                BannerImageFile = prayerGroup.BannerFile,
+                AvatarFile = prayerGroup.AvatarFile,
+                BannerFile = prayerGroup.BannerFile,
                 Admins = adminUserSummaries,
                 Color = colorString,
                 IsUserJoined = appUser != null,
@@ -227,7 +227,7 @@ namespace PrayerAppServices.PrayerGroups
             {
                 PrayerGroupId = searchResult.PrayerGroupId,
                 GroupName = searchResult.GroupName,
-                ImageFile = mediaFile,
+                AvatarFile = mediaFile,
             };
         }
 

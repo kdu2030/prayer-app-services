@@ -26,8 +26,8 @@ namespace PrayerAppServices.PrayerGroups.Mappers {
                 .ForMember(dest => dest.Description, options => options.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Rules, options => options.MapFrom(src => src.Rules))
                 .ForMember(dest => dest.Color, options => options.MapFrom(src => src.Color != null ? ColorUtils.ColorIntToHexString(src.Color.Value) : null))
-                .ForMember(dest => dest.ImageFile, options => options.MapFrom(src => src.AvatarFile))
-                .ForMember(dest => dest.BannerImageFile, options => options.MapFrom(src => src.BannerFile))
+                .ForMember(dest => dest.AvatarFile, options => options.MapFrom(src => src.AvatarFile))
+                .ForMember(dest => dest.BannerFile, options => options.MapFrom(src => src.BannerFile))
                 .ForMember(dest => dest.IsUserJoined, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("IsUserJoined")))
                 .ForMember(dest => dest.Admins, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("Admins")))
                 .ForMember(dest => dest.UserRole, options => options.MapFrom((src, dest, destMember, context) => context.Items.GetValueOrDefault("UserRole")));
@@ -38,7 +38,7 @@ namespace PrayerAppServices.PrayerGroups.Mappers {
                 .ForMember(dest => dest.Description, options => options.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Rules, options => options.MapFrom(src => src.Rules))
                 .ForMember(dest => dest.Color, options => options.MapFrom(src => src.Color != null ? ColorUtils.ColorIntToHexString(src.Color.Value) : null))
-                .ForMember(dest => dest.ImageFile, options => options.MapFrom(src => src.AvatarFile));
+                .ForMember(dest => dest.AvatarFile, options => options.MapFrom(src => src.AvatarFile));
 
             CreateMap<PrayerGroupUserEntity, PrayerGroupUserSummary>()
                 .ForMember(dest => dest.UserId, options => options.MapFrom(src => src.UserId))
@@ -50,7 +50,7 @@ namespace PrayerAppServices.PrayerGroups.Mappers {
             CreateMap<PrayerGroupSummaryEntity, PrayerGroupDetails>()
                 .ForMember(dest => dest.PrayerGroupId, options => options.MapFrom(src => src.PrayerGroupId))
                 .ForMember(dest => dest.GroupName, options => options.MapFrom(src => src.GroupName))
-                .ForMember(dest => dest.ImageFile, options => options.MapFrom(src => src.ImageFileId != null ? new MediaFile { MediaFileId = src.ImageFileId, FileName = src.FileName ?? "", FileUrl = src.Url ?? "", FileType = src.FileType ?? FileType.Image } : null));
+                .ForMember(dest => dest.AvatarFile, options => options.MapFrom(src => src.MediaFileId != null ? new MediaFile { MediaFileId = src.MediaFileId, FileName = src.FileName ?? "", FileUrl = src.FileUrl ?? "", FileType = src.FileType ?? FileType.Image } : null));
 
             CreateMap<PrayerGroupAppUser, PrayerGroupUserToAdd>()
                 .ForMember(dest => dest.UserId, options => options.MapFrom(src => src.UserId))

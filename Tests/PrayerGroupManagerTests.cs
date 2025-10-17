@@ -100,9 +100,9 @@ namespace Tests {
             PrayerGroupDetails details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", groupRequest);
 
             Assert.Multiple(() => {
-                Assert.That(details.ImageFile?.MediaFileId, Is.EqualTo(2));
-                Assert.That(details.ImageFile?.FileName, Is.EqualTo(mockFileName));
-                Assert.That(details.ImageFile?.FileUrl, Is.EqualTo(mockUrl));
+                Assert.That(details.AvatarFile?.MediaFileId, Is.EqualTo(2));
+                Assert.That(details.AvatarFile?.FileName, Is.EqualTo(mockFileName));
+                Assert.That(details.AvatarFile?.FileUrl, Is.EqualTo(mockUrl));
             });
 
         }
