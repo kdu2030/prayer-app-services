@@ -77,7 +77,7 @@ namespace Tests {
                 ResponseStatus = ResponseStatus.Completed
             };
 
-            MediaFile file = new MediaFile { MediaFileId = 1, FileName = "leslieknope.png", FileType = FileType.Image, Url = "http://localhost:5000/static/2.png" };
+            MediaFile file = new MediaFile { MediaFileId = 1, FileName = "leslieknope.png", FileType = FileType.Image, FileUrl = "http://localhost:5000/static/2.png" };
 
             _serviceProvider = CreateServiceProviderForDeleteTests(new List<FileDeleteError>(), fileDeleteResponse, file);
             using IServiceScope scope = _serviceProvider.CreateScope();

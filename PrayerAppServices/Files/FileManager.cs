@@ -29,7 +29,7 @@ namespace PrayerAppServices.Files {
                 throw new IOException("Unable to upload file");
             }
 
-            MediaFile fileEntity = new MediaFile { FileName = fileName, FileType = fileType, Url = response.Data.Url };
+            MediaFile fileEntity = new MediaFile { FileName = fileName, FileType = fileType, FileUrl = response.Data.Url };
             return await _fileRepository.CreateMediaFileAsync(fileEntity);
         }
 
@@ -45,7 +45,7 @@ namespace PrayerAppServices.Files {
             }
 
             Uri fileServicesStaticUri = new Uri(new Uri(_fileServicesClient.FileServicesUrl), "static");
-            string fileServicesName = file.Url.Replace($"{fileServicesStaticUri}/", "");
+            string fileServicesName = file.FileUrl.Replace($"{fileServicesStaticUri}/", "");
 
             RestRequest restRequest = new RestRequest($"/file/{fileServicesName}", Method.Delete);
             RestResponse<FileDeleteResponse> response = await _fileServicesClient.ExecuteAsync<FileDeleteResponse>(restRequest);

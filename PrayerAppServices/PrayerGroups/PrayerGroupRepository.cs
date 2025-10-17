@@ -37,8 +37,8 @@ namespace PrayerAppServices.PrayerGroups {
         public Task<PrayerGroup?> GetPrayerGroupByIdAsync(int id, bool includeImage = false) {
             if (includeImage) {
                 return _dbContext.PrayerGroups
-                    .Include(group => group.ImageFile)
-                    .Include(group => group.BannerImageFile)
+                    .Include(group => group.AvatarFile)
+                    .Include(group => group.BannerFile)
                     .FirstOrDefaultAsync(group => group.PrayerGroupId == id);
             }
 

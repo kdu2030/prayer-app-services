@@ -37,10 +37,10 @@ namespace Tests.MockData {
             Color = 65280,
             Description = "Missionary organization",
             Rules = "No explicit language",
-            ImageFile = new MediaFile {
+            AvatarFile = new MediaFile {
                 MediaFileId = 1,
                 FileName = "imb-logo.jpg",
-                Url = "https://127.0.0.1:5000/static/4.jpg",
+                FileUrl = "https://127.0.0.1:5000/static/4.jpg",
                 FileType = FileType.Image,
             },
         };
@@ -65,7 +65,7 @@ namespace Tests.MockData {
         public static readonly MediaFile MockMediaFile = new MediaFile {
             MediaFileId = 1,
             FileName = "dunder-mifflin-logo.jpg",
-            Url = "https://127.0.0.1:5000/static/1.jpg",
+            FileUrl = "https://127.0.0.1:5000/static/1.jpg",
             FileType = FileType.Image,
         };
 

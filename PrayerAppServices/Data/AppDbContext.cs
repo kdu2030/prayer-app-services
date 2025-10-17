@@ -46,14 +46,14 @@ namespace PrayerAppServices.Data {
             }
 
             modelBuilder.Entity<PrayerGroup>()
-                .HasOne(group => group.ImageFile)
+                .HasOne(group => group.AvatarFile)
                 .WithMany(file => file.PrayerGroups)
-                .HasForeignKey(group => group.ImageFileId);
+                .HasForeignKey(group => group.AvatarFileId);
 
             modelBuilder.Entity<PrayerGroup>()
-                .HasOne(group => group.BannerImageFile)
+                .HasOne(group => group.BannerFile)
                 .WithMany(file => file.BannerPrayerGroups)
-                .HasForeignKey(group => group.BannerImageFileId);
+                .HasForeignKey(group => group.BannerFileId);
         }
 
 

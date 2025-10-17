@@ -102,7 +102,7 @@ namespace Tests {
             Assert.Multiple(() => {
                 Assert.That(details.ImageFile?.MediaFileId, Is.EqualTo(2));
                 Assert.That(details.ImageFile?.FileName, Is.EqualTo(mockFileName));
-                Assert.That(details.ImageFile?.Url, Is.EqualTo(mockUrl));
+                Assert.That(details.ImageFile?.FileUrl, Is.EqualTo(mockUrl));
             });
 
         }

@@ -80,7 +80,7 @@ namespace PrayerAppServices.PrayerRequests {
                 PrayerGroup = query.PrayerGroup != null ? new() {
                     PrayerGroupId = query.PrayerGroup.PrayerGroupId,
                     GroupName = query.PrayerGroup.GroupName,
-                    ImageFile = query.PrayerGroup.ImageFile,
+                    AvatarFile = query.PrayerGroup.AvatarFile,
                 } : null,
 
             });

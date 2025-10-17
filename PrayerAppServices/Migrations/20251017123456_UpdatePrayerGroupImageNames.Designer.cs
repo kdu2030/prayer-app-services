@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PrayerAppServices.Data;
@@ -11,9 +12,11 @@ using PrayerAppServices.Data;
 namespace PrayerAppServices.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251017123456_UpdatePrayerGroupImageNames")]
+    partial class UpdatePrayerGroupImageNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -204,10 +207,10 @@ namespace PrayerAppServices.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("file_type");
 
-                    b.Property<string>("FileUrl")
+                    b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
-                        .HasColumnName("file_url");
+                        .HasColumnName("url");
 
                     b.HasKey("MediaFileId")
                         .HasName("pk_media_files");

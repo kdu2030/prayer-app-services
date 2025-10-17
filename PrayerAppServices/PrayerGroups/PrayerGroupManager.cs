@@ -84,8 +84,8 @@ namespace PrayerAppServices.PrayerGroups
                 GroupName = prayerGroup.GroupName,
                 Description = prayerGroup.Description,
                 Rules = prayerGroup.Rules,
-                ImageFile = prayerGroup.ImageFile,
-                BannerImageFile = prayerGroup.BannerImageFile,
+                ImageFile = prayerGroup.AvatarFile,
+                BannerImageFile = prayerGroup.BannerFile,
                 Admins = adminUserSummaries,
                 Color = colorString,
                 IsUserJoined = appUser != null,
@@ -220,7 +220,7 @@ namespace PrayerAppServices.PrayerGroups
                     MediaFileId = searchResult.ImageFileId,
                     FileName = searchResult.FileName ?? "",
                     FileType = searchResult.FileType ?? FileType.Unknown,
-                    Url = searchResult.FileUrl ?? ""
+                    FileUrl = searchResult.FileUrl ?? ""
                 }
                 : null;
             return new PrayerGroupDetails
@@ -241,7 +241,7 @@ namespace PrayerAppServices.PrayerGroups
             {
                 MediaFileId = response.ImageFileId,
                 FileName = response.GroupImageFileName ?? "",
-                Url = response.GroupImageFileUrl ?? "",
+                FileUrl = response.GroupImageFileUrl ?? "",
                 FileType = FileType.Image,
             };
         }
@@ -256,7 +256,7 @@ namespace PrayerAppServices.PrayerGroups
             {
                 MediaFileId = response.BannerImageFileId,
                 FileName = response.BannerImageFileName ?? "",
-                Url = response.BannerImageFileUrl ?? "",
+                FileUrl = response.BannerImageFileUrl ?? "",
                 FileType = FileType.Image,
             };
         }
@@ -273,7 +273,7 @@ namespace PrayerAppServices.PrayerGroups
                 {
                     MediaFileId = response.AdminImageFileId,
                     FileName = response.AdminImageFileName ?? "",
-                    Url = response.AdminImageFileUrl ?? "",
+                    FileUrl = response.AdminImageFileUrl ?? "",
                     FileType = FileType.Image
                 }
                 : null;
@@ -299,7 +299,7 @@ namespace PrayerAppServices.PrayerGroups
                     {
                         MediaFileId = adminUser.ImageFileId,
                         FileName = adminUser.FileName ?? "",
-                        Url = adminUser.FileUrl ?? "",
+                        FileUrl = adminUser.FileUrl ?? "",
                         FileType = FileType.Image
                     } : null
                 });
