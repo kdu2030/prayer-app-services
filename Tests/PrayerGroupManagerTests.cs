@@ -42,7 +42,7 @@ namespace Tests {
                 .Returns(() => username);
 
             PrayerGroupDetailsEntity response = new PrayerGroupDetailsEntity {
-                Id = 1,
+                PrayerGroupId = 1,
                 GroupName = "Dunder Mifflin",
                 AdminUserId = 1,
                 AdminFullName = "Andy Bernard",
@@ -62,7 +62,7 @@ namespace Tests {
 
             Assert.Multiple(() => {
                 Assert.That((details.GroupName ?? "").Equals(newPrayerGroup.GroupName), Is.True);
-                Assert.That(details.Id, Is.Not.Null);
+                Assert.That(details.PrayerGroupId, Is.Not.Null);
             });
         }
 
@@ -76,7 +76,7 @@ namespace Tests {
             string mockUrl = "http://127.0.0.1:5000/group_image.png";
 
             PrayerGroupDetailsEntity response = new PrayerGroupDetailsEntity {
-                Id = 1,
+                PrayerGroupId = 1,
                 GroupName = "Dunder Mifflin",
                 AdminUserId = 1,
                 AdminFullName = "Andy Bernard",
@@ -116,7 +116,7 @@ namespace Tests {
                 .Returns(() => username);
 
             PrayerGroupDetailsEntity response = new PrayerGroupDetailsEntity {
-                Id = 1,
+                PrayerGroupId = 1,
                 GroupName = "Dunder Mifflin",
                 AdminUserId = 1,
                 AdminFullName = "Andy Bernard",
@@ -156,7 +156,7 @@ namespace Tests {
             PrayerGroupDetails prayerGroupDetails = await manager.GetPrayerGroupDetailsAsync("mockToken", 2);
 
             Assert.Multiple(() => {
-                Assert.That(prayerGroupDetails.Id, Is.EqualTo(MockPrayerGroupData.MockPrayerGroup.Id));
+                Assert.That(prayerGroupDetails.PrayerGroupId, Is.EqualTo(MockPrayerGroupData.MockPrayerGroup.PrayerGroupId));
                 Assert.That(prayerGroupDetails.GroupName, Is.EqualTo(MockPrayerGroupData.MockPrayerGroup.GroupName));
             });
         }
@@ -178,7 +178,7 @@ namespace Tests {
             PrayerGroupDetails updatedGroup = await manager.UpdatePrayerGroupAsync(1, request);
 
             Assert.Multiple(() => {
-                Assert.That(updatedGroup.Id, Is.EqualTo(1));
+                Assert.That(updatedGroup.PrayerGroupId, Is.EqualTo(1));
                 Assert.That(updatedGroup.GroupName, Is.EqualTo(request.GroupName));
                 Assert.That(updatedGroup.Description, Is.EqualTo(request.Description));
             });
@@ -194,7 +194,7 @@ namespace Tests {
                 ImageFileId = 1
             };
 
-            PrayerGroup existingPrayerGroup = new PrayerGroup { Id = 2, GroupName = "Dunder Mifflin", Description = "Group Name Description" };
+            PrayerGroup existingPrayerGroup = new PrayerGroup { PrayerGroupId = 2, GroupName = "Dunder Mifflin", Description = "Group Name Description" };
 
             _mockMediaFileRepository.Setup(repository => repository.GetMediaFileByIdAsync(1, It.IsAny<bool>())).ReturnsAsync(MockPrayerGroupData.MockMediaFile);
             _mockPrayerGroupRepository.Setup(repository => repository.UpdatePrayerGroupAsync(It.IsAny<PrayerGroup>())).Returns(Task.CompletedTask);
@@ -217,7 +217,7 @@ namespace Tests {
             PrayerGroupDetails updatedGroup = await manager.UpdatePrayerGroupAsync(1, request);
 
             Assert.Multiple(() => {
-                Assert.That(updatedGroup.Id, Is.EqualTo(1));
+                Assert.That(updatedGroup.PrayerGroupId, Is.EqualTo(1));
                 Assert.That(updatedGroup.GroupName, Is.EqualTo(request.GroupName));
                 Assert.That(updatedGroup.Description, Is.EqualTo(request.Description));
             });
@@ -246,14 +246,14 @@ namespace Tests {
             IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
             IEnumerable<int> prayerGroupAdminIds = MockPrayerGroupData.MockPrayerGroupAdminUsers
                                                         .Skip(1)
-                                                        .Select(admin => admin.Id)
+                                                        .Select(admin => admin.UserId)
                                                         .OfType<int>();
 
             await manager.UpdatePrayerGroupAdminsAsync("mockToken", 747, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds });
 
             Assert.Multiple(() => {
                 Assert.That(adminsToAdd.ToArray().Length, Is.EqualTo(0));
-                Assert.That(adminsToRemove.Contains(MockPrayerGroupData.MockPrayerGroupAdminUsers?.ElementAt(0).Id ?? -1), Is.True);
+                Assert.That(adminsToRemove.Contains(MockPrayerGroupData.MockPrayerGroupAdminUsers?.ElementAt(0).UserId ?? -1), Is.True);
             });
         }
 
@@ -285,15 +285,15 @@ namespace Tests {
 
             IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
             IEnumerable<int> prayerGroupAdminIds = MockPrayerGroupData.MockPrayerGroupAdminUsers
-                                                        .Select(admin => admin.Id)
+                                                        .Select(admin => admin.UserId)
                                                         .OfType<int>();
 
             await manager.UpdatePrayerGroupAdminsAsync("mockToken", 747, new UpdatePrayerGroupAdminsRequest { UserIds = prayerGroupAdminIds });
 
             Assert.Multiple(() => {
                 Assert.That(adminsToRemove.ToArray().Length, Is.EqualTo(0));
-                Assert.That(adminsToAdd.Contains(MockPrayerGroupData.MockPrayerGroupAdminUsers.ElementAt(1).Id ?? -1), Is.True);
-                Assert.That(adminsToAdd.Contains(MockPrayerGroupData.MockPrayerGroupAdminUsers.ElementAt(2).Id ?? -1), Is.True);
+                Assert.That(adminsToAdd.Contains(MockPrayerGroupData.MockPrayerGroupAdminUsers.ElementAt(1).UserId ?? -1), Is.True);
+                Assert.That(adminsToAdd.Contains(MockPrayerGroupData.MockPrayerGroupAdminUsers.ElementAt(2).UserId ?? -1), Is.True);
             });
 
         }
@@ -305,7 +305,7 @@ namespace Tests {
                 .ReturnsAsync(MockPrayerGroupData.MockPrayerGroupMember);
 
             IEnumerable<int> prayerGroupAdminIds = MockPrayerGroupData.MockPrayerGroupAdminUsers
-                                                       .Select(admin => admin.Id)
+                                                       .Select(admin => admin.UserId)
                                                        .OfType<int>();
 
             IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);

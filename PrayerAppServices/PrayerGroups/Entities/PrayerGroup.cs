@@ -3,9 +3,11 @@ using PrayerAppServices.PrayerRequests.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PrayerAppServices.PrayerGroups.Entities {
-    public class PrayerGroup {
-        public int? Id { get; set; }
+namespace PrayerAppServices.PrayerGroups.Entities
+{
+    public class PrayerGroup
+    {
+        public int? PrayerGroupId { get; set; }
 
         [Required]
         [Column(TypeName = "varchar(255)")]

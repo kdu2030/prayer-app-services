@@ -39,11 +39,11 @@ namespace PrayerAppServices.PrayerGroups {
                 return _dbContext.PrayerGroups
                     .Include(group => group.ImageFile)
                     .Include(group => group.BannerImageFile)
-                    .FirstOrDefaultAsync(group => group.Id == id);
+                    .FirstOrDefaultAsync(group => group.PrayerGroupId == id);
             }
 
             return _dbContext.PrayerGroups
-                .FirstOrDefaultAsync(group => group.Id == id);
+                .FirstOrDefaultAsync(group => group.PrayerGroupId == id);
         }
 
         public async Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole> prayerGroupRoles) {
@@ -130,14 +130,14 @@ namespace PrayerAppServices.PrayerGroups {
 
         public async Task DeletePrayerGroupUsersAsync(int prayerGroupId, IEnumerable<int> userIds) {
             _dbContext.PrayerGroupUsers.RemoveRange(
-                _dbContext.PrayerGroupUsers.Where(user => user.PrayerGroup.Id == prayerGroupId && userIds.Contains(user.AppUser.Id))
+                _dbContext.PrayerGroupUsers.Where(user => user.PrayerGroup.PrayerGroupId == prayerGroupId && userIds.Contains(user.AppUser.Id))
             );
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task<PrayerGroupUser?> GetPrayerGroupUserByUserIdAsync(int prayerGroupId, int userId, CancellationToken token = default) {
             return await _dbContext.PrayerGroupUsers
-                .Where(user => user.PrayerGroup.Id == prayerGroupId && user.AppUser.Id == userId)
+                .Where(user => user.PrayerGroup.PrayerGroupId == prayerGroupId && user.AppUser.Id == userId)
                 .FirstOrDefaultAsync(token);
         }
     }

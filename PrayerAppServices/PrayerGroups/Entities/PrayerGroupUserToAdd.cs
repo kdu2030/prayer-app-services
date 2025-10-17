@@ -1,6 +1,8 @@
-﻿namespace PrayerAppServices.PrayerGroups.Entities {
-    public class PrayerGroupUserToAdd {
-        public required int Id { get; set; }
+﻿namespace PrayerAppServices.PrayerGroups.Entities
+{
+    public class PrayerGroupUserToAdd
+    {
+        public required int UserId { get; set; }
         public required int PrayerGroupRole { get; set; }
     }
 }

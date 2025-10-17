@@ -25,7 +25,7 @@ namespace PrayerAppServices.PrayerRequests {
             };
 
             PrayerGroup prayerGroup = new PrayerGroup {
-                Id = prayerGroupId
+                PrayerGroupId = prayerGroupId
             };
 
             PrayerRequest prayerRequest = new PrayerRequest {

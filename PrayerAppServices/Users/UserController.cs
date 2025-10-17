@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using PrayerAppServices.Users.Models;
 using System.Net;
 
-namespace PrayerAppServices.Users {
+namespace PrayerAppServices.Users
+{
     [ApiController]
     [Route("/api/v1/user")]
-    public class UserController(IUserManager userManager) : ControllerBase, IUserController {
+    public class UserController(IUserManager userManager) : ControllerBase, IUserController
+    {
         private readonly IUserManager _userManager = userManager;
 
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
-        public async Task<IActionResult> CreateUser(CreateUserRequest request) {
+        public async Task<IActionResult> CreateUser(CreateUserRequest request)
+        {
             UserSummary userSummary = await _userManager.CreateUserAsync(request);
             return Ok(userSummary);
         }
@@ -19,7 +22,8 @@ namespace PrayerAppServices.Users {
         [HttpPost]
         [Route("summary")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
-        public async Task<IActionResult> GetUserSummaryFromCredentials(UserCredentials credentials) {
+        public async Task<IActionResult> GetUserSummaryFromCredentials(UserCredentials credentials)
+        {
             UserSummary userSummary = await _userManager.GetUserSummaryFromCredentialsAsync(credentials);
             return Ok(userSummary);
         }
@@ -28,7 +32,8 @@ namespace PrayerAppServices.Users {
         [Authorize]
         [Route("{userId}/summary")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
-        public async Task<IActionResult> GetUserSummaryFromUserIdAsync(int userId) {
+        public async Task<IActionResult> GetUserSummaryFromUserIdAsync(int userId)
+        {
             UserSummary userSummary = await _userManager.GetUserSummaryFromUserIdAsync(userId);
             return Ok(userSummary);
         }
@@ -37,7 +42,8 @@ namespace PrayerAppServices.Users {
         [Authorize]
         [Route("token")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserTokenPair))]
-        public IActionResult GetUserTokenPair([FromHeader(Name = "Authorization")] string authHeader) {
+        public IActionResult GetUserTokenPair([FromHeader(Name = "Authorization")] string authHeader)
+        {
             UserTokenPair tokenPair = _userManager.GetUserTokenPair(authHeader);
             return Ok(tokenPair);
         }

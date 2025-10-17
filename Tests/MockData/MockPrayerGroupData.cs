@@ -9,7 +9,7 @@ namespace Tests.MockData {
     public static class MockPrayerGroupData {
         public static readonly IEnumerable<PrayerGroupUserEntity> MockPrayerGroupAdminUsers = [
             new PrayerGroupUserEntity {
-                Id = 1,
+                UserId = 1,
                 FullName = "Anakin Skywalker",
                 GroupRole = PrayerGroupRole.Admin,
                 ImageFileId = 1,
@@ -17,12 +17,12 @@ namespace Tests.MockData {
                 FileType = FileType.Image,
             },
             new PrayerGroupUserEntity {
-                Id = 2,
+                UserId = 2,
                 FullName = "Obi Wan Kenobi",
                 GroupRole = PrayerGroupRole.Admin
             },
             new PrayerGroupUserEntity {
-                Id = 3,
+                UserId = 3,
                 FullName = "Count Dooku",
                 ImageFileId = 4,
                 FileName = "count_dooku.jpg",
@@ -32,7 +32,7 @@ namespace Tests.MockData {
         ];
 
         public static readonly PrayerGroup MockPrayerGroup = new PrayerGroup {
-            Id = 2,
+            PrayerGroupId = 2,
             GroupName = "IMB",
             Color = 65280,
             Description = "Missionary organization",
@@ -46,7 +46,7 @@ namespace Tests.MockData {
         };
 
         public static readonly PrayerGroupAppUser PrayerGroupAppUser = new PrayerGroupAppUser {
-            Id = 6,
+            UserId = 6,
             FullName = "Commander Cody",
             ImageFileId = 4,
             FileName = "commander_cody.jpg",
@@ -55,7 +55,7 @@ namespace Tests.MockData {
         };
 
         public static readonly PrayerGroupAppUser MockPrayerGroupMember = new PrayerGroupAppUser {
-            Id = 7,
+            UserId = 7,
             FullName = "Commander Fox",
             ImageFileId = 5,
             FileType = FileType.Image,

@@ -2,9 +2,11 @@
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.Users.Models;
 
-namespace PrayerAppServices.PrayerGroups.Models {
-    public class PrayerGroupDetails {
-        public int? Id { get; set; }
+namespace PrayerAppServices.PrayerGroups.Models
+{
+    public class PrayerGroupDetails
+    {
+        public int? PrayerGroupId { get; set; }
         public string? GroupName { get; set; }
         public string? Description { get; set; }
         public string? Rules { get; set; }

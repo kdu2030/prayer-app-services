@@ -39,7 +39,7 @@ namespace PrayerAppServices.PrayerRequests {
             IQueryable<PrayerRequest> query = _dbContext.PrayerRequests.AsQueryable();
 
             if (prayerGroupIds.Count > 0) {
-                query = query.Where(prayerRequest => prayerRequest.PrayerGroup != null && prayerGroupIds.Contains(prayerRequest.PrayerGroup.Id ?? -1));
+                query = query.Where(prayerRequest => prayerRequest.PrayerGroup != null && prayerGroupIds.Contains(prayerRequest.PrayerGroup.PrayerGroupId ?? -1));
             }
 
             if (creatorUserIds.Count > 0) {
@@ -78,7 +78,7 @@ namespace PrayerAppServices.PrayerRequests {
                     UserName = query.User.UserName,
                 } : null,
                 PrayerGroup = query.PrayerGroup != null ? new() {
-                    Id = query.PrayerGroup.Id,
+                    PrayerGroupId = query.PrayerGroup.PrayerGroupId,
                     GroupName = query.PrayerGroup.GroupName,
                     ImageFile = query.PrayerGroup.ImageFile,
                 } : null,
