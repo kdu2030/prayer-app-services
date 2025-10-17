@@ -13,7 +13,7 @@ namespace Tests.MockData {
                 Id = 2,
                 FullName = "Anakin Skywalker",
             },
-            Role = PrayerGroupRole.Member,
+            PrayerGroupRole = PrayerGroupRole.Member,
             PrayerGroup = new PrayerGroup {
                 PrayerGroupId = 3,
                 GroupName = "IMB",
