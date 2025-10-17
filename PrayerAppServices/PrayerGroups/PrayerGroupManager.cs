@@ -190,7 +190,7 @@ namespace PrayerAppServices.PrayerGroups {
         private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult) {
             MediaFileBase? mediaFile = searchResult.ImageFileId != null
                 ? new MediaFileBase {
-                    Id = searchResult.ImageFileId,
+                    MediaFileId = searchResult.ImageFileId,
                     FileName = searchResult.FileName ?? "",
                     FileType = searchResult.FileType ?? FileType.Unknown,
                     Url = searchResult.FileUrl ?? ""
@@ -208,7 +208,7 @@ namespace PrayerAppServices.PrayerGroups {
                 return null;
             }
             return new MediaFileBase {
-                Id = response.ImageFileId,
+                MediaFileId = response.ImageFileId,
                 FileName = response.GroupImageFileName ?? "",
                 Url = response.GroupImageFileUrl ?? "",
                 FileType = FileType.Image,
@@ -220,7 +220,7 @@ namespace PrayerAppServices.PrayerGroups {
                 return null;
             }
             return new MediaFileBase {
-                Id = response.BannerImageFileId,
+                MediaFileId = response.BannerImageFileId,
                 FileName = response.BannerImageFileName ?? "",
                 Url = response.BannerImageFileUrl ?? "",
                 FileType = FileType.Image,
@@ -234,7 +234,7 @@ namespace PrayerAppServices.PrayerGroups {
 
             MediaFileBase? userImage = response.AdminImageFileId != null ?
                 new MediaFileBase {
-                    Id = response.AdminImageFileId,
+                    MediaFileId = response.AdminImageFileId,
                     FileName = response.AdminImageFileName ?? "",
                     Url = response.AdminImageFileUrl ?? "",
                     FileType = FileType.Image
@@ -256,7 +256,7 @@ namespace PrayerAppServices.PrayerGroups {
                     Id = adminUser.Id ?? -1,
                     FullName = adminUser.FullName,
                     Image = adminUser.ImageFileId != null ? new MediaFileBase {
-                        Id = adminUser.ImageFileId,
+                        MediaFileId = adminUser.ImageFileId,
                         FileName = adminUser.FileName ?? "",
                         Url = adminUser.FileUrl ?? "",
                         FileType = FileType.Image

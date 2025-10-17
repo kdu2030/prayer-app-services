@@ -1,9 +1,11 @@
 ﻿using PrayerAppServices.Files.Constants;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PrayerAppServices.Files.Entities {
-    public class MediaFileBase {
-        public int? Id { get; set; }
+namespace PrayerAppServices.Files.Entities
+{
+    public class MediaFileBase
+    {
+        public int? MediaFileId { get; set; }
 
         [Column(TypeName = "varchar(255)")]
         public required string FileName { get; set; }

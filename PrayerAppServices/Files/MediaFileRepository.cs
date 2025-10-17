@@ -25,7 +25,7 @@ namespace PrayerAppServices.Files {
 
             return await _dbContext.MediaFiles
                 .AsNoTracking()
-                .FirstOrDefaultAsync((file) => file.Id == fileId);
+                .FirstOrDefaultAsync((file) => file.MediaFileId == fileId);
         }
 
         public async Task DeleteMediaFileAsync(MediaFile mediaFile) {

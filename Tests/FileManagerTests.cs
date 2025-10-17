@@ -77,13 +77,13 @@ namespace Tests {
                 ResponseStatus = ResponseStatus.Completed
             };
 
-            MediaFile file = new MediaFile { Id = 1, FileName = "leslieknope.png", FileType = FileType.Image, Url = "http://localhost:5000/static/2.png" };
+            MediaFile file = new MediaFile { MediaFileId = 1, FileName = "leslieknope.png", FileType = FileType.Image, Url = "http://localhost:5000/static/2.png" };
 
             _serviceProvider = CreateServiceProviderForDeleteTests(new List<FileDeleteError>(), fileDeleteResponse, file);
             using IServiceScope scope = _serviceProvider.CreateScope();
 
             IFileManager fileManager = scope.ServiceProvider.GetRequiredService<IFileManager>();
-            Assert.DoesNotThrowAsync(() => fileManager.DeleteFileAsync(file.Id ?? -1));
+            Assert.DoesNotThrowAsync(() => fileManager.DeleteFileAsync(file.MediaFileId ?? -1));
         }
 
         [Test]
