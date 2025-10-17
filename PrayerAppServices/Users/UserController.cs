@@ -6,7 +6,7 @@ using System.Net;
 namespace PrayerAppServices.Users
 {
     [ApiController]
-    [Route("/api/v1/user")]
+    [Route("/api/user")]
     public class UserController(IUserManager userManager) : ControllerBase, IUserController
     {
         private readonly IUserManager _userManager = userManager;
