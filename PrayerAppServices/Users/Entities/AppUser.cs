@@ -13,7 +13,8 @@ namespace PrayerAppServices.Users.Entities
         [Column(TypeName = "varchar(256)")]
         public string? FullName { get; set; }
 
-        public MediaFile? ImageFile { get; set; }
+        public int? ImageFileId { get; set; }
+        public MediaFile? Image { get; set; }
 
         public IEnumerable<PrayerGroupUser>? GroupUsers { get; set; }
         public IEnumerable<PrayerRequest>? PrayerRequests { get; set; }

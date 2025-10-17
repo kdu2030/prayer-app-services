@@ -74,7 +74,7 @@ namespace PrayerAppServices.PrayerRequests {
                 User = query.User != null ? new() {
                     Id = query.User.Id,
                     FullName = query.User.FullName,
-                    ImageFile = query.User.ImageFile,
+                    Image = query.User.Image,
                     UserName = query.User.UserName,
                 } : null,
                 PrayerGroup = query.PrayerGroup != null ? new() {

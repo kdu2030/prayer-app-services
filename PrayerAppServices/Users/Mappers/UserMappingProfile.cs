@@ -8,7 +8,7 @@ namespace PrayerAppServices.Users.Mappers {
             CreateMap<AppUser, UserSummary>()
                 .ForMember(dest => dest.UserId, options => options.MapFrom(src => src.Id))
                 .ForMember(dest => dest.FullName, options => options.MapFrom(src => src.FullName))
-                .ForMember(dest => dest.Image, options => options.MapFrom(src => src.ImageFile))
+                .ForMember(dest => dest.Image, options => options.MapFrom(src => src.Image))
                 .ForMember(dest => dest.Username, options => options.MapFrom(src => src.UserName));
         }
 
