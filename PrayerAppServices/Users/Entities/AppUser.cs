@@ -8,8 +8,6 @@ namespace PrayerAppServices.Users.Entities
 {
     public class AppUser : IdentityUser<int>
     {
-        public int? AppUserId { get => Id; set => value = Id; }
-
         [Column(TypeName = "varchar(256)")]
         public string? FullName { get; set; }
 
