@@ -4,8 +4,12 @@ using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerRequests.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PrayerAppServices.Users.Entities {
-    public class AppUser : IdentityUser<int> {
+namespace PrayerAppServices.Users.Entities
+{
+    public class AppUser : IdentityUser<int>
+    {
+        public int? UserId { get => Id; set => value = Id; }
+
         [Column(TypeName = "varchar(256)")]
         public string? FullName { get; set; }
 
@@ -14,10 +18,12 @@ namespace PrayerAppServices.Users.Entities {
         public IEnumerable<PrayerGroupUser>? GroupUsers { get; set; }
         public IEnumerable<PrayerRequest>? PrayerRequests { get; set; }
 
-        public AppUser() : base() {
+        public AppUser() : base()
+        {
         }
 
-        public AppUser(string username, string fullName, string email, string passwordHash) : base(username) {
+        public AppUser(string username, string fullName, string email, string passwordHash) : base(username)
+        {
             FullName = fullName;
             Email = email;
             PasswordHash = passwordHash;
