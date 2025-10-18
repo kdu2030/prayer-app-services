@@ -1,11 +1,15 @@
-﻿using PrayerAppServices.Files.Entities;
+﻿using PrayerAppServices.Files.DTOs;
+using PrayerAppServices.Files.Entities;
 using PrayerAppServices.Files.Models;
 
-namespace PrayerAppServices.Files {
-    public interface IMediaFileRepository {
+namespace PrayerAppServices.Files
+{
+    public interface IMediaFileRepository
+    {
         Task<MediaFile> CreateMediaFileAsync(MediaFile file);
         IEnumerable<FileDeleteError> ValidateMediaFileDelete(int fileId);
         Task<MediaFile?> GetMediaFileByIdAsync(int fileId, bool enableTracking = true);
         Task DeleteMediaFileAsync(MediaFile mediaFile);
+        Task<IEnumerable<FileReferenceDTO>> GetFileReferencesForDeleteAsync(int fileId);
     }
 }

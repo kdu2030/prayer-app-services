@@ -1,8 +1,11 @@
-﻿using PrayerAppServices.PrayerGroups.Constants;
+﻿using PrayerAppServices.Files.DTOs;
+using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.Models;
 
-namespace PrayerAppServices.PrayerGroups {
-    public interface IPrayerGroupManager {
+namespace PrayerAppServices.PrayerGroups
+{
+    public interface IPrayerGroupManager
+    {
         Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest);
         Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId);
         Task<GroupNameValidationResponse> ValidateGroupNameAsync(string groupName);
