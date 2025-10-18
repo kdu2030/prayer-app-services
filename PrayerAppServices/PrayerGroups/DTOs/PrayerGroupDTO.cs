@@ -1,11 +1,15 @@
-﻿namespace PrayerAppServices.PrayerGroups.DTOs {
-    public class PrayerGroupDTO {
-        public required string GroupName { get; set; }
-        public string? Description { get; set; }
-        public string? Rules { get; set; }
-        public int? Color { get; set; }
-        public int? ImageFileId { get; set; }
+﻿using PrayerAppServices.PrayerGroups.Constants;
 
-        public int? BannerImageFileId { get; set; }
+namespace PrayerAppServices.PrayerGroups.DTOs
+{
+    public class PrayerGroupDTO
+    {
+        public required int CreatorUserId { get; set; }
+        public required string NewGroupName { get; set; }
+        public string? GroupDescription { get; set; }
+        public string? GroupRules { get; set; }
+        public VisibilityLevel? GroupVisibility { get; set; }
+        public int? GroupAvatarFileId { get; set; }
+        public int? GroupBannerFileId { get; set; }
     }
 }

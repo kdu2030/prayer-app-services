@@ -26,12 +26,12 @@ namespace PrayerAppServices.PrayerGroups
             DynamicParameters parameters = new DynamicParameters();
 
             parameters.Add("admin_username", adminUsername);
-            parameters.Add("group_name", newPrayerGroup.GroupName);
-            parameters.Add("description", newPrayerGroup.Description);
-            parameters.Add("rules", newPrayerGroup.Rules);
+            parameters.Add("group_name", newPrayerGroup.NewGroupName);
+            parameters.Add("description", newPrayerGroup.GroupDescription);
+            parameters.Add("rules", newPrayerGroup.GroupRules);
             parameters.Add("color", newPrayerGroup.Color);
-            parameters.Add("group_image_file_id", newPrayerGroup.ImageFileId);
-            parameters.Add("banner_image_file_id", newPrayerGroup.BannerImageFileId);
+            parameters.Add("group_image_file_id", newPrayerGroup.GroupAvatarFileId);
+            parameters.Add("banner_image_file_id", newPrayerGroup.GroupBannerFileId);
 
             string sql = "SELECT * FROM create_prayer_group(@admin_username, @group_name, @description, @rules, @color, @group_image_file_id, @banner_image_file_id)";
             PrayerGroupDetailsEntity response = await connection.QueryFirstAsync<PrayerGroupDetailsEntity>(sql, parameters);

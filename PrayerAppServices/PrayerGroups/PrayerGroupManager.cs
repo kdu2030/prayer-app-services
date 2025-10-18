@@ -24,11 +24,11 @@ namespace PrayerAppServices.PrayerGroups
             string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
             PrayerGroupDTO newPrayerGroup = new PrayerGroupDTO
             {
-                GroupName = newPrayerGroupRequest.GroupName,
-                Description = newPrayerGroupRequest.Description,
-                Rules = newPrayerGroupRequest.Rules,
-                ImageFileId = newPrayerGroupRequest.AvatarFileId,
-                BannerImageFileId = newPrayerGroupRequest.BannerFileId,
+                NewGroupName = newPrayerGroupRequest.GroupName,
+                GroupDescription = newPrayerGroupRequest.Description,
+                GroupRules = newPrayerGroupRequest.Rules,
+                GroupAvatarFileId = newPrayerGroupRequest.AvatarFileId,
+                GroupBannerFileId = newPrayerGroupRequest.BannerFileId,
             };
 
             PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup);
