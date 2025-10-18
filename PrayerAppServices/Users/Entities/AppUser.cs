@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PrayerAppServices.Files.Entities;
+using PrayerAppServices.JoinRequests.Entities;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerRequests.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,6 +17,7 @@ namespace PrayerAppServices.Users.Entities
 
         public IEnumerable<PrayerGroupUser>? GroupUsers { get; set; }
         public IEnumerable<PrayerRequest>? PrayerRequests { get; set; }
+        public IEnumerable<JoinRequest>? JoinRequests { get; set; }
 
         public AppUser() : base()
         {

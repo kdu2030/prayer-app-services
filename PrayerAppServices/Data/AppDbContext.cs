@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using PrayerAppServices.Files.Entities;
+using PrayerAppServices.JoinRequests.Entities;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerRequests.Entities;
 using PrayerAppServices.Users.Entities;
@@ -21,6 +22,8 @@ namespace PrayerAppServices.Data
         public DbSet<PrayerRequestLike> PrayerRequestLikes { get; set; }
 
         public DbSet<PrayerRequestComment> PrayerRequestComments { get; set; }
+
+        public DbSet<JoinRequest> JoinRequests { get; set; }
 
         private readonly string[] IdentityTableNames = ["AspNetUsers", "AspNetUserTokens", "AspNetUserLogins", "AspNetUserClaims", "AspNetRoles", "AspNetUserRoles", "AspNetRoleClaims"];
 

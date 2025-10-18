@@ -1,4 +1,5 @@
 ﻿using PrayerAppServices.Files.Entities;
+using PrayerAppServices.JoinRequests.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerRequests.Entities;
 using System.ComponentModel.DataAnnotations;
@@ -23,5 +24,6 @@ namespace PrayerAppServices.PrayerGroups.Entities
 
         public IEnumerable<PrayerGroupUser>? Users { get; set; }
         public IEnumerable<PrayerRequest>? PrayerRequests { get; set; }
+        public IEnumerable<JoinRequest>? JoinRequests { get; set; }
     }
 }
