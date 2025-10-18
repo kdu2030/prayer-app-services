@@ -2,7 +2,7 @@
 {
     public class FileReferenceDTO
     {
-        public int? EntityId;
-        public int? EntityType;
+        public int EntityId;
+        public int EntityType;
     }
 }
