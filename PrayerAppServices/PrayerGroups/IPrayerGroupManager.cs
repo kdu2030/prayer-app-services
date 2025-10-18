@@ -1,5 +1,4 @@
-﻿using PrayerAppServices.Files.DTOs;
-using PrayerAppServices.PrayerGroups.Constants;
+﻿using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.Models;
 
 namespace PrayerAppServices.PrayerGroups

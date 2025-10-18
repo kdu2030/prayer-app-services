@@ -1,6 +1,5 @@
 ﻿using PrayerAppServices.Files.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
-using PrayerAppServices.Users.Models;
 
 namespace PrayerAppServices.PrayerGroups.Models
 {
@@ -13,7 +12,7 @@ namespace PrayerAppServices.PrayerGroups.Models
         public VisibilityLevel? VisibilityLevel { get; set; }
         public MediaFileBase? AvatarFile { get; set; }
         public MediaFileBase? BannerFile { get; set; }
-        public IEnumerable<UserSummary>? Admins { get; set; }
+        public IEnumerable<PrayerGroupUserSummary>? Admins { get; set; }
         public JoinStatus? JoinStatus { get; set; }
         public PrayerGroupRole? PrayerGroupRole { get; set; }
 

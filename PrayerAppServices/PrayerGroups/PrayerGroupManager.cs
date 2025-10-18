@@ -67,6 +67,7 @@ namespace PrayerAppServices.PrayerGroups
             IEnumerable<PrayerGroupUserEntity> prayerGroupAdminEntities = await prayerGroupAdminEntitiesTask;
 
             PrayerGroupModel prayerGroup = _mapper.Map<PrayerGroupModel>(prayerGroupGetResponse);
+            IEnumerable<PrayerGroupUserSummary> prayerGroupAdmins = _mapper.Map<IEnumerable<PrayerGroupUserSummary>>(prayerGroupAdminEntities);
 
             if (prayerGroupGetResponse.PrayerGroupRole.HasValue)
             {
@@ -81,8 +82,9 @@ namespace PrayerAppServices.PrayerGroups
                 prayerGroup.JoinStatus = JoinStatus.NotJoined;
             }
 
+            prayerGroup.Admins = prayerGroupAdmins;
 
-
+            return prayerGroup;
         }
 
         public async Task<GroupNameValidationResponse> ValidateGroupNameAsync(string groupName)
