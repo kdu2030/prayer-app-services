@@ -27,6 +27,9 @@ namespace PrayerAppServices.PrayerGroups.Mappers
                 .ForMember(dest => dest.AvatarFile, options => options.MapFrom((src) => src.AvatarFileId.HasValue ? new MediaFileBase { MediaFileId = src.AvatarFileId, FileName = src.AvatarFileName ?? "", FileUrl = src.AvatarFileUrl ?? "", FileType = (FileType?)src.AvatarFileType ?? FileType.Unknown } : null))
                 .ForMember(dest => dest.BannerFile, options => options.MapFrom((src) => src.BannerFileId.HasValue ? new MediaFileBase { MediaFileId = src.BannerFileId, FileName = src.BannerFileName ?? "", FileUrl = src.BannerFileUrl ?? "", FileType = (FileType?)src.BannerFileType ?? FileType.Unknown } : null));
 
+            CreateMap<PrayerGroupSearchResult, PrayerGroupModel>()
+                .ForMember(dest => dest.AvatarFile, options => options.MapFrom((src) => src.MediaFileId.HasValue ? new MediaFileBase { MediaFileId = src.MediaFileId, FileName = src.FileName ?? "", FileType = src.FileType ?? FileType.Unknown, FileUrl = src.FileUrl ?? "" } : null));
+
             CreateMap<PrayerGroup, PrayerGroupModel>()
                 .ForMember(dest => dest.PrayerGroupId, options => options.MapFrom(src => src.PrayerGroupId))
                 .ForMember(dest => dest.GroupName, options => options.MapFrom(src => src.GroupName))

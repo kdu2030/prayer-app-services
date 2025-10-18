@@ -107,13 +107,19 @@ namespace PrayerAppServices.PrayerGroups
                 .FirstOrDefaultAsync();
         }
 
-        public IEnumerable<PrayerGroupSearchResult> SearchPrayerGroupsByName(string nameQuery, int maxNumResults)
+        public async Task<IEnumerable<PrayerGroupSearchResult>> SearchPrayerGroupsAsync(string nameQuery, int maxNumResults)
         {
-            FormattableString query = $"SELECT * FROM search_prayer_groups_by_name({nameQuery}, {maxNumResults})";
-            return _dbContext.Database.SqlQuery<PrayerGroupSearchResult>(query);
+            await using NpgsqlConnection connection = await Connection;
+
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@group_name_query", nameQuery);
+            parameters.Add("@max_num_results", maxNumResults);
+
+            string sql = "SELECT * FROM search_prayer_groups(@group_name_query, @max_num_results);";
+            IEnumerable<PrayerGroupSearchResult> searchResults = await connection.QueryAsync<PrayerGroupSearchResult>(sql, parameters);
+
+            return searchResults;
         }
-
-
 
         public async Task UpdatePrayerGroupAsync(PrayerGroup prayerGroup)
         {

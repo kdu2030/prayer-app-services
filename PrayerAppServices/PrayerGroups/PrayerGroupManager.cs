@@ -99,10 +99,10 @@ namespace PrayerAppServices.PrayerGroups
             return new GroupNameValidationResponse { IsNameValid = errors.Count == 0, Errors = errors };
         }
 
-        public IEnumerable<PrayerGroupModel> SearchPrayerGroupsByName(string nameQuery, int maxNumResults)
+        public async Task<IEnumerable<PrayerGroupModel>> SearchPrayerGroupsAsync(PrayerGroupSearchRequest prayerGroupSearchRequest)
         {
-            IEnumerable<PrayerGroupSearchResult> searchResults = _prayerGroupRepository.SearchPrayerGroupsByName(nameQuery, maxNumResults);
-            return searchResults.Select(GetPrayerGroupDetailFromSearchResult);
+            IEnumerable<PrayerGroupSearchResult> searchResults = await _prayerGroupRepository.SearchPrayerGroupsAsync(prayerGroupSearchRequest.GroupNameQuery, prayerGroupSearchRequest.MaxNumResults ?? 20);
+            return _mapper.Map<IEnumerable<PrayerGroupModel>>(searchResults);
         }
 
         public async Task<PrayerGroupModel> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
@@ -202,25 +202,6 @@ namespace PrayerAppServices.PrayerGroups
         private async Task<MediaFile?> GetMediaFileByNullableIdAsync(int? fileId)
         {
             return fileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(fileId ?? -1, false) : null;
-        }
-
-        private PrayerGroupModel GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult)
-        {
-            MediaFileBase? mediaFile = searchResult.MediaFileId != null
-                ? new MediaFileBase
-                {
-                    MediaFileId = searchResult.MediaFileId,
-                    FileName = searchResult.FileName ?? "",
-                    FileType = searchResult.FileType ?? FileType.Unknown,
-                    FileUrl = searchResult.FileUrl ?? ""
-                }
-                : null;
-            return new PrayerGroupModel
-            {
-                PrayerGroupId = searchResult.PrayerGroupId,
-                GroupName = searchResult.GroupName,
-                AvatarFile = mediaFile,
-            };
         }
 
         private static MediaFileBase? GetGroupImageFromCreateResponse(PrayerGroupDetailsEntity response)

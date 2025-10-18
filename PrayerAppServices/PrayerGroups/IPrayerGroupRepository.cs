@@ -11,7 +11,6 @@ namespace PrayerAppServices.PrayerGroups
         Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole> prayerGroupRoles);
         Task<PrayerGroupAppUser?> GetPrayerGroupAppUserByUsernameAsync(int prayerGroupId, string username);
         Task<PrayerGroup?> GetPrayerGroupByNameAsync(string groupName, bool enableTracking = true);
-        IEnumerable<PrayerGroupSearchResult> SearchPrayerGroupsByName(string nameQuery, int maxNumResults);
         Task UpdatePrayerGroupAsync(PrayerGroup prayerGroup);
         Task<IEnumerable<PrayerGroupSummaryEntity>> GetPrayerGroupSummariesByUserIdAsync(int userId);
         Task UpdatePrayerGroupAdminsAsync(int prayerGroupId, IEnumerable<int> adminUserIdsToAdd, IEnumerable<int> adminUserIdsToRemove);
@@ -19,5 +18,6 @@ namespace PrayerAppServices.PrayerGroups
         Task DeletePrayerGroupUsersAsync(int prayerGroupId, IEnumerable<int> userIds);
         Task<PrayerGroupUser?> GetPrayerGroupUserByUserIdAsync(int prayerGroupId, int userId, CancellationToken token = default);
         Task<PrayerGroupGetResponse> GetPrayerGroupAsync(PrayerGroupQuery prayerGroupQuery);
+        Task<IEnumerable<PrayerGroupSearchResult>> SearchPrayerGroupsAsync(string nameQuery, int maxNumResults);
     }
 }
