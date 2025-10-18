@@ -8,7 +8,6 @@ using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
 using PrayerAppServices.Users.Models;
-using PrayerAppServices.Utils;
 
 namespace PrayerAppServices.PrayerGroups
 {
@@ -21,17 +20,19 @@ namespace PrayerAppServices.PrayerGroups
 
         public async Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest)
         {
-            string username = _userManager.ExtractUsernameFromAuthHeader(authToken);
+            int userId = _userManager.ExtractUserIdFromAuthHeader(authToken);
             PrayerGroupDTO newPrayerGroup = new PrayerGroupDTO
             {
+                CreatorUserId = userId,
                 NewGroupName = newPrayerGroupRequest.GroupName,
                 GroupDescription = newPrayerGroupRequest.Description,
                 GroupRules = newPrayerGroupRequest.Rules,
                 GroupAvatarFileId = newPrayerGroupRequest.AvatarFileId,
                 GroupBannerFileId = newPrayerGroupRequest.BannerFileId,
+                GroupVisibility = newPrayerGroupRequest.VisibilityLevel ?? VisibilityLevel.Public,
             };
 
-            PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(username, newPrayerGroup);
+            PrayerGroupDetailsEntity createResponse = await _prayerGroupRepository.CreatePrayerGroupAsync(newPrayerGroup);
 
             MediaFileBase? groupImage = GetGroupImageFromCreateResponse(createResponse);
             MediaFileBase? bannerImage = GetGroupBannerImageFromCreateResponse(createResponse);

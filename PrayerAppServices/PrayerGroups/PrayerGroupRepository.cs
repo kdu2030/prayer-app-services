@@ -20,20 +20,20 @@ namespace PrayerAppServices.PrayerGroups
             }
         }
 
-        public async Task<PrayerGroupDetailsEntity> CreatePrayerGroupAsync(string adminUsername, PrayerGroupDTO newPrayerGroup)
+        public async Task<PrayerGroupDetailsEntity> CreatePrayerGroupAsync(PrayerGroupDTO newPrayerGroup)
         {
             await using NpgsqlConnection connection = await Connection;
             DynamicParameters parameters = new DynamicParameters();
 
-            parameters.Add("admin_username", adminUsername);
-            parameters.Add("group_name", newPrayerGroup.NewGroupName);
-            parameters.Add("description", newPrayerGroup.GroupDescription);
-            parameters.Add("rules", newPrayerGroup.GroupRules);
-            parameters.Add("color", newPrayerGroup.Color);
-            parameters.Add("group_image_file_id", newPrayerGroup.GroupAvatarFileId);
-            parameters.Add("banner_image_file_id", newPrayerGroup.GroupBannerFileId);
+            parameters.Add("creator_user_id", newPrayerGroup.CreatorUserId);
+            parameters.Add("new_group_name", newPrayerGroup.NewGroupName);
+            parameters.Add("group_description", newPrayerGroup.GroupDescription);
+            parameters.Add("group_rules", newPrayerGroup.GroupRules);
+            parameters.Add("group_visibility", newPrayerGroup.GroupVisibility);
+            parameters.Add("group_avatar_file_id", newPrayerGroup.GroupAvatarFileId);
+            parameters.Add("group_banner_file_id", newPrayerGroup.GroupBannerFileId);
 
-            string sql = "SELECT * FROM create_prayer_group(@admin_username, @group_name, @description, @rules, @color, @group_image_file_id, @banner_image_file_id)";
+            string sql = "SELECT * FROM create_prayer_group(@creator_user_id, @new_group_name, @group_description, @group_rules, @group_visibility, @group_avatar_file_id, @group_banner_file_id)";
             PrayerGroupDetailsEntity response = await connection.QueryFirstAsync<PrayerGroupDetailsEntity>(sql, parameters);
 
             return response;
