@@ -3,71 +3,82 @@ using Microsoft.AspNetCore.Mvc;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.Models;
 
-namespace PrayerAppServices.PrayerGroups {
+namespace PrayerAppServices.PrayerGroups
+{
     [ApiController]
     [Route("/api/v1/prayergroup")]
-    public class PrayerGroupController(IPrayerGroupManager prayerGroupManager) : ControllerBase, IPrayerGroupController {
+    public class PrayerGroupController(IPrayerGroupManager prayerGroupManager) : ControllerBase, IPrayerGroupController
+    {
         private readonly IPrayerGroupManager _prayerGroupManager = prayerGroupManager;
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupModel>> CreatePrayerGroupAsync([FromHeader(Name = "Authorization")] string authHeader, PrayerGroupRequest newPrayerGroupRequest) {
+        public async Task<ActionResult<PrayerGroupModel>> CreatePrayerGroupAsync([FromHeader(Name = "Authorization")] string authHeader, PrayerGroupRequest newPrayerGroupRequest)
+        {
             PrayerGroupModel details = await _prayerGroupManager.CreatePrayerGroupAsync(authHeader, newPrayerGroupRequest);
             return Ok(details);
         }
 
         [HttpGet("{prayerGroupId}")]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupModel>> GetPrayerGroupDetailsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId) {
+        public async Task<ActionResult<PrayerGroupModel>> GetPrayerGroupDetailsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId)
+        {
             PrayerGroupModel prayerGroupDetails = await _prayerGroupManager.GetPrayerGroupDetailsAsync(authHeader, prayerGroupId);
             return Ok(prayerGroupDetails);
         }
 
         [HttpGet("validate-name")]
         [Authorize]
-        public async Task<ActionResult<GroupNameValidationResponse>> ValidateGroupNameAsync([FromQuery(Name = "name")] string prayerGroupName) {
+        public async Task<ActionResult<GroupNameValidationResponse>> ValidateGroupNameAsync([FromQuery(Name = "name")] string prayerGroupName)
+        {
             GroupNameValidationResponse validationResponse = await _prayerGroupManager.ValidateGroupNameAsync(prayerGroupName);
             return Ok(validationResponse);
         }
 
-        [HttpGet("search")]
+        [HttpPost("search")]
         [Authorize]
-        public ActionResult<IEnumerable<PrayerGroupModel>> SearchByGroupName([FromQuery(Name = "name")] string nameQuery, [FromQuery(Name = "maxResults")] int maxResults) {
-            IEnumerable<PrayerGroupModel> prayerGroups = _prayerGroupManager.SearchPrayerGroupsByName(nameQuery, maxResults);
+        public async Task<ActionResult<IEnumerable<PrayerGroupModel>>> SearchPrayerGroupsAsync([FromBody] PrayerGroupSearchRequest prayerGroupSearchRequest)
+        {
+            IEnumerable<PrayerGroupModel> prayerGroups = await _prayerGroupManager.SearchPrayerGroupsAsync(prayerGroupSearchRequest);
             return Ok(prayerGroups);
         }
 
         [HttpPut("{prayerGroupId}")]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupModel>> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
+        public async Task<ActionResult<PrayerGroupModel>> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
+        {
             PrayerGroupModel prayerGroup = await _prayerGroupManager.UpdatePrayerGroupAsync(prayerGroupId, prayerGroupRequest);
             return Ok(prayerGroup);
         }
 
         [HttpGet("{prayerGroupId}/users")]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, [FromQuery(Name = "role")] IEnumerable<PrayerGroupRole>? roles) {
+        public async Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, [FromQuery(Name = "role")] IEnumerable<PrayerGroupRole>? roles)
+        {
             PrayerGroupUsersResponse prayerGroupUsersResponse = await _prayerGroupManager.GetPrayerGroupUsersAsync(prayerGroupId, roles);
             return Ok(prayerGroupUsersResponse);
         }
 
         [HttpPut("{prayerGroupId}/admins")]
         [Authorize]
-        public async Task<ActionResult> UpdatePrayerGroupAdminsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest) {
+        public async Task<ActionResult> UpdatePrayerGroupAdminsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest)
+        {
             await _prayerGroupManager.UpdatePrayerGroupAdminsAsync(authHeader, prayerGroupId, updateAdminsRequest);
             return Ok();
         }
 
         [HttpPost("{prayerGroupId}/users")]
         [Authorize]
-        public async Task<ActionResult> AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request) {
+        public async Task<ActionResult> AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request)
+        {
             await _prayerGroupManager.AddPrayerGroupUsersAsync(prayerGroupId, request);
             return Ok();
         }
 
         [HttpDelete("{prayerGroupId}/users")]
         [Authorize]
-        public async Task<ActionResult> DeletePrayerGroupUsersAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request) {
+        public async Task<ActionResult> DeletePrayerGroupUsersAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request)
+        {
             await _prayerGroupManager.DeletePrayerGroupUsersAsync(authHeader, prayerGroupId, request);
             return Ok();
         }

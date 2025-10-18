@@ -2,12 +2,14 @@
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.Models;
 
-namespace PrayerAppServices.PrayerGroups {
-    public interface IPrayerGroupController {
+namespace PrayerAppServices.PrayerGroups
+{
+    public interface IPrayerGroupController
+    {
         Task<ActionResult<PrayerGroupModel>> CreatePrayerGroupAsync(string authHeader, PrayerGroupRequest newPrayerGroupRequest);
         Task<ActionResult<PrayerGroupModel>> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId);
         Task<ActionResult<GroupNameValidationResponse>> ValidateGroupNameAsync(string prayerGroupName);
-        ActionResult<IEnumerable<PrayerGroupModel>> SearchByGroupName(string nameQuery, int maxResults);
+        Task<ActionResult<IEnumerable<PrayerGroupModel>>> SearchPrayerGroupsAsync([FromBody] PrayerGroupSearchRequest prayerGroupSearchRequest);
         Task<ActionResult<PrayerGroupModel>> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest);
         Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? roles);
         Task<ActionResult> UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest);

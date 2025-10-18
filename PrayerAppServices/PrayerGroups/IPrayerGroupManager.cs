@@ -8,7 +8,7 @@ namespace PrayerAppServices.PrayerGroups
         Task<PrayerGroupModel> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest);
         Task<PrayerGroupModel> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId);
         Task<GroupNameValidationResponse> ValidateGroupNameAsync(string groupName);
-        IEnumerable<PrayerGroupModel> SearchPrayerGroupsByName(string nameQuery, int maxNumResults);
+        Task<IEnumerable<PrayerGroupModel>> SearchPrayerGroupsAsync(PrayerGroupSearchRequest prayerGroupSearchRequest);
         Task<PrayerGroupModel> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest);
         Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? prayerGroupRoles);
         Task UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest);
