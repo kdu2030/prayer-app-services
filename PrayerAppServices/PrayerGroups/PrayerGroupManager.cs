@@ -206,10 +206,10 @@ namespace PrayerAppServices.PrayerGroups
 
         private PrayerGroupModel GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult)
         {
-            MediaFileBase? mediaFile = searchResult.ImageFileId != null
+            MediaFileBase? mediaFile = searchResult.MediaFileId != null
                 ? new MediaFileBase
                 {
-                    MediaFileId = searchResult.ImageFileId,
+                    MediaFileId = searchResult.MediaFileId,
                     FileName = searchResult.FileName ?? "",
                     FileType = searchResult.FileType ?? FileType.Unknown,
                     FileUrl = searchResult.FileUrl ?? ""
