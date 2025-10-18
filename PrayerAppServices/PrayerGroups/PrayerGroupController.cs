@@ -11,15 +11,15 @@ namespace PrayerAppServices.PrayerGroups {
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupDetails>> CreatePrayerGroupAsync([FromHeader(Name = "Authorization")] string authHeader, PrayerGroupRequest newPrayerGroupRequest) {
-            PrayerGroupDetails details = await _prayerGroupManager.CreatePrayerGroupAsync(authHeader, newPrayerGroupRequest);
+        public async Task<ActionResult<PrayerGroupModel>> CreatePrayerGroupAsync([FromHeader(Name = "Authorization")] string authHeader, PrayerGroupRequest newPrayerGroupRequest) {
+            PrayerGroupModel details = await _prayerGroupManager.CreatePrayerGroupAsync(authHeader, newPrayerGroupRequest);
             return Ok(details);
         }
 
         [HttpGet("{prayerGroupId}")]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupDetails>> GetPrayerGroupDetailsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId) {
-            PrayerGroupDetails prayerGroupDetails = await _prayerGroupManager.GetPrayerGroupDetailsAsync(authHeader, prayerGroupId);
+        public async Task<ActionResult<PrayerGroupModel>> GetPrayerGroupDetailsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId) {
+            PrayerGroupModel prayerGroupDetails = await _prayerGroupManager.GetPrayerGroupDetailsAsync(authHeader, prayerGroupId);
             return Ok(prayerGroupDetails);
         }
 
@@ -32,15 +32,15 @@ namespace PrayerAppServices.PrayerGroups {
 
         [HttpGet("search")]
         [Authorize]
-        public ActionResult<IEnumerable<PrayerGroupDetails>> SearchByGroupName([FromQuery(Name = "name")] string nameQuery, [FromQuery(Name = "maxResults")] int maxResults) {
-            IEnumerable<PrayerGroupDetails> prayerGroups = _prayerGroupManager.SearchPrayerGroupsByName(nameQuery, maxResults);
+        public ActionResult<IEnumerable<PrayerGroupModel>> SearchByGroupName([FromQuery(Name = "name")] string nameQuery, [FromQuery(Name = "maxResults")] int maxResults) {
+            IEnumerable<PrayerGroupModel> prayerGroups = _prayerGroupManager.SearchPrayerGroupsByName(nameQuery, maxResults);
             return Ok(prayerGroups);
         }
 
         [HttpPut("{prayerGroupId}")]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupDetails>> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
-            PrayerGroupDetails prayerGroup = await _prayerGroupManager.UpdatePrayerGroupAsync(prayerGroupId, prayerGroupRequest);
+        public async Task<ActionResult<PrayerGroupModel>> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest) {
+            PrayerGroupModel prayerGroup = await _prayerGroupManager.UpdatePrayerGroupAsync(prayerGroupId, prayerGroupRequest);
             return Ok(prayerGroup);
         }
 

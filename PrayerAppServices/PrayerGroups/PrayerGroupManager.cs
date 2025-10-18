@@ -18,7 +18,7 @@ namespace PrayerAppServices.PrayerGroups
         private readonly IMediaFileRepository _mediaFileRepository = mediaFileRepository;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<PrayerGroupDetails> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest)
+        public async Task<PrayerGroupModel> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest)
         {
             int userId = _userManager.ExtractUserIdFromAuthHeader(authToken);
             PrayerGroupDTO newPrayerGroup = new PrayerGroupDTO
@@ -39,7 +39,7 @@ namespace PrayerAppServices.PrayerGroups
 
             IEnumerable<UserSummary>? adminUsers = GetAdminUserFromCreateResponse(createResponse);
 
-            PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails
+            PrayerGroupModel prayerGroupDetails = new PrayerGroupModel
             {
                 PrayerGroupId = createResponse.PrayerGroupId,
                 GroupName = createResponse.GroupName,
@@ -49,45 +49,40 @@ namespace PrayerAppServices.PrayerGroups
                 BannerFile = bannerImage,
                 Admins = adminUsers,
                 JoinStatus = JoinStatus.Joined,
-                UserRole = PrayerGroupRole.Admin,
+                PrayerGroupRole = PrayerGroupRole.Admin,
                 VisibilityLevel = (VisibilityLevel?)createResponse.VisibilityLevel,
             };
 
             return prayerGroupDetails;
         }
 
-        public async Task<PrayerGroupDetails> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId)
+        public async Task<PrayerGroupModel> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId)
         {
-            string username = _userManager.ExtractUsernameFromAuthHeader(authHeader);
+            int userId = _userManager.ExtractUserIdFromAuthHeader(authHeader);
 
-            Task<PrayerGroup?> prayerGroupTask = _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId, true);
-            Task<IEnumerable<PrayerGroupUserEntity>> adminUsersTask = _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
-            Task<PrayerGroupAppUser?> appUserTask = _prayerGroupRepository.GetPrayerGroupAppUserByUsernameAsync(prayerGroupId, username);
+            Task<PrayerGroupGetResponse> prayerGroupGetResponseTask = _prayerGroupRepository.GetPrayerGroupAsync(new PrayerGroupQuery { TargetPrayerGroupId = prayerGroupId, TargetUserId = userId });
+            Task<IEnumerable<PrayerGroupUserEntity>> prayerGroupAdminEntitiesTask = _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, [PrayerGroupRole.Admin]);
 
-            PrayerGroup? prayerGroup = await prayerGroupTask;
-            IEnumerable<PrayerGroupUserEntity> adminUsers = await adminUsersTask;
-            PrayerGroupAppUser? appUser = await appUserTask;
+            PrayerGroupGetResponse prayerGroupGetResponse = await prayerGroupGetResponseTask;
+            IEnumerable<PrayerGroupUserEntity> prayerGroupAdminEntities = await prayerGroupAdminEntitiesTask;
 
-            if (prayerGroup == null)
+            PrayerGroupModel prayerGroup = _mapper.Map<PrayerGroupModel>(prayerGroupGetResponse);
+
+            if (prayerGroupGetResponse.PrayerGroupRole.HasValue)
             {
-                throw new ArgumentException($"A prayer group with id {prayerGroupId} does not exist");
+                prayerGroup.JoinStatus = JoinStatus.Joined;
+            }
+            else if (prayerGroupGetResponse.JoinRequestId.HasValue)
+            {
+                prayerGroup.JoinStatus = JoinStatus.RequestSubmitted;
+            }
+            else
+            {
+                prayerGroup.JoinStatus = JoinStatus.NotJoined;
             }
 
-            IEnumerable<UserSummary> adminUserSummaries = GetAdminUserSummaries(adminUsers);
 
-            PrayerGroupDetails prayerGroupDetails = new PrayerGroupDetails
-            {
-                PrayerGroupId = prayerGroupId,
-                GroupName = prayerGroup.GroupName,
-                Description = prayerGroup.Description,
-                Rules = prayerGroup.Rules,
-                AvatarFile = prayerGroup.AvatarFile,
-                BannerFile = prayerGroup.BannerFile,
-                Admins = adminUserSummaries,
-                UserRole = appUser?.PrayerGroupRole,
-            };
 
-            return prayerGroupDetails;
         }
 
         public async Task<GroupNameValidationResponse> ValidateGroupNameAsync(string groupName)
@@ -102,13 +97,13 @@ namespace PrayerAppServices.PrayerGroups
             return new GroupNameValidationResponse { IsNameValid = errors.Count == 0, Errors = errors };
         }
 
-        public IEnumerable<PrayerGroupDetails> SearchPrayerGroupsByName(string nameQuery, int maxNumResults)
+        public IEnumerable<PrayerGroupModel> SearchPrayerGroupsByName(string nameQuery, int maxNumResults)
         {
             IEnumerable<PrayerGroupSearchResult> searchResults = _prayerGroupRepository.SearchPrayerGroupsByName(nameQuery, maxNumResults);
             return searchResults.Select(GetPrayerGroupDetailFromSearchResult);
         }
 
-        public async Task<PrayerGroupDetails> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
+        public async Task<PrayerGroupModel> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
         {
             PrayerGroup? existingPrayerGroup = await _prayerGroupRepository.GetPrayerGroupByNameAsync(prayerGroupRequest.GroupName, false);
 
@@ -142,7 +137,7 @@ namespace PrayerAppServices.PrayerGroups
             });
 
             await _prayerGroupRepository.UpdatePrayerGroupAsync(updatedPrayerGroup);
-            return _mapper.Map<PrayerGroupDetails>(updatedPrayerGroup);
+            return _mapper.Map<PrayerGroupModel>(updatedPrayerGroup);
         }
 
         public async Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? prayerGroupRoles)
@@ -207,7 +202,7 @@ namespace PrayerAppServices.PrayerGroups
             return fileId.HasValue ? await _mediaFileRepository.GetMediaFileByIdAsync(fileId ?? -1, false) : null;
         }
 
-        private PrayerGroupDetails GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult)
+        private PrayerGroupModel GetPrayerGroupDetailFromSearchResult(PrayerGroupSearchResult searchResult)
         {
             MediaFileBase? mediaFile = searchResult.ImageFileId != null
                 ? new MediaFileBase
@@ -218,7 +213,7 @@ namespace PrayerAppServices.PrayerGroups
                     FileUrl = searchResult.FileUrl ?? ""
                 }
                 : null;
-            return new PrayerGroupDetails
+            return new PrayerGroupModel
             {
                 PrayerGroupId = searchResult.PrayerGroupId,
                 GroupName = searchResult.GroupName,

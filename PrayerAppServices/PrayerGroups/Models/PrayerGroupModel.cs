@@ -4,7 +4,7 @@ using PrayerAppServices.Users.Models;
 
 namespace PrayerAppServices.PrayerGroups.Models
 {
-    public class PrayerGroupDetails
+    public class PrayerGroupModel
     {
         public int? PrayerGroupId { get; set; }
         public string? GroupName { get; set; }
@@ -15,7 +15,7 @@ namespace PrayerAppServices.PrayerGroups.Models
         public MediaFileBase? BannerFile { get; set; }
         public IEnumerable<UserSummary>? Admins { get; set; }
         public JoinStatus? JoinStatus { get; set; }
-        public PrayerGroupRole? UserRole { get; set; }
+        public PrayerGroupRole? PrayerGroupRole { get; set; }
 
     }
 }

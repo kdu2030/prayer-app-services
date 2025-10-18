@@ -18,7 +18,7 @@ namespace PrayerAppServices.Users.Models
 
         public MediaFileBase? Image { get; set; }
 
-        public IEnumerable<PrayerGroupDetails>? PrayerGroups { get; set; }
+        public IEnumerable<PrayerGroupModel>? PrayerGroups { get; set; }
 
     }
 }

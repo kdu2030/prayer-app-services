@@ -59,7 +59,7 @@ namespace PrayerAppServices.Users
             }
 
             IEnumerable<PrayerGroupSummaryEntity> prayerGroupSummaries = await _prayerGroupRepository.GetPrayerGroupSummariesByUserIdAsync(user.Id);
-            IEnumerable<PrayerGroupDetails> prayerGroups = _mapper.Map<IEnumerable<PrayerGroupDetails>>(prayerGroupSummaries);
+            IEnumerable<PrayerGroupModel> prayerGroups = _mapper.Map<IEnumerable<PrayerGroupModel>>(prayerGroupSummaries);
 
             return CreateUserSummary(user, prayerGroups);
         }
@@ -68,7 +68,7 @@ namespace PrayerAppServices.Users
         {
             AppUser user = _userManager.Users.FirstOrDefault((user) => user.Id == userId) ?? throw new ArgumentException("User ID does not exist.");
             IEnumerable<PrayerGroupSummaryEntity> prayerGroupSummaries = await _prayerGroupRepository.GetPrayerGroupSummariesByUserIdAsync(user.Id);
-            IEnumerable<PrayerGroupDetails> prayerGroups = _mapper.Map<IEnumerable<PrayerGroupDetails>>(prayerGroupSummaries);
+            IEnumerable<PrayerGroupModel> prayerGroups = _mapper.Map<IEnumerable<PrayerGroupModel>>(prayerGroupSummaries);
 
             return CreateUserSummary(user, prayerGroups);
         }
@@ -110,7 +110,7 @@ namespace PrayerAppServices.Users
         }
 
 
-        private UserSummary CreateUserSummary(AppUser user, IEnumerable<PrayerGroupDetails> prayerGroups)
+        private UserSummary CreateUserSummary(AppUser user, IEnumerable<PrayerGroupModel> prayerGroups)
         {
             string username = user.UserName ?? "";
 

@@ -7,7 +7,7 @@ namespace PrayerAppServices.PrayerRequests.Models {
         public string? RequestTitle { get; set; }
         public string? RequestDescription { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public PrayerGroupDetails? PrayerGroup { get; set; }
+        public PrayerGroupModel? PrayerGroup { get; set; }
         public UserSummary? User { get; set; }
         public int? LikeCount { get; set; }
         public int? CommentCount { get; set; }

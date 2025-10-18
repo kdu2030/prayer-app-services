@@ -58,7 +58,7 @@ namespace Tests {
                 .ReturnsAsync(response);
 
             IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
-            PrayerGroupDetails details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", newPrayerGroup);
+            PrayerGroupModel details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", newPrayerGroup);
 
             Assert.Multiple(() => {
                 Assert.That((details.GroupName ?? "").Equals(newPrayerGroup.GroupName), Is.True);
@@ -97,7 +97,7 @@ namespace Tests {
                 .ReturnsAsync(response);
 
             IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
-            PrayerGroupDetails details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", groupRequest);
+            PrayerGroupModel details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", groupRequest);
 
             Assert.Multiple(() => {
                 Assert.That(details.AvatarFile?.MediaFileId, Is.EqualTo(2));
@@ -132,7 +132,7 @@ namespace Tests {
                 .ReturnsAsync(response);
 
             IPrayerGroupManager prayerGroupManager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
-            PrayerGroupDetails details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", newPrayerGroup);
+            PrayerGroupModel details = await prayerGroupManager.CreatePrayerGroupAsync("mockToken", newPrayerGroup);
 
             IEnumerable<UserSummary> adminUsers = details.Admins ?? [];
             Assert.That(adminUsers.Where(admin => admin.UserId == response?.AdminUserId).Count, Is.EqualTo(1));
@@ -153,7 +153,7 @@ namespace Tests {
                 .ReturnsAsync(MockPrayerGroupData.MockPrayerGroup);
 
             IPrayerGroupManager manager = new PrayerGroupManager(mockRepository.Object, mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
-            PrayerGroupDetails prayerGroupDetails = await manager.GetPrayerGroupDetailsAsync("mockToken", 2);
+            PrayerGroupModel prayerGroupDetails = await manager.GetPrayerGroupDetailsAsync("mockToken", 2);
 
             Assert.Multiple(() => {
                 Assert.That(prayerGroupDetails.PrayerGroupId, Is.EqualTo(MockPrayerGroupData.MockPrayerGroup.PrayerGroupId));
@@ -175,7 +175,7 @@ namespace Tests {
             _mockPrayerGroupRepository.Setup(repository => repository.UpdatePrayerGroupAsync(It.IsAny<PrayerGroup>())).Returns(Task.CompletedTask);
 
             IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
-            PrayerGroupDetails updatedGroup = await manager.UpdatePrayerGroupAsync(1, request);
+            PrayerGroupModel updatedGroup = await manager.UpdatePrayerGroupAsync(1, request);
 
             Assert.Multiple(() => {
                 Assert.That(updatedGroup.PrayerGroupId, Is.EqualTo(1));
@@ -214,7 +214,7 @@ namespace Tests {
             _mockPrayerGroupRepository.Setup(repository => repository.UpdatePrayerGroupAsync(It.IsAny<PrayerGroup>())).Returns(Task.CompletedTask);
 
             IPrayerGroupManager manager = new PrayerGroupManager(_mockPrayerGroupRepository.Object, _mockUserManager.Object, _mockMediaFileRepository.Object, _mapper);
-            PrayerGroupDetails updatedGroup = await manager.UpdatePrayerGroupAsync(1, request);
+            PrayerGroupModel updatedGroup = await manager.UpdatePrayerGroupAsync(1, request);
 
             Assert.Multiple(() => {
                 Assert.That(updatedGroup.PrayerGroupId, Is.EqualTo(1));
