@@ -37,7 +37,7 @@ namespace PrayerAppServices.PrayerGroups
             MediaFileBase? groupImage = GetGroupImageFromCreateResponse(createResponse);
             MediaFileBase? bannerImage = GetGroupBannerImageFromCreateResponse(createResponse);
 
-            IEnumerable<UserSummary>? adminUsers = GetAdminUserFromCreateResponse(createResponse);
+            IEnumerable<PrayerGroupUserSummary>? adminUsers = GetAdminUserFromCreateResponse(createResponse);
 
             PrayerGroupModel prayerGroupDetails = new PrayerGroupModel
             {
@@ -253,7 +253,7 @@ namespace PrayerAppServices.PrayerGroups
             };
         }
 
-        private static IEnumerable<UserSummary>? GetAdminUserFromCreateResponse(PrayerGroupDetailsEntity response)
+        private static IEnumerable<PrayerGroupUserSummary>? GetAdminUserFromCreateResponse(PrayerGroupDetailsEntity response)
         {
             if (response.AdminUserId == null)
             {
@@ -270,11 +270,12 @@ namespace PrayerAppServices.PrayerGroups
                 }
                 : null;
 
-            UserSummary adminUserSummary = new UserSummary
+            PrayerGroupUserSummary adminUserSummary = new PrayerGroupUserSummary
             {
                 UserId = response.AdminUserId ?? -1,
                 FullName = response.AdminFullName,
-                Image = userImage
+                Image = userImage,
+                PrayerGroupRole = PrayerGroupRole.Admin,
             };
 
             return [adminUserSummary];
