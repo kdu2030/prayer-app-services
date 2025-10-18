@@ -6,13 +6,13 @@
         public required string GroupName { get; set; }
         public string? Description { get; set; }
         public string? Rules { get; set; }
-        public int? Color { get; set; }
-        public int? ImageFileId { get; set; }
-        public string? GroupImageFileName { get; set; }
-        public string? GroupImageFileUrl { get; set; }
-        public int? BannerImageFileId { get; set; }
-        public string? BannerImageFileName { get; set; }
-        public string? BannerImageFileUrl { get; set; }
+        public int? VisibilityLevel { get; set; }
+        public int? AvatarFileId { get; set; }
+        public string? GroupAvatarFileName { get; set; }
+        public string? GroupAvatarFileUrl { get; set; }
+        public int? BannerFileId { get; set; }
+        public string? GroupBannerFileName { get; set; }
+        public string? GroupBannerFileUrl { get; set; }
         public int? AdminUserId { get; set; }
         public string? AdminFullName { get; set; }
         public int? AdminImageFileId { get; set; }

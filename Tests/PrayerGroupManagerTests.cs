@@ -80,9 +80,9 @@ namespace Tests {
                 GroupName = "Dunder Mifflin",
                 AdminUserId = 1,
                 AdminFullName = "Andy Bernard",
-                ImageFileId = 2,
-                GroupImageFileName = mockFileName,
-                GroupImageFileUrl = mockUrl
+                AvatarFileId = 2,
+                GroupAvatarFileName = mockFileName,
+                GroupAvatarFileUrl = mockUrl
             };
 
             PrayerGroupRequest groupRequest = new PrayerGroupRequest {

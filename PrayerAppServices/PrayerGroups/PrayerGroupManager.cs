@@ -50,6 +50,7 @@ namespace PrayerAppServices.PrayerGroups
                 Admins = adminUsers,
                 JoinStatus = JoinStatus.Joined,
                 UserRole = PrayerGroupRole.Admin,
+                VisibilityLevel = (VisibilityLevel?)createResponse.VisibilityLevel,
             };
 
             return prayerGroupDetails;
@@ -227,30 +228,30 @@ namespace PrayerAppServices.PrayerGroups
 
         private static MediaFileBase? GetGroupImageFromCreateResponse(PrayerGroupDetailsEntity response)
         {
-            if (response.ImageFileId == null)
+            if (response.AvatarFileId == null)
             {
                 return null;
             }
             return new MediaFileBase
             {
-                MediaFileId = response.ImageFileId,
-                FileName = response.GroupImageFileName ?? "",
-                FileUrl = response.GroupImageFileUrl ?? "",
+                MediaFileId = response.AvatarFileId,
+                FileName = response.GroupAvatarFileName ?? "",
+                FileUrl = response.GroupAvatarFileUrl ?? "",
                 FileType = FileType.Image,
             };
         }
 
         private static MediaFileBase? GetGroupBannerImageFromCreateResponse(PrayerGroupDetailsEntity response)
         {
-            if (response.BannerImageFileId == null)
+            if (response.BannerFileId == null)
             {
                 return null;
             }
             return new MediaFileBase
             {
-                MediaFileId = response.BannerImageFileId,
-                FileName = response.BannerImageFileName ?? "",
-                FileUrl = response.BannerImageFileUrl ?? "",
+                MediaFileId = response.BannerFileId,
+                FileName = response.GroupBannerFileName ?? "",
+                FileUrl = response.GroupBannerFileUrl ?? "",
                 FileType = FileType.Image,
             };
         }
