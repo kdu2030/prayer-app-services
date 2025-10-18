@@ -7,7 +7,7 @@ namespace PrayerAppServices.PrayerGroups.Entities
     {
         public int? PrayerGroupUserId { get; set; }
         public required PrayerGroup PrayerGroup { get; set; }
-        public required AppUser AppUser { get; set; }
+        public required AppUser User { get; set; }
         public required PrayerGroupRole PrayerGroupRole { get; set; }
 
     }

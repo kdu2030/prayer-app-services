@@ -147,7 +147,7 @@ namespace PrayerAppServices.PrayerGroups
         public async Task DeletePrayerGroupUsersAsync(int prayerGroupId, IEnumerable<int> userIds)
         {
             _dbContext.PrayerGroupUsers.RemoveRange(
-                _dbContext.PrayerGroupUsers.Where(user => user.PrayerGroup.PrayerGroupId == prayerGroupId && userIds.Contains(user.AppUser.Id))
+                _dbContext.PrayerGroupUsers.Where(user => user.PrayerGroup.PrayerGroupId == prayerGroupId && userIds.Contains(user.User.Id))
             );
             await _dbContext.SaveChangesAsync();
         }
@@ -155,7 +155,7 @@ namespace PrayerAppServices.PrayerGroups
         public async Task<PrayerGroupUser?> GetPrayerGroupUserByUserIdAsync(int prayerGroupId, int userId, CancellationToken token = default)
         {
             return await _dbContext.PrayerGroupUsers
-                .Where(user => user.PrayerGroup.PrayerGroupId == prayerGroupId && user.AppUser.Id == userId)
+                .Where(user => user.PrayerGroup.PrayerGroupId == prayerGroupId && user.User.Id == userId)
                 .FirstOrDefaultAsync(token);
         }
     }

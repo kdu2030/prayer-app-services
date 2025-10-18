@@ -9,7 +9,7 @@ namespace Tests.MockData {
     public static class MockPrayerRequestData {
         public static readonly PrayerGroupUser MockPrayerGroupUser = new PrayerGroupUser {
             PrayerGroupUserId = 1,
-            AppUser = new AppUser {
+            User = new AppUser {
                 Id = 2,
                 FullName = "Anakin Skywalker",
             },
