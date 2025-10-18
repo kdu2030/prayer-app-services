@@ -2,6 +2,8 @@
 using PrayerAppServices.Files;
 using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
+using PrayerAppServices.JoinRequests;
+using PrayerAppServices.JoinRequests.Entities;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
@@ -11,12 +13,13 @@ using PrayerAppServices.Users.Models;
 
 namespace PrayerAppServices.PrayerGroups
 {
-    public class PrayerGroupManager(IPrayerGroupRepository prayerGroupRepository, IUserManager userManager, IMediaFileRepository mediaFileRepository, IMapper mapper) : IPrayerGroupManager
+    public class PrayerGroupManager(IPrayerGroupRepository prayerGroupRepository, IUserManager userManager, IMediaFileRepository mediaFileRepository, IJoinRequestRepository joinRequestRepository, IMapper mapper) : IPrayerGroupManager
     {
         private readonly IPrayerGroupRepository _prayerGroupRepository = prayerGroupRepository;
         private readonly IUserManager _userManager = userManager;
         private readonly IMediaFileRepository _mediaFileRepository = mediaFileRepository;
         private readonly IMapper _mapper = mapper;
+        private readonly IJoinRequestRepository _joinRequestRepository = joinRequestRepository;
 
         public async Task<PrayerGroupModel> CreatePrayerGroupAsync(string authToken, PrayerGroupRequest newPrayerGroupRequest)
         {
@@ -115,6 +118,14 @@ namespace PrayerAppServices.PrayerGroups
                 throw new ArgumentException(PrayerGroupValidationErrors.MustBeAdminToModifyPrayerGroup);
             }
 
+            if (prayerGroupRequest.VisibilityLevel == VisibilityLevel.Public)
+            {
+                IEnumerable<JoinRequest> joinRequests = await _joinRequestRepository.GetJoinRequestsAsync(prayerGroupId, 0, 1);
+                if (joinRequests.Count() > 0)
+                {
+                    throw new ArgumentException(PrayerGroupValidationErrors.CannotBePublicWithActiveJoinRequests);
+                }
+            }
 
 
 
