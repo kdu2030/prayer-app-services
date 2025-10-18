@@ -8,16 +8,16 @@ $$
 BEGIN
    RETURN QUERY
     SELECT
-        user_id AS entity_id, 1 AS entity_type
+        id AS entity_id, 1 AS entity_type
     FROM
-        app_user
+        asp_net_users
     WHERE
         image_file_id = target_file_id
     UNION
     SELECT
         prayer_group_id AS entity_id, 2 AS entity_type
     FROM
-        prayer_group
+        prayer_groups
     WHERE
         avatar_file_id = target_file_id OR banner_file_id = target_file_id;
 END;
