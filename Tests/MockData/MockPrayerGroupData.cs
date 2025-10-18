@@ -11,7 +11,7 @@ namespace Tests.MockData {
             new PrayerGroupUserEntity {
                 UserId = 1,
                 FullName = "Anakin Skywalker",
-                GroupRole = PrayerGroupRole.Admin,
+                PrayerGroupRole = PrayerGroupRole.Admin,
                 ImageFileId = 1,
                 FileName = "anakin_skywalker.png",
                 FileType = FileType.Image,
@@ -19,7 +19,7 @@ namespace Tests.MockData {
             new PrayerGroupUserEntity {
                 UserId = 2,
                 FullName = "Obi Wan Kenobi",
-                GroupRole = PrayerGroupRole.Admin
+                PrayerGroupRole = PrayerGroupRole.Admin
             },
             new PrayerGroupUserEntity {
                 UserId = 3,
@@ -27,7 +27,7 @@ namespace Tests.MockData {
                 ImageFileId = 4,
                 FileName = "count_dooku.jpg",
                 FileType = FileType.Image,
-                GroupRole = PrayerGroupRole.Admin
+                PrayerGroupRole = PrayerGroupRole.Admin
             }
         ];
 

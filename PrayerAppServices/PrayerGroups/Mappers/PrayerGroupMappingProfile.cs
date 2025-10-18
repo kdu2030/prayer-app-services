@@ -50,8 +50,8 @@ namespace PrayerAppServices.PrayerGroups.Mappers
             CreateMap<PrayerGroupUserEntity, PrayerGroupUserSummary>()
                 .ForMember(dest => dest.UserId, options => options.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.FullName, options => options.MapFrom(src => src.FullName))
-                .ForMember(dest => dest.Username, options => options.MapFrom(src => src.UserName))
-                .ForMember(dest => dest.PrayerGroupRole, options => options.MapFrom(src => src.GroupRole))
+                .ForMember(dest => dest.Username, options => options.MapFrom(src => src.Username))
+                .ForMember(dest => dest.PrayerGroupRole, options => options.MapFrom(src => src.PrayerGroupRole))
                 .ForMember(dest => dest.Image, options => options.MapFrom(src => src.ImageFileId != null ? new MediaFile { MediaFileId = src.ImageFileId, FileName = src.FileName ?? "", FileUrl = src.FileUrl ?? "", FileType = FileType.Image } : null));
 
             CreateMap<PrayerGroupSummaryEntity, PrayerGroupModel>()
