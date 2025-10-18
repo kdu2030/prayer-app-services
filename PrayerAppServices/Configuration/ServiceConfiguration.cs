@@ -1,12 +1,16 @@
 ﻿using PrayerAppServices.Files;
+using PrayerAppServices.JoinRequests;
 using PrayerAppServices.PrayerGroups;
 using PrayerAppServices.PrayerRequests;
 using PrayerAppServices.Users;
 
-namespace PrayerAppServices.Configuration {
-    public static class ServiceConfiguration {
+namespace PrayerAppServices.Configuration
+{
+    public static class ServiceConfiguration
+    {
 
-        public static void RegisterServices(this IServiceCollection services) {
+        public static void RegisterServices(this IServiceCollection services)
+        {
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IFileManager, FileManager>();
             services.AddScoped<IMediaFileRepository, MediaFileRepository>();
@@ -15,6 +19,7 @@ namespace PrayerAppServices.Configuration {
             services.AddScoped<IPrayerGroupManager, PrayerGroupManager>();
             services.AddScoped<IPrayerRequestRepository, PrayerRequestRepository>();
             services.AddScoped<IPrayerRequestManager, PrayerRequestManager>();
+            services.AddScoped<IJoinRequestRepository, JoinRequestRepository>();
 
         }
 

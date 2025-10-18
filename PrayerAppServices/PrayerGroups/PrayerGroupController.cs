@@ -45,9 +45,9 @@ namespace PrayerAppServices.PrayerGroups
 
         [HttpPut("{prayerGroupId}")]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupModel>> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
+        public async Task<ActionResult<PrayerGroupModel>> UpdatePrayerGroupAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
         {
-            PrayerGroupModel prayerGroup = await _prayerGroupManager.UpdatePrayerGroupAsync(prayerGroupId, prayerGroupRequest);
+            PrayerGroupModel prayerGroup = await _prayerGroupManager.UpdatePrayerGroupAsync(authHeader, prayerGroupId, prayerGroupRequest);
             return Ok(prayerGroup);
         }
 

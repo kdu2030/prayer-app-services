@@ -10,7 +10,7 @@ namespace PrayerAppServices.PrayerGroups
         Task<ActionResult<PrayerGroupModel>> GetPrayerGroupDetailsAsync(string authHeader, int prayerGroupId);
         Task<ActionResult<GroupNameValidationResponse>> ValidateGroupNameAsync(string prayerGroupName);
         Task<ActionResult<IEnumerable<PrayerGroupModel>>> SearchPrayerGroupsAsync([FromBody] PrayerGroupSearchRequest prayerGroupSearchRequest);
-        Task<ActionResult<PrayerGroupModel>> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest);
+        Task<ActionResult<PrayerGroupModel>> UpdatePrayerGroupAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, PrayerGroupRequest prayerGroupRequest);
         Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? roles);
         Task<ActionResult> UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest);
         Task<ActionResult> AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request);

@@ -108,10 +108,10 @@ namespace PrayerAppServices.PrayerGroups
             return _mapper.Map<IEnumerable<PrayerGroupModel>>(searchResults);
         }
 
-        public async Task<PrayerGroupModel> UpdatePrayerGroupAsync(string authToken, int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
+        public async Task<PrayerGroupModel> UpdatePrayerGroupAsync(string authHeader, int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
         {
-            int userId = _userManager.ExtractUserIdFromAuthHeader(authToken);
-            PrayerGroupUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupUserByUserIdAsync(userId, prayerGroupId);
+            int userId = _userManager.ExtractUserIdFromAuthHeader(authHeader);
+            PrayerGroupUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupUserByUserIdAsync(prayerGroupId, userId);
 
             if (prayerGroupUser == null || prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin)
             {
@@ -128,33 +128,31 @@ namespace PrayerAppServices.PrayerGroups
             }
 
 
+            int? avatarFileId = prayerGroupRequest.AvatarFileId;
+            int? bannerFileId = prayerGroupRequest.BannerFileId;
 
-            int? imageFileId = prayerGroupRequest.AvatarFileId;
-            int? bannerImageFileId = prayerGroupRequest.BannerFileId;
+            MediaFile? avatarFile = await GetMediaFileByNullableIdAsync(avatarFileId);
+            MediaFile? bannerFile = await GetMediaFileByNullableIdAsync(bannerFileId);
 
-
-            MediaFile? groupImageFile = await GetMediaFileByNullableIdAsync(imageFileId);
-            MediaFile? bannerImageFile = await GetMediaFileByNullableIdAsync(bannerImageFileId);
-
-            if (groupImageFile != null && groupImageFile.FileType != FileType.Image)
+            if (avatarFile != null && avatarFile.FileType != FileType.Image)
             {
-                throw new ArgumentException("Cannot use a non-image as a prayer group image");
+                throw new ArgumentException(PrayerGroupValidationErrors.CannotUseNonImageForAvatar);
             }
 
-            if (bannerImageFile != null && bannerImageFile.FileType != FileType.Image)
+            if (bannerFile != null && bannerFile.FileType != FileType.Image)
             {
-                throw new ArgumentException("Cannot use a non-image as a prayer group banner image.");
+                throw new ArgumentException(PrayerGroupValidationErrors.CannotUseNonImageForBanner);
             }
 
             PrayerGroup updatedPrayerGroup = _mapper.Map<PrayerGroup>(prayerGroupRequest, opts =>
             {
                 opts.Items["Id"] = prayerGroupId;
-                opts.Items["ImageFile"] = groupImageFile;
-                opts.Items["BannerImageFile"] = bannerImageFile;
+                opts.Items["AvatarFile"] = avatarFile;
+                opts.Items["BannerFile"] = bannerFile;
             });
 
             await _prayerGroupRepository.UpdatePrayerGroupAsync(updatedPrayerGroup);
-            return _mapper.Map<PrayerGroupModel>(updatedPrayerGroup);
+            return await GetPrayerGroupDetailsAsync(authHeader, prayerGroupId);
         }
 
         public async Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? prayerGroupRoles)

@@ -14,9 +14,9 @@ namespace PrayerAppServices.PrayerGroups.Mappers
         {
             CreateMap<PrayerGroupRequest, PrayerGroup>()
                 .ForMember(dest => dest.PrayerGroupId, options => options.MapFrom((src, dest, destMember, context) => context.Items["Id"]))
-                .ForMember(dest => dest.AvatarFile, options => options.MapFrom((src, dest, destMember, context) => context.Items["ImageFile"]))
+                .ForMember(dest => dest.AvatarFile, options => options.MapFrom((src, dest, destMember, context) => context.Items["AvatarFile"]))
                 .ForMember(dest => dest.AvatarFileId, options => options.MapFrom(src => src.AvatarFileId))
-                .ForMember(dest => dest.BannerFile, options => options.MapFrom((src, dest, destMember, context) => context.Items["BannerImageFile"]))
+                .ForMember(dest => dest.BannerFile, options => options.MapFrom((src, dest, destMember, context) => context.Items["BannerFile"]))
                 .ForMember(dest => dest.BannerFileId, options => options.MapFrom(src => src.BannerFileId))
                 .ForMember(dest => dest.GroupName, options => options.MapFrom(src => src.GroupName))
                 .ForMember(dest => dest.Description, options => options.MapFrom(src => src.Description))
