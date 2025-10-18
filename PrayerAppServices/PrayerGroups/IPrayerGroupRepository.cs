@@ -18,5 +18,6 @@ namespace PrayerAppServices.PrayerGroups
         Task AddPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupUserToAdd> users);
         Task DeletePrayerGroupUsersAsync(int prayerGroupId, IEnumerable<int> userIds);
         Task<PrayerGroupUser?> GetPrayerGroupUserByUserIdAsync(int prayerGroupId, int userId, CancellationToken token = default);
+        Task<PrayerGroupGetResponse> GetPrayerGroupAsync(PrayerGroupQuery prayerGroupQuery);
     }
 }

@@ -53,6 +53,20 @@ namespace PrayerAppServices.PrayerGroups
                 .FirstOrDefaultAsync(group => group.PrayerGroupId == id);
         }
 
+        public async Task<PrayerGroupGetResponse> GetPrayerGroupAsync(PrayerGroupQuery prayerGroupQuery)
+        {
+            await using NpgsqlConnection connection = await Connection;
+            DynamicParameters parameters = new DynamicParameters();
+
+            parameters.Add("@target_prayer_group_id", prayerGroupQuery.TargetPrayerGroupId);
+            parameters.Add("@target_user_id", prayerGroupQuery.TargetUserId);
+
+            string sql = "SELECT * FROM get_prayer_group(@target_prayer_group_id, @target_user_id);";
+            PrayerGroupGetResponse prayerGroupGetResponse = await connection.QueryFirstAsync<PrayerGroupGetResponse>(sql, parameters);
+
+            return prayerGroupGetResponse;
+        }
+
         public async Task<IEnumerable<PrayerGroupUserEntity>> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole> prayerGroupRoles)
         {
             await using NpgsqlConnection connection = await Connection;
