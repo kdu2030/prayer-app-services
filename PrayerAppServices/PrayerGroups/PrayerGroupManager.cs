@@ -105,14 +105,18 @@ namespace PrayerAppServices.PrayerGroups
             return _mapper.Map<IEnumerable<PrayerGroupModel>>(searchResults);
         }
 
-        public async Task<PrayerGroupModel> UpdatePrayerGroupAsync(int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
+        public async Task<PrayerGroupModel> UpdatePrayerGroupAsync(string authToken, int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
         {
-            PrayerGroup? existingPrayerGroup = await _prayerGroupRepository.GetPrayerGroupByNameAsync(prayerGroupRequest.GroupName, false);
+            int userId = _userManager.ExtractUserIdFromAuthHeader(authToken);
+            PrayerGroupUser? prayerGroupUser = await _prayerGroupRepository.GetPrayerGroupUserByUserIdAsync(userId, prayerGroupId);
 
-            if (existingPrayerGroup != null && existingPrayerGroup?.PrayerGroupId != prayerGroupId)
+            if (prayerGroupUser == null || prayerGroupUser.PrayerGroupRole != PrayerGroupRole.Admin)
             {
-                throw new ArgumentException("A prayer group with this name already exists.");
+                throw new ArgumentException(PrayerGroupValidationErrors.MustBeAdminToModifyPrayerGroup);
             }
+
+
+
 
             int? imageFileId = prayerGroupRequest.AvatarFileId;
             int? bannerImageFileId = prayerGroupRequest.BannerFileId;
