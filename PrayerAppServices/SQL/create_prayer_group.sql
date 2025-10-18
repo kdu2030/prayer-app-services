@@ -1,5 +1,3 @@
-DROP FUNCTION IF EXISTS create_prayer_group;
-
 CREATE OR REPLACE FUNCTION create_prayer_group(
     creator_user_id INT,
     new_group_name VARCHAR(255),
@@ -35,7 +33,7 @@ BEGIN
     DROP TABLE IF EXISTS temp_relevant_files;
 
     CREATE TEMPORARY TABLE temp_admin_user (
-        app_user_id INT,
+        user_id INT,
         full_name VARCHAR(255),
         image_file_id INT
     );
@@ -48,7 +46,7 @@ BEGIN
     );
 
     INSERT INTO
-        temp_admin_user (app_user_id, full_name, image_file_id)
+        temp_admin_user (user_id, full_name, image_file_id)
     SELECT
         u.id,
         full_name,
@@ -96,10 +94,10 @@ BEGIN
     RETURNING prayer_groups.prayer_group_id INTO new_group_id;
 
     INSERT INTO
-        prayer_group_users (prayer_group_id, app_user_id, prayer_group_role)
+        prayer_group_users (prayer_group_id, user_id, prayer_group_role)
     SELECT
         new_group_id,
-        a.app_user_id,
+        a.user_id,
         1
     FROM
         temp_admin_user a;
@@ -117,7 +115,7 @@ BEGIN
             group_banner_file_id,
             f3.file_name,
             f3.file_url,
-            a.app_user_id,
+            a.user_id,
             a.full_name,
             a.image_file_id,
             f1.file_name,

@@ -25,7 +25,7 @@ BEGIN
             prayer_groups g ON g.prayer_group_id = u.prayer_group_id
         LEFT JOIN
             media_files f ON f.media_file_id = g.avatar_file_id
-        WHERE app_user_id = target_user_id;
+        WHERE user_id = target_user_id;
 END;
 $$
 LANGUAGE plpgsql;
