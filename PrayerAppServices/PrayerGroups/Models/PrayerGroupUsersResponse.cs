@@ -2,6 +2,6 @@
 {
     public class PrayerGroupUsersResponse
     {
-        public IEnumerable<PrayerGroupUserSummary>? Users { get; set; }
+        public IEnumerable<PrayerGroupUserSummary>? PrayerGroupUsers { get; set; }
     }
 }
