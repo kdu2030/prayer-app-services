@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 
@@ -12,6 +11,12 @@ namespace PrayerAppServices.PrayerGroups
     {
         private readonly IPrayerGroupManager _prayerGroupManager = prayerGroupManager;
 
+        /// <summary>
+        /// Creates a prayer group
+        /// </summary>
+        /// <param name="authHeader"></param>
+        /// <param name="newPrayerGroupRequest"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<PrayerGroupModel>> CreatePrayerGroupAsync([FromHeader(Name = "Authorization")] string authHeader, PrayerGroupRequest newPrayerGroupRequest)
@@ -20,6 +25,12 @@ namespace PrayerAppServices.PrayerGroups
             return Ok(details);
         }
 
+        /// <summary>
+        /// Gets a prayer group
+        /// </summary>
+        /// <param name="authHeader"></param>
+        /// <param name="prayerGroupId"></param>
+        /// <returns></returns>
         [HttpGet("{prayerGroupId}")]
         [Authorize]
         public async Task<ActionResult<PrayerGroupModel>> GetPrayerGroupDetailsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId)
@@ -28,6 +39,11 @@ namespace PrayerAppServices.PrayerGroups
             return Ok(prayerGroupDetails);
         }
 
+        /// <summary>
+        /// Validates prayer group name for uniqueness
+        /// </summary>
+        /// <param name="prayerGroupName"></param>
+        /// <returns></returns>
         [HttpGet("validate-name")]
         [Authorize]
         public async Task<ActionResult<GroupNameValidationResponse>> ValidateGroupNameAsync([FromQuery(Name = "name")] string prayerGroupName)
@@ -36,6 +52,11 @@ namespace PrayerAppServices.PrayerGroups
             return Ok(validationResponse);
         }
 
+        /// <summary>
+        /// Search for prayer groups by name
+        /// </summary>
+        /// <param name="prayerGroupSearchRequest"></param>
+        /// <returns></returns>
         [HttpPost("search")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<PrayerGroupModel>>> SearchPrayerGroupsAsync([FromBody] PrayerGroupSearchRequest prayerGroupSearchRequest)
@@ -44,6 +65,13 @@ namespace PrayerAppServices.PrayerGroups
             return Ok(prayerGroups);
         }
 
+        /// <summary>
+        /// Updates prayer group
+        /// </summary>
+        /// <param name="authHeader"></param>
+        /// <param name="prayerGroupId"></param>
+        /// <param name="prayerGroupRequest"></param>
+        /// <returns></returns>
         [HttpPut("{prayerGroupId}")]
         [Authorize]
         public async Task<ActionResult<PrayerGroupModel>> UpdatePrayerGroupAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, PrayerGroupRequest prayerGroupRequest)
@@ -52,6 +80,12 @@ namespace PrayerAppServices.PrayerGroups
             return Ok(prayerGroup);
         }
 
+        /// <summary>
+        /// Gets users that have joined a prayer group
+        /// </summary>
+        /// <param name="prayerGroupId"></param>
+        /// <param name="getUsersRequest"></param>
+        /// <returns></returns>
         [HttpPost("{prayerGroupId}/users")]
         [Authorize]
         public async Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, [FromBody] PrayerGroupUsersGetRequest getUsersRequest)
