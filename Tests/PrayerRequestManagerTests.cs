@@ -115,7 +115,7 @@ namespace Tests {
                     PageSize = 10,
                     SortConfig = new SortConfig {
                         SortField = PrayerRequestSortFields.CreatedAt,
-                        SortOrder = SortOrder.Descending,
+                        SortDirection = SortDirection.Descending,
                     },
                     IncludeExpiredRequests = false,
 
@@ -160,7 +160,7 @@ namespace Tests {
                     PageSize = 10,
                     SortConfig = new SortConfig {
                         SortField = PrayerRequestSortFields.CreatedAt,
-                        SortOrder = SortOrder.Descending,
+                        SortDirection = SortDirection.Descending,
                     },
                     IncludeExpiredRequests = false,
 

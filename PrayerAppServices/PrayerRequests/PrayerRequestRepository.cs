@@ -163,28 +163,28 @@ namespace PrayerAppServices.PrayerRequests {
         private static IQueryable<PrayerRequest> ApplySorting(IQueryable<PrayerRequest> query, SortConfig sortConfig) {
             switch (sortConfig.SortField) {
                 case PrayerRequestSortFields.PrayedCount:
-                    if (sortConfig.SortOrder == SortOrder.Ascending) {
+                    if (sortConfig.SortDirection == SortDirection.Ascending) {
                         return query.OrderBy(prayerRequest => prayerRequest.PrayedCount);
                     }
                     else {
                         return query.OrderByDescending(prayerRequest => prayerRequest.PrayedCount);
                     }
                 case PrayerRequestSortFields.LikeCount:
-                    if (sortConfig.SortOrder == SortOrder.Ascending) {
+                    if (sortConfig.SortDirection == SortDirection.Ascending) {
                         return query.OrderBy(prayerRequest => prayerRequest.LikeCount);
                     }
                     else {
                         return query.OrderByDescending(prayerRequest => prayerRequest.LikeCount);
                     }
                 case PrayerRequestSortFields.CommentCount:
-                    if (sortConfig.SortOrder == SortOrder.Ascending) {
+                    if (sortConfig.SortDirection == SortDirection.Ascending) {
                         return query.OrderBy(prayerRequest => prayerRequest.CommentCount);
                     }
                     else {
                         return query.OrderByDescending(prayerRequest => prayerRequest.CommentCount);
                     }
                 case PrayerRequestSortFields.CreatedAt:
-                    if (sortConfig.SortOrder == SortOrder.Ascending) {
+                    if (sortConfig.SortDirection == SortDirection.Ascending) {
                         return query.OrderBy(prayerRequest => prayerRequest.CreatedDate);
                     }
                     else {
