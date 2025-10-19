@@ -10,6 +10,7 @@ using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 using PrayerAppServices.Users;
+using PrayerAppServices.Users.Entities;
 using PrayerAppServices.Users.Models;
 
 namespace PrayerAppServices.PrayerGroups
@@ -165,6 +166,30 @@ namespace PrayerAppServices.PrayerGroups
             SortConfig sortConfig = usersGetRequest.SortConfig == null ? new SortConfig { SortField = PrayerGroupUserSortField.FullName, SortDirection = SortDirection.Ascending } : usersGetRequest.SortConfig;
 
             return new PrayerGroupUsersResponse { PrayerGroupUsers = SortPrayerGroupUsers(prayerGroupUserSummaries, sortConfig) };
+        }
+
+        public async Task AddPrayerGroupUserAsync(string authToken, int prayerGroupId, int userId)
+        {
+            PrayerGroup? prayerGroup = await _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
+            if (prayerGroup == null)
+            {
+                throw new ArgumentException(PrayerGroupValidationErrors.UnableToFindPrayerGroup);
+            }
+
+            int submitterUserId = _userManager.ExtractUserIdFromAuthHeader(authToken);
+            PrayerGroupUser? submitterUser = await _prayerGroupRepository.GetPrayerGroupUserByUserIdAsync(prayerGroupId, submitterUserId);
+
+            if (submitterUserId != userId && submitterUser?.PrayerGroupRole != PrayerGroupRole.Admin)
+            {
+                throw new ArgumentException(PrayerGroupValidationErrors.MustBeAnAdminToAdd);
+            }
+
+            if (prayerGroup.VisibilityLevel == VisibilityLevel.Private && submitterUser?.PrayerGroupRole != PrayerGroupRole.Admin)
+            {
+                throw new ArgumentException(PrayerGroupValidationErrors.CannotAddUserToPrivatePrayerGroup);
+            }
+
+            await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, [new PrayerGroupUserToAdd { UserId = userId, PrayerGroupRole = PrayerGroupRole.Member }]);
         }
 
         public async Task UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest)
