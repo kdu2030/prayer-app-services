@@ -94,6 +94,22 @@ namespace PrayerAppServices.PrayerGroups
             return Ok(prayerGroupUsersResponse);
         }
 
+
+        /// <summary>
+        /// Add a prayer group user
+        /// </summary>
+        /// <param name="authHeader"></param>
+        /// <param name="prayerGroupId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPost("{prayerGroupId}/user/{userId}")]
+        [Authorize]
+        public async Task<ActionResult> AddPrayerGroupUserAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, int userId)
+        {
+            await _prayerGroupManager.AddPrayerGroupUserAsync(authHeader, prayerGroupId, userId);
+            return Ok();
+        }
+
         [HttpPut("{prayerGroupId}/admins")]
         [Authorize]
         public async Task<ActionResult> UpdatePrayerGroupAdminsAsync([FromHeader(Name = "Authorization")] string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest)

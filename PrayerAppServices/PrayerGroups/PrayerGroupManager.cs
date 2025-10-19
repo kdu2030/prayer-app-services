@@ -189,7 +189,7 @@ namespace PrayerAppServices.PrayerGroups
                 throw new ArgumentException(PrayerGroupValidationErrors.CannotAddUserToPrivatePrayerGroup);
             }
 
-            await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, [new PrayerGroupUserToAdd { UserId = userId, PrayerGroupRole = PrayerGroupRole.Member }]);
+            await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, [new PrayerGroupUserToAdd { UserId = userId, PrayerGroupRole = (int)PrayerGroupRole.Member }]);
         }
 
         public async Task UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest)
