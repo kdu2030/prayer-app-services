@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PrayerAppServices.Common.Sorting;
 using PrayerAppServices.Files;
 using PrayerAppServices.Files.Constants;
 using PrayerAppServices.Files.Entities;
@@ -155,12 +156,15 @@ namespace PrayerAppServices.PrayerGroups
             return await GetPrayerGroupDetailsAsync(authHeader, prayerGroupId);
         }
 
-        public async Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? prayerGroupRoles)
+        public async Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, PrayerGroupUsersGetRequest usersGetRequest)
         {
-            IEnumerable<PrayerGroupRole> rolesToSearch = prayerGroupRoles == null || prayerGroupRoles.Count() == 0 ? [PrayerGroupRole.Member, PrayerGroupRole.Admin] : prayerGroupRoles;
+            IEnumerable<PrayerGroupRole> rolesToSearch = usersGetRequest.PrayerGroupRoles == null || usersGetRequest.PrayerGroupRoles.Count() == 0 ? [PrayerGroupRole.Member, PrayerGroupRole.Admin] : usersGetRequest.PrayerGroupRoles;
             IEnumerable<PrayerGroupUserEntity> prayerGroupUsers = await _prayerGroupRepository.GetPrayerGroupUsersAsync(prayerGroupId, rolesToSearch);
             IEnumerable<PrayerGroupUserSummary> prayerGroupUserSummaries = _mapper.Map<IEnumerable<PrayerGroupUserSummary>>(prayerGroupUsers);
-            return new PrayerGroupUsersResponse { PrayerGroupUsers = prayerGroupUserSummaries };
+
+            SortConfig sortConfig = usersGetRequest.SortConfig == null ? new SortConfig { SortField = PrayerGroupUserSortField.FullName, SortDirection = SortDirection.Ascending } : usersGetRequest.SortConfig;
+
+            return new PrayerGroupUsersResponse { PrayerGroupUsers = SortPrayerGroupUsers(prayerGroupUserSummaries, sortConfig) };
         }
 
         public async Task UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest)
@@ -275,21 +279,21 @@ namespace PrayerAppServices.PrayerGroups
             return [adminUserSummary];
         }
 
-        private IEnumerable<UserSummary> GetAdminUserSummaries(IEnumerable<PrayerGroupUserEntity> adminUsers)
+        private static IEnumerable<PrayerGroupUserSummary> SortPrayerGroupUsers(IEnumerable<PrayerGroupUserSummary> prayerGroupUsers, SortConfig sortConfig)
         {
-            return adminUsers.Where(adminUser => adminUser.UserId != null)
-                .Select(adminUser => new UserSummary
-                {
-                    UserId = adminUser.UserId ?? -1,
-                    FullName = adminUser.FullName,
-                    Image = adminUser.ImageFileId != null ? new MediaFileBase
-                    {
-                        MediaFileId = adminUser.ImageFileId,
-                        FileName = adminUser.FileName ?? "",
-                        FileUrl = adminUser.FileUrl ?? "",
-                        FileType = FileType.Image
-                    } : null
-                });
+            switch (sortConfig.SortField)
+            {
+                case PrayerGroupUserSortField.Username:
+                    return sortConfig.SortDirection == SortDirection.Ascending
+                        ? prayerGroupUsers.OrderBy(user => user.Username)
+                        : prayerGroupUsers.OrderByDescending(user => user.Username);
+                case PrayerGroupUserSortField.FullName:
+                    return sortConfig.SortDirection == SortDirection.Ascending
+                        ? prayerGroupUsers.OrderBy(user => user.FullName)
+                        : prayerGroupUsers.OrderByDescending(user => user.FullName);
+                default:
+                    throw new ArgumentException(PrayerGroupValidationErrors.UserSortFieldNotSupported);
+            }
         }
 
     }

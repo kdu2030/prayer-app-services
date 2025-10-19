@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrayerAppServices.PrayerGroups.Constants;
+using PrayerAppServices.PrayerGroups.Entities;
 using PrayerAppServices.PrayerGroups.Models;
 
 namespace PrayerAppServices.PrayerGroups
@@ -51,11 +52,11 @@ namespace PrayerAppServices.PrayerGroups
             return Ok(prayerGroup);
         }
 
-        [HttpGet("{prayerGroupId}/users")]
+        [HttpPost("{prayerGroupId}/users")]
         [Authorize]
-        public async Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, [FromQuery(Name = "role")] IEnumerable<PrayerGroupRole>? roles)
+        public async Task<ActionResult<PrayerGroupUsersResponse>> GetPrayerGroupUsersAsync(int prayerGroupId, [FromBody] PrayerGroupUsersGetRequest getUsersRequest)
         {
-            PrayerGroupUsersResponse prayerGroupUsersResponse = await _prayerGroupManager.GetPrayerGroupUsersAsync(prayerGroupId, roles);
+            PrayerGroupUsersResponse prayerGroupUsersResponse = await _prayerGroupManager.GetPrayerGroupUsersAsync(prayerGroupId, getUsersRequest);
             return Ok(prayerGroupUsersResponse);
         }
 
@@ -67,13 +68,13 @@ namespace PrayerAppServices.PrayerGroups
             return Ok();
         }
 
-        [HttpPost("{prayerGroupId}/users")]
-        [Authorize]
-        public async Task<ActionResult> AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request)
-        {
-            await _prayerGroupManager.AddPrayerGroupUsersAsync(prayerGroupId, request);
-            return Ok();
-        }
+        //[HttpPost("{prayerGroupId}/users")]
+        //[Authorize]
+        //public async Task<ActionResult> AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request)
+        //{
+        //    await _prayerGroupManager.AddPrayerGroupUsersAsync(prayerGroupId, request);
+        //    return Ok();
+        //}
 
         [HttpDelete("{prayerGroupId}/users")]
         [Authorize]

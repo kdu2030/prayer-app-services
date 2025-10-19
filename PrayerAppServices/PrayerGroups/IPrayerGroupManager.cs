@@ -11,7 +11,7 @@ namespace PrayerAppServices.PrayerGroups
         Task<GroupNameValidationResponse> ValidateGroupNameAsync(string groupName);
         Task<IEnumerable<PrayerGroupModel>> SearchPrayerGroupsAsync(PrayerGroupSearchRequest prayerGroupSearchRequest);
         Task<PrayerGroupModel> UpdatePrayerGroupAsync(string authHeader, int prayerGroupId, PrayerGroupRequest prayerGroupRequest);
-        Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupRole>? prayerGroupRoles);
+        Task<PrayerGroupUsersResponse> GetPrayerGroupUsersAsync(int prayerGroupId, PrayerGroupUsersGetRequest usersGetRequest);
         Task UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest);
         Task AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request);
         Task DeletePrayerGroupUsersAsync(string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request);
