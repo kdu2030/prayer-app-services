@@ -11,6 +11,11 @@ namespace PrayerAppServices.Users
     {
         private readonly IUserManager _userManager = userManager;
 
+        /// <summary>
+        /// Creates a user
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
         public async Task<IActionResult> CreateUser(CreateUserRequest request)
@@ -19,6 +24,11 @@ namespace PrayerAppServices.Users
             return Ok(userSummary);
         }
 
+        /// <summary>
+        /// Logs in a user and fetches user details
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("summary")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserSummary))]
@@ -28,6 +38,11 @@ namespace PrayerAppServices.Users
             return Ok(userSummary);
         }
 
+        /// <summary>
+        /// Gets user details
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("{userId}/summary")]
@@ -38,6 +53,11 @@ namespace PrayerAppServices.Users
             return Ok(userSummary);
         }
 
+        /// <summary>
+        /// Get user's access token and refresh token
+        /// </summary>
+        /// <param name="authHeader"></param>
+        /// <returns></returns>
         [HttpGet]
         [Authorize]
         [Route("token")]

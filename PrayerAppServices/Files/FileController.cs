@@ -12,6 +12,11 @@ namespace PrayerAppServices.Files
     {
         private readonly IFileManager _fileManager = fileManager;
 
+        /// <summary>
+        /// Uploads a file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(MediaFileBase))]
@@ -21,6 +26,11 @@ namespace PrayerAppServices.Files
             return Ok(mediaFile);
         }
 
+        /// <summary>
+        /// Deletes a file
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
         [HttpDelete("{fileId}")]
         [Authorize]
         public async Task<IActionResult> DeleteFileAsync(int fileId)
