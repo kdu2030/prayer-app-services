@@ -14,7 +14,7 @@ namespace PrayerAppServices.PrayerGroups
         Task UpdatePrayerGroupAsync(PrayerGroup prayerGroup);
         Task<IEnumerable<PrayerGroupSummaryEntity>> GetPrayerGroupSummariesByUserIdAsync(int userId);
         Task UpdatePrayerGroupAdminsAsync(int prayerGroupId, IEnumerable<int> adminUserIdsToAdd, IEnumerable<int> adminUserIdsToRemove);
-        Task AddPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupUserToAdd> users);
+        Task AddPrayerGroupUserAsync(PrayerGroup prayerGroup, int userId, PrayerGroupRole prayerGroupRole = PrayerGroupRole.Member);
         Task DeletePrayerGroupUsersAsync(int prayerGroupId, IEnumerable<int> userIds);
         Task<PrayerGroupUser?> GetPrayerGroupUserByUserIdAsync(int prayerGroupId, int userId, CancellationToken token = default);
         Task<PrayerGroupGetResponse> GetPrayerGroupAsync(PrayerGroupQuery prayerGroupQuery);

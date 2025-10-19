@@ -170,11 +170,7 @@ namespace PrayerAppServices.PrayerGroups
 
         public async Task AddPrayerGroupUserAsync(string authToken, int prayerGroupId, int userId)
         {
-            PrayerGroup? prayerGroup = await _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId);
-            if (prayerGroup == null)
-            {
-                throw new ArgumentException(PrayerGroupValidationErrors.UnableToFindPrayerGroup);
-            }
+            PrayerGroup? prayerGroup = await _prayerGroupRepository.GetPrayerGroupByIdAsync(prayerGroupId) ?? throw new ArgumentException(PrayerGroupValidationErrors.UnableToFindPrayerGroup);
 
             int submitterUserId = _userManager.ExtractUserIdFromAuthHeader(authToken);
             PrayerGroupUser? submitterUser = await _prayerGroupRepository.GetPrayerGroupUserByUserIdAsync(prayerGroupId, submitterUserId);
@@ -189,7 +185,7 @@ namespace PrayerAppServices.PrayerGroups
                 throw new ArgumentException(PrayerGroupValidationErrors.CannotAddUserToPrivatePrayerGroup);
             }
 
-            await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, [new PrayerGroupUserToAdd { UserId = userId, PrayerGroupRole = (int)PrayerGroupRole.Member }]);
+            await _prayerGroupRepository.AddPrayerGroupUserAsync(prayerGroup, userId, PrayerGroupRole.Member);
         }
 
         public async Task UpdatePrayerGroupAdminsAsync(string authHeader, int prayerGroupId, UpdatePrayerGroupAdminsRequest updateAdminsRequest)
@@ -207,12 +203,6 @@ namespace PrayerAppServices.PrayerGroups
             IEnumerable<int> adminsToRemove = currentAdminUserIdsSet.Except(updatedAdminUserIdsSet);
             IEnumerable<int> adminsToAdd = updatedAdminUserIdsSet.Except(currentAdminUserIdsSet);
             await _prayerGroupRepository.UpdatePrayerGroupAdminsAsync(prayerGroupId, adminsToAdd, adminsToRemove);
-        }
-
-        public async Task AddPrayerGroupUsersAsync(int prayerGroupId, AddPrayerGroupUserRequest request)
-        {
-            IEnumerable<PrayerGroupUserToAdd> usersToAdd = _mapper.Map<IEnumerable<PrayerGroupUserToAdd>>(request.Users);
-            await _prayerGroupRepository.AddPrayerGroupUsersAsync(prayerGroupId, usersToAdd);
         }
 
         public async Task DeletePrayerGroupUsersAsync(string authHeader, int prayerGroupId, PrayerGroupDeleteRequest request)

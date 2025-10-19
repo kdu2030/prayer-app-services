@@ -5,6 +5,7 @@ using PrayerAppServices.Data;
 using PrayerAppServices.PrayerGroups.Constants;
 using PrayerAppServices.PrayerGroups.DTOs;
 using PrayerAppServices.PrayerGroups.Entities;
+using PrayerAppServices.Users.Entities;
 
 namespace PrayerAppServices.PrayerGroups
 {
@@ -138,6 +139,24 @@ namespace PrayerAppServices.PrayerGroups
             return prayerGroupSummaries;
         }
 
+        public async Task AddPrayerGroupUserAsync(PrayerGroup prayerGroup, int userId, PrayerGroupRole prayerGroupRole = PrayerGroupRole.Member)
+        {
+            AppUser user = new AppUser { Id = userId };
+
+            _dbContext.Attach(prayerGroup);
+            _dbContext.Attach(user);
+
+            PrayerGroupUser prayerGroupUser = new PrayerGroupUser
+            {
+                PrayerGroup = prayerGroup,
+                User = user,
+                PrayerGroupRole = prayerGroupRole
+            };
+
+            _dbContext.PrayerGroupUsers.Add(prayerGroupUser);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task UpdatePrayerGroupAdminsAsync(int prayerGroupId, IEnumerable<int> adminUserIdsToAdd, IEnumerable<int> adminUserIdsToRemove)
         {
             await using NpgsqlConnection connection = await Connection;
@@ -151,18 +170,6 @@ namespace PrayerAppServices.PrayerGroups
             parameters.Add("admin_user_ids_to_remove", adminUsersToRemoveIdArr.Length > 0 ? adminUsersToRemoveIdArr : null, System.Data.DbType.Object);
 
             string sql = "CALL update_prayer_group_admins(@prayer_group_id, @admin_user_ids_to_add, @admin_user_ids_to_remove)";
-            await connection.ExecuteAsync(sql, parameters);
-        }
-
-        public async Task AddPrayerGroupUsersAsync(int prayerGroupId, IEnumerable<PrayerGroupUserToAdd> users)
-        {
-            await using NpgsqlConnection connection = await Connection;
-
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("prayer_group_id", prayerGroupId);
-            parameters.Add("users_to_add", users.ToArray(), System.Data.DbType.Object);
-
-            string sql = "CALL add_prayer_group_users(@prayer_group_id, @users_to_add)";
             await connection.ExecuteAsync(sql, parameters);
         }
 
